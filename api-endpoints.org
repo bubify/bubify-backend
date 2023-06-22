@@ -1,0 +1,94 @@
+* TODO 401
+JWT token failed to authenticate
+* 400 Bad request
+Invalid parameter, e.g., a user id for a non-existing user
+* 403 Forbidden
+Something breaking the rules, like attempting to register a user multiple times to a help request
+
+* API Endpoints
+** /available/helpRequests                                              :Get:
+description
+*** input
+*** output
+
+
+** /populateDB                                                          :Get:
+** /achievements                                                        :Get:
+** /achievements                                                       :Post:
+** /achievements/{id}                                                   :Get:
+** /achievements/{id}                                                   :Put:
+** /achievements/{id}                                                :Delete:
+** /usernames_old                                                       :Get:
+** /allStudentNamesAndIds                                               :Get:
+** /allNamesAndIds                                                      :Get:
+** /batchRegister                                                      :Post:
+** /login/{id}                                                          :Get:
+Logs in a user with user id "id" if the user is in the database. During development, this always succeeds. 
+Returns a Json.LoginResult which includes a valid JWT. 
+*** input
+An id as part of the URL. Example: /login/9 logs in user with user id 9.
+*** output example
+#+begin_src javascript
+{
+   "token" : "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZXhwIjoxNTk3MDE4NjEzLCJpYXQiOjE1OTcwMDA2MTN9.XlxU4Q33e_hE_gLyhpH42bz41YqqscqG4rgYI_wPe23jSmZVfCAOrdBNhkK33M_c9rU9WCDUKlWJefoehPdQUQ",
+   "courseInfo" : {
+      "codeSpaceBaseURL" : "http://FIXME",
+      "studiumURL" : "http://FIXME",
+      "githubBaseURL" : "http://github.com/IOOPM-UU/jono4597",
+      "courseWebURL" : "http://wrigstad.com/ioopm",
+      "name" : "IOOPM"
+   },
+   "user" : {
+      "userName" : "jono4597",
+      "lastName" : "Norlinder",
+      "role" : "SENIOR_TA",
+      "id" : 9,
+      "firstName" : "Jonas"
+   }
+}
+#+end_src
+*** possible errors
+400, "USER_NOT_FOUND" is returned if the user id is not in the database
+404, is returned if the parameters are forgotten (as there is no match to such an endpoint)
+*** TODOs 
+Change from GET to POST 
+** /users                                                               :Get:
+** /users                                                              :Post:
+** /users/{id}                                                          :Get:
+** /whois/{userName}                                                    :Get:
+** /users/{id}                                                          :Put:
+** /users/{id}                                                       :Delete:
+** /login2                                                              :Get:
+** /logout                                                              :Get:
+** /helpRequests                                                        :Get:
+** /helpRequests/my                                                     :Get:
+** /helpRequests/active                                                 :Get:
+** /helpRequests/pickedUp                                               :Get:
+** /helpRequests/notPickedUp                                            :Get:
+** /helpRequests                                                       :Post:
+** /helpRequests/{id}                                                   :Get:
+** /askForHelp                                                         :Post:
+** /offerHelp                                                          :Post:
+** /markAsDone                                                         :Post:
+** /helpRequests/{id}                                                   :Put:
+** /helpRequests/{id}                                                :Delete:
+** /enrolments                                                          :Get:
+** /enrolments                                                         :Post:
+** /enrolments/{id}                                                     :Get:
+** /enrolments/{id}                                                     :Put:
+** /enrolments/{id}                                                  :Delete:
+** /demonstrations                                                      :Get:
+** /demonstrations                                                     :Post:
+** /demonstrations/{demonstrationId}                                    :Get:
+** /demonstrations/{demonstrationId}                                    :Put:
+** /demonstrations/{demonstrationId}                                 :Delete:
+** /demonstration/request                                              :Post:
+** /demonstration/claim                                                :Post:
+** /demonstration/done                                                 :Post:
+** /demonstrations/activeAndSubmitted                                   :Get:
+** /demonstrations/activeAndSubmittedOrPickedUp                         :Get:
+** /demonstration/pending                                               :Get:
+** /demonstration/matchMaking                                           :Get:
+** /progress/                                                           :Get:
+** /unlocked/                                                           :Get:
+** /remaining/                                                          :Get:
