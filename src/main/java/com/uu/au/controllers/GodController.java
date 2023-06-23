@@ -1,7 +1,6 @@
 package com.uu.au.controllers;
 
 import com.uu.au.AUPortal;
-import com.uu.au.enums.AchievementType;
 import com.uu.au.enums.Level;
 import com.uu.au.enums.Result;
 import com.uu.au.enums.Role;
@@ -12,13 +11,11 @@ import com.uu.au.models.*;
 import com.uu.au.repository.*;
 import net.coobird.thumbnailator.Thumbnails;
 
-import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,7 +34,6 @@ import java.util.stream.Collectors;
 import com.github.bohnman.squiggly.Squiggly;
 import com.github.bohnman.squiggly.util.SquigglyUtils;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -59,7 +55,6 @@ import java.io.*;
 import java.util.*;
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.TimeUnit;
 
 /// This controller is an internal staging area for API endpoints
 /// before we ultimately decide how to structure the API internally

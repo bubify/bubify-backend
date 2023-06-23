@@ -28,7 +28,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.cas.ServiceProperties;
-import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.cas.authentication.
+CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -154,4 +155,6 @@ public class AUPortal {
     public static void main(String... args) {
         SpringApplication.run(AUPortal.class, args);
     }
+
 }
+

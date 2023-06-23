@@ -4,24 +4,22 @@ import com.uu.au.enums.*;
 import com.uu.au.enums.errors.UserErrors;
 import com.uu.au.models.*;
 import com.uu.au.repository.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.SpringVersion;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.boot.devtools.restart.Restarter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 @Controller
@@ -138,36 +136,38 @@ public class DevelopmentController {
     @Autowired
     AchievementPushedBackRepository apb;
 
+
     @CrossOrigin
     @GetMapping("/restart")
     public @ResponseBody String restartGet() {
         logger.info("Restarting backend");
+        Restarter.getInstance().restart();
 
-        //        restartEndpoint.restart();
-        return "Hejsasn!";
+        return "OK restarting";
     }
 
     @GetMapping("/populateDB")
     public @ResponseBody String populateDB() {
-        logger.info("Populating DB");
-        logger.info("Spring version: " + SpringVersion.getVersion());
+        return "test";
+        // logger.info("Populating DB");
+        // logger.info("Spring version: " + SpringVersion.getVersion());
 
 
-        var defaultUser = User.builder().email("first.last.1234@student.uu.se").firstName("Senior").lastName("Sundelin").userName("jonno220").enrolments(new HashSet<>()).role(Role.TEACHER).build();
+        // var defaultUser = User.builder().email("first.last.1234@student.uu.se").firstName("Senior").lastName("Sundelin").userName("jonno220").enrolments(new HashSet<>()).role(Role.TEACHER).build();
 
-        u.save(defaultUser);
+        // u.save(defaultUser);
 
-        var defaultCourse = Course.builder()
-                .name("IOOPM")
-                .startDate(LocalDate.now())
-                .build();
+        // var defaultCourse = Course.builder()
+        //         .name("IOOPM")
+        //         .startDate(LocalDate.now())
+        //         .build();
 
-        var defaultUser1Enrolment1 = Enrolment.builder().courseInstance(defaultCourse).achievementsUnlocked(new HashSet<>()).achievementsPushedBack(new HashSet<>()).build();
-        defaultUser.getEnrolments().add(defaultUser1Enrolment1);
+        // var defaultUser1Enrolment1 = Enrolment.builder().courseInstance(defaultCourse).achievementsUnlocked(new HashSet<>()).achievementsPushedBack(new HashSet<>()).build();
+        // defaultUser.getEnrolments().add(defaultUser1Enrolment1);
 
-        c.save(defaultCourse);
-        e.save(defaultUser1Enrolment1);
+        // c.save(defaultCourse);
+        // e.save(defaultUser1Enrolment1);
 
-        return "Populated the DB with default values";
+        // return "Populated the DB with default values";
     }
 }

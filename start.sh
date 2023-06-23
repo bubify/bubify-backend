@@ -1,16 +1,17 @@
 #!/bin/bash
 source /home/bubify/.bashrc
 
-cd /home/bubify/backend
+cd /home/bubify
+sudo chown -R bubify:bubify .m2
+cd backend
+
+export TERM=xterm
 
 while true; do
-  mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=development -Dspring-boot.run.jvmArguments=-XX:+UseG1GC
-  exit_code=$?
-  if [ $exit_code -eq 0 ]; then
-    echo "Spring application exited gracefully."
-    break
-  else
-    echo "Spring application exited with error. Restarting..."
-    sleep 2s
-  fi
+  mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=development -Dspring-boot.run.jvmArguments=-XX:+UseG1GC -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" &
+
+  while true; do
+    watch -d -t -g "ls -lR src | sha1sum" && mvn compile && curl http://localhost:8900/restart
+  done
+
 done
