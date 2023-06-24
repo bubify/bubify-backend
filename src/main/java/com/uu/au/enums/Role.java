@@ -4,8 +4,7 @@ public enum Role {
     STUDENT("Student"),
     JUNIOR_TA("Junior_TA"),
     SENIOR_TA("Senior_TA"),
-    TEACHER("Teacher"),
-    SETUP_SYSTEM("SETUP_SYSTEM");
+    TEACHER("Teacher");
 
     private final String role;
 

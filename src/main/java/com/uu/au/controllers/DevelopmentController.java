@@ -1,6 +1,7 @@
 package com.uu.au.controllers;
 
 import com.uu.au.enums.*;
+import com.uu.au.enums.errors.CourseErrors;
 import com.uu.au.enums.errors.UserErrors;
 import com.uu.au.models.*;
 import com.uu.au.repository.*;
@@ -13,13 +14,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.boot.devtools.restart.Restarter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,6 +32,9 @@ import java.util.stream.Collectors;
 public class DevelopmentController {
     @Autowired
     AuthController authController;
+
+    @Autowired
+    UserController userController;
 
     @Autowired
     UserRepository users;
@@ -90,13 +98,6 @@ public class DevelopmentController {
     @CrossOrigin
     @GetMapping("/su")
     public @ResponseBody String devConsumeToken(@RequestParam String username) {
-        if (users.count() == 0 && course.count() == 0) {
-            var newRootUser = User.builder()
-                .userName(username)
-                .role(Role.TEACHER)
-                .build();
-            users.save(newRootUser);
-        }
         Long id = users.findByUserNameOrThrow(username).getId();
         var user = authController.installUser(id);
         var dbUser = users.findByUserNameOrThrow(username);
@@ -142,32 +143,50 @@ public class DevelopmentController {
     public @ResponseBody String restartGet() {
         logger.info("Restarting backend");
         Restarter.getInstance().restart();
-
         return "OK restarting";
     }
 
-    @GetMapping("/populateDB")
-    public @ResponseBody String populateDB() {
-        return "test";
-        // logger.info("Populating DB");
-        // logger.info("Spring version: " + SpringVersion.getVersion());
+    RoleConverter roleConverter = new RoleConverter();
 
+    @PostMapping("/dev/user")
+    public @ResponseBody String postUser(@RequestBody Json.CreateUser u) {
+        logger.info("Creating user from developer endpoint");
+        if (course.count() == 0) throw CourseErrors.emptyOrCorrupt();
 
-        // var defaultUser = User.builder().email("first.last.1234@student.uu.se").firstName("Senior").lastName("Sundelin").userName("jonno220").enrolments(new HashSet<>()).role(Role.TEACHER).build();
+        var existing = users.findByUserName(u.getUserName());
+        if (existing.isPresent()) {
+            throw UserErrors.userAlreadyExists();
+        }
 
-        // u.save(defaultUser);
+        var currentCourse = course.currentCourseInstance();
 
-        // var defaultCourse = Course.builder()
-        //         .name("IOOPM")
-        //         .startDate(LocalDate.now())
-        //         .build();
+        var role = roleConverter.convertToEntityAttribute(u.getRole());
+        if (role == null) throw UserErrors.userMalformedRole();
 
-        // var defaultUser1Enrolment1 = Enrolment.builder().courseInstance(defaultCourse).achievementsUnlocked(new HashSet<>()).achievementsPushedBack(new HashSet<>()).build();
-        // defaultUser.getEnrolments().add(defaultUser1Enrolment1);
+        var user = User
+                .builder()
+                .firstName(u.getFirstName())
+                .lastName(u.getLastName())
+                .email(u.getEmail())
+                .userName(u.getUserName())
+                .role(role)
+                .enrolments(Set.of(Enrolment.builder().courseInstance(currentCourse).achievementsPushedBack(Set.of()).achievementsUnlocked(Set.of()).build()))
+                .build();
 
-        // c.save(defaultCourse);
-        // e.save(defaultUser1Enrolment1);
-
-        // return "Populated the DB with default values";
+        users.save(user);
+        return "SUCCESS on user";
     }
+
+    @PostMapping("/dev/course")
+    public @ResponseBody String postCourse(@RequestBody Json.CourseInfo request) {
+        logger.info("Creating course from developer endpoint");
+        if (course.count() > 0) throw CourseErrors.alreadyExists();
+        var newCourse = Course.builder()
+            .name(request.getName())
+            .startDate(LocalDate.now())
+            .build();
+        course.save(newCourse);
+        return "SUCCESS on course\n";
+    }
+
 }

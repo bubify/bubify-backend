@@ -107,18 +107,7 @@ public class AUPortal {
                 users.save(dbUser);
                 return user.get();
 
-            }
-            else if (users.count() == 0 && course.count() == 0) {
-                var newRootUser = User.builder()
-                     .userName(uuUserName)
-                     .role(Role.TEACHER)
-                     .build();
-                userRepository.save(newRootUser);
-                user = authController.installUser(uuUserName);
-                user.get().setToken(authController.keyFromUserId(user.get().getId()));
-                return user.get();
-            }
-            else {
+            } else {
                 logger.error("Created disabled user " + uuUserName);
                 return AUUser.createDisabled(uuUserName);
             }

@@ -337,21 +337,10 @@ public class UserController {
     public Object basicData(HttpServletRequest request, HttpServletResponse response) {
         var user = users.currentUser();
 
-        try {
-            return Json.BasicData.builder()
-                .user(user)
-                .course(courseRepository.currentCourseInstance())
-                .build();
-        } catch (RuntimeException e) {
-            if (courseRepository.count() == 0) {
-                user.setRole(Role.SETUP_SYSTEM);
-                return ResponseEntity.status(201).body(Json.BasicData.builder()
-                    .user(user)
-                    .course(Course.builder().name("dummy").build())
-                    .build());
-            }
-        }
-        throw new RuntimeException("Malformed configuration: Should not reach here");
+        return Json.BasicData.builder()
+            .user(user)
+            .course(courseRepository.currentCourseInstance())
+            .build();
     }
 
     @PreAuthorize("hasAuthority('Senior_TA') or hasAuthority('Teacher')")
@@ -362,7 +351,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('Senior_TA') or hasAuthority('Teacher')")
     @PostMapping("/users")
-     String postUser(@RequestBody Json.CreateUser u) {
+    String postUser(@RequestBody Json.CreateUser u) {
         return addUserCSVBased(String.join(";", u.getFirstName(),
                 u.getLastName(), u.getEmail(), u.getUserName(), u.getRole()), false /*public usage*/);
     }

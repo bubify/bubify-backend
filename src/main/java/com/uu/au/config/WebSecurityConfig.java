@@ -56,12 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().addFilterBefore(logoutFilter, LogoutFilter.class).csrf().ignoringAntMatchers("/exit/cas");
 
         /// Protect all admin endpoints from being accessed outside of the deployment machine
-        http.authorizeRequests().antMatchers("/admin/**", "/su", "/populateDB", "/restart").access("hasIpAddress('127.0.0.1')");
+        http.authorizeRequests().antMatchers("/admin/**", "/su", "/dev/**", "/restart").access("hasIpAddress('127.0.0.1')");
 
         http.authorizeRequests().antMatchers("/error").permitAll();
-
-        http.authorizeRequests().antMatchers("/populateDB").permitAll().and().csrf()
-            .ignoringAntMatchers("/populateDB").and().headers().frameOptions().sameOrigin();
 
         http.authorizeRequests().antMatchers("/restart").permitAll().and().csrf()
             .ignoringAntMatchers("/restart").and().headers().frameOptions().sameOrigin();
