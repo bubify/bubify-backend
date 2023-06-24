@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.ServiceProperties;
@@ -43,6 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ServiceProperties serviceProperties;
 
+    @Autowired
+    private Environment environment;
+
     @Value("${server.host.frontend}")
     private String FRONTEND_HOST_URL;
 
@@ -56,7 +60,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().addFilterBefore(logoutFilter, LogoutFilter.class).csrf().ignoringAntMatchers("/exit/cas");
 
         /// Protect all admin endpoints from being accessed outside of the deployment machine
-        http.authorizeRequests().antMatchers("/admin/**", "/su", "/dev/**", "/restart").access("hasIpAddress('127.0.0.1')");
+        String[] activeProfiles = environment.getActiveProfiles();
+        boolean isDevelopmentProfileActive = false;
+
+        for (String profile : activeProfiles) {
+            if (profile.equals("development")) {
+                isDevelopmentProfileActive = true;
+                break;
+            }
+        }
+
+        if (!isDevelopmentProfileActive) {
+            http.authorizeRequests().antMatchers("/admin/**", "/su", "/dev/**", "/restart").access("hasIpAddress('127.0.0.1') or hasIpAddress('::1')");
+        }
 
         http.authorizeRequests().antMatchers("/error").permitAll();
 
