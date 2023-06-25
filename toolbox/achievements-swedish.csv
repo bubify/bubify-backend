@@ -1,0 +1,78 @@
+A1;Procedurell abstraktion;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#1
+A2;Objektorienterad abstraktion;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#2
+A3;Informationsgömning;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#3
+A8;Gränssnitt;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#8
+B4;Arv och subtypspolymorfism;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#4
+B5;Liskov's Substitution Principle;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#5
+B6;Genomskärande åtaganden och arv;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#6
+C7;Planering och uppföljning;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#7
+D9;Dokumentation;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#9
+E10;Implementera genericitet genom void-pekare;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#10
+E11;Parametrisk polymorfism och typsäkerhet;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#11
+E12;Designa med parametrisk polymorfism;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#12
+F13;Iteration vs. rekursion;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#13
+F14;Svansrekursion;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#14
+G15;Aliasering;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#15
+G16;Namn-baserad inkapsling;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#16
+G17;Nästlade och inre klasser;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#17
+H18;Jämförelsemetoden equals();GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#18
+H19;Skillnaden mellan identitet och ekvivalens;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#19
+H20;Värdeöverföring;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#20
+H21;Abstrakta klasser, metoder och interface;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#21
+I23;Undantagshantering;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#23
+I24;Olika metoder för felhantering;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#24
+I25;Egendefinierade undantag;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#25
+J26;Allokering på stacken vs. på heapen;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#26
+J27;Manuell minneshantering;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#27
+J28;Manuell vs. automatisk minneshantering;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#28
+J29;Jämför två metoder för automatisk skräpsamling;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#29
+K30;Gränssnitt mellan moduler;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#30
+K31;Coupling & cohesion;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#31
+K32;Separation of concerns;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#32
+M36;C:s array-notation och pekararitmetik;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#36
+M37;Använda pekare för att skapa länkade strukturer;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#37
+M38;Värdeöverföring via pekare;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#38
+M39;Pekare till pekare;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#39
+N40;Kompilering, länkning och interpretering;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#40
+N41;Bindning;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#41
+O42;Profilering och optimering 1/3;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#42
+O43;Profilering och optimering 2/3;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#43
+O44;Profilering och optimering 3/3;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#44
+P45;Gör en informell kodgranskning under fas 1;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#45
+P46;Gör en informell kodgranskning under fas 2;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#46
+P47;Åtgärda defekter efter en kodgranskning;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#47
+Q49;Enhetstestning;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#49
+Q50;Mät och resonera kring testkvalitet;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#50
+R52;Debuggning med GDB;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#52
+T55;Använda en utvecklingsmiljö på ett effektivt sätt;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#55
+T56;Continuous Integration;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#56
+U57;Byggverktyget Make;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#57
+V58;Grundläggande terminalkommandon;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#58
+X59;Essä;GRADE_4;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#59
+X61;Running Group Meetings Responsibly;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#61
+X62;Kommunikation 1:1;GRADE_5;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#62
+X63;Kommuniktion 1:M;GRADE_3;ACHIEVEMENT;http://wrigstad.com/ioopm/achievements.html#63
+# Projektuppgiften;;;;
+Y60;Presentera projektarbetet på ett seminarium;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#60
+Y64;Använd en namngiven utvecklingsprocess och reflektera över utkomsten;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#64
+Y65;Skriv konsekvent bra kod;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#65
+Y66;Tillämpa kodgranskning löpande;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#66
+Y67;Delta aktivt i ett programmeringsprojekt;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#67
+Y68;Redovisa en fungerande projektuppgift;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#68
+Y69;Tillämpa regressionstestning under projektet;GRADE_3;PROJECT;http://wrigstad.com/ioopm/achievements.html#69
+# Inlupparna;;;;
+Z91;Inlämningsuppgift 1 (C);GRADE_3;ASSIGNMENT;http://wrigstad.com/ioopm/achievements.html#100
+Z92;Inlämningsuppgift 2 (C);GRADE_3;ASSIGNMENT;http://wrigstad.com/ioopm/achievements.html#101
+Z93;Inlämningsuppgift 3 (Java);GRADE_3;ASSIGNMENT;http://wrigstad.com/ioopm/achievements.html#103
+Z94;Inlämningsuppgift 4 (Java);GRADE_3;ASSIGNMENT;http://wrigstad.com/ioopm/achievements.html#104
+# Introlabbarna;;;;
+LAB1;Lab 1 (C);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/c-bootstrap.html#orga968df8
+LAB2;Lab 2 (C);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/c-bootstrap.html#org59045da
+LAB3;Lab 3 (C);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/c-bootstrap.html#org2d54c94
+LAB4;Lab 4 (C);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/c-bootstrap.html#org8ad7fe8
+LAB5;Lab 5 (C);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/c-bootstrap.html#orgfc93e56
+LAB6;Lab 6 (Java);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/java-bootstrap.html#org8bd6bd0
+LAB7;Lab 7 (Java);GRADE_3;INTRO_LAB;http://wrigstad.com/ioopm/assignments/java-bootstrap.html#org2b37e6a
+# Kodprov;;;;
+CEC;C/Imperative Code Exam;GRADE_3;CODE_EXAM;http://wrigstad.com/ioopm/code-exam.html
+JEC;Java/OO Code Exam;GRADE_3;CODE_EXAM;http://wrigstad.com/ioopm/code-exam.html
