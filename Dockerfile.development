@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-LABEL maintainer="jonas@norlinder.nu"
+LABEL maintainer="jonas.norlinder@it.uu.se"
 
 RUN apt update
 RUN apt upgrade -y
@@ -45,25 +45,12 @@ ENV AU_KEY_STORE=/home/bubify/keystore/keystore.p12
 ENV AU_KEY_STORE_PASSWORD=password
 ENV AU_KEY_STORE_TYPE=PKCS12
 
-ENV AU_BACKEND_HOST=
-ENV AU_FRONTEND_HOST=
-ENV AU_APP_API=
-ENV AU_APP_WEBSOCKET=
-
-ENV AU_DB_HOST=localhost
-ENV AU_DB_PORT=3306
-ENV AU_DB_NAME=ioopm
-ENV AU_DB_USER=ioopm
-ENV AU_DB_PASSWORD=CHANGE_ME
-ENV AU_GITHUB_CLIENT_ID=CHANGE_ME
-ENV AU_GITHUB_CLIENT_SECRET=CHANGE_ME
-
 ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
 ENV AU_BACKUP_DIR=/home/bubify/au_backups/
 
 WORKDIR /home/bubify
-COPY --chown=bubify:bubify start_development.sh.sh /home/bubify
-RUN chmod +x start_development.sh.sh
+COPY --chown=bubify:bubify start_development.sh /home/bubify
+RUN chmod +x start_development.sh
 
 EXPOSE 8900
-CMD ["./start_development.sh.sh"]
+CMD ["./start_development.sh"]

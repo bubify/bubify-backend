@@ -1,3 +1,8 @@
 #!/usr/bin/zsh
 
-curl --silent --header "Content-Type: application/json" --header "token: ${token}" --request POST --data $2 http://localhost:8900/$1
+PROTOCOL=http
+if [[ $PRODUCTION == "true" ]]; then
+  PROTOCOL="https"
+fi
+
+curl -k --silent --header "Content-Type: application/json" --header "token: ${token}" --request POST --data $2 $PROTOCOL://localhost:8900/$1

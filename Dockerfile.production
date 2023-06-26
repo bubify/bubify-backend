@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-LABEL maintainer="jonas@norlinder.nu"
+LABEL maintainer="jonas.norlinder@it.uu.se"
 
 RUN apt update
 RUN apt upgrade -y
@@ -47,8 +47,6 @@ ENV AU_KEY_STORE_TYPE=PKCS12
 
 ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
 ENV AU_BACKUP_DIR=/home/bubify/au_backups/
-
-ENV AU_DB_PORT=3306
 
 WORKDIR /home/bubify
 COPY --chown=bubify:bubify start_production.sh /home/bubify

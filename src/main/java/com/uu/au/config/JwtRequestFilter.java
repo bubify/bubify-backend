@@ -37,12 +37,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     public boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/portfolio")  /// Web sockets
                 || request.getServletPath().startsWith("/admin/") /// Adming endpoints can only be run from localhost
-                || request.getServletPath().startsWith("/dev/")
+                || request.getServletPath().startsWith("/internal/")
                 || ok.contains(request.getServletPath());
     }
 
     // FIXME: replace with proper handling
-    private static final List<String> ok = List.of("/autoclose", "/su", "/login/cas", "/consume-token", "/auth", "/authDemo", "/secured", "/unregistered", "/unsuccessful", "/error", "/", "/webhook/github/accept", "/restart");
+    private static final List<String> ok = List.of("/autoclose", "/su", "/login/cas", "/consume-token", "/auth", "/authDemo", "/secured", "/unregistered", "/unsuccessful", "/error", "/", "/webhook/github/accept");
     private static final List<String> gitHubAuthEndPoints = List.of("/login/oauth2/code/github", "/authenticate-github", "/webhook/github/accept");
 
     @Override

@@ -71,13 +71,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         if (!isDevelopmentProfileActive) {
-            http.authorizeRequests().antMatchers("/admin/**", "/su", "/dev/**", "/restart").access("hasIpAddress('127.0.0.1') or hasIpAddress('::1')");
+            http.authorizeRequests().antMatchers("/admin/**", "/su", "/internal/**").access("hasIpAddress('127.0.0.1') or hasIpAddress('::1')");
         }
 
         http.authorizeRequests().antMatchers("/error").permitAll();
-
-        http.authorizeRequests().antMatchers("/restart").permitAll().and().csrf()
-            .ignoringAntMatchers("/restart").and().headers().frameOptions().sameOrigin();
 
         http.cors().and().csrf().disable().authorizeRequests().anyRequest().permitAll();
 

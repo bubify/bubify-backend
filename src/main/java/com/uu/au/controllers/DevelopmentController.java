@@ -1,7 +1,5 @@
 package com.uu.au.controllers;
 
-import com.uu.au.enums.*;
-import com.uu.au.enums.errors.CourseErrors;
 import com.uu.au.enums.errors.UserErrors;
 import com.uu.au.models.*;
 import com.uu.au.repository.*;
@@ -14,17 +12,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.boot.devtools.restart.Restarter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -119,74 +112,4 @@ public class DevelopmentController {
             throw UserErrors.malformedUserName("No user with username " + username);
         }
     }
-
-    @Autowired
-    UserRepository u;
-    @Autowired
-    CourseRepository c;
-    @Autowired
-    AchievementRepository ar;
-    @Autowired
-    EnrolmentRepository e;
-    @Autowired
-    HelpRequestRepository hr;
-    @Autowired
-    DemonstrationRepository d;
-    @Autowired
-    AchievementUnlockedRepository au;
-    @Autowired
-    AchievementPushedBackRepository apb;
-
-
-    @CrossOrigin
-    @GetMapping("/restart")
-    public @ResponseBody String restartGet() {
-        logger.info("Restarting backend");
-        Restarter.getInstance().restart();
-        return "OK restarting";
-    }
-
-    RoleConverter roleConverter = new RoleConverter();
-
-    @PostMapping("/dev/user")
-    public @ResponseBody String postUser(@RequestBody Json.CreateUser u) {
-        logger.info("Creating user from developer endpoint");
-        if (course.count() == 0) throw CourseErrors.emptyOrCorrupt();
-
-        var existing = users.findByUserName(u.getUserName());
-        if (existing.isPresent()) {
-            throw UserErrors.userAlreadyExists();
-        }
-
-        var currentCourse = course.currentCourseInstance();
-
-        var role = roleConverter.convertToEntityAttribute(u.getRole());
-        if (role == null) throw UserErrors.userMalformedRole();
-
-        var user = User
-                .builder()
-                .firstName(u.getFirstName())
-                .lastName(u.getLastName())
-                .email(u.getEmail())
-                .userName(u.getUserName())
-                .role(role)
-                .enrolments(Set.of(Enrolment.builder().courseInstance(currentCourse).achievementsPushedBack(Set.of()).achievementsUnlocked(Set.of()).build()))
-                .build();
-
-        users.save(user);
-        return "SUCCESS on user";
-    }
-
-    @PostMapping("/dev/course")
-    public @ResponseBody String postCourse(@RequestBody Json.CourseInfo request) {
-        logger.info("Creating course from developer endpoint");
-        if (course.count() > 0) throw CourseErrors.alreadyExists();
-        var newCourse = Course.builder()
-            .name(request.getName())
-            .startDate(LocalDate.now())
-            .build();
-        course.save(newCourse);
-        return "SUCCESS on course\n";
-    }
-
 }
