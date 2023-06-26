@@ -62,8 +62,8 @@ ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
 ENV AU_BACKUP_DIR=/home/bubify/au_backups/
 
 WORKDIR /home/bubify
-COPY --chown=bubify:bubify start.sh /home/bubify
-RUN chmod +x start.sh
+COPY --chown=bubify:bubify start_development.sh.sh /home/bubify
+RUN chmod +x start_development.sh.sh
 
 EXPOSE 8900
-CMD ["./start.sh"]
+CMD ["./start_development.sh.sh"]
