@@ -12,7 +12,11 @@ RUN apt install -y nginx maven
 # rm -rf /var/lib/apt/lists/* && \
 # apt clean
 
-RUN apt install -y git wget apt-transport-https gnupg curl sudo tmux emacs mysql-client nano htop zsh
+RUN apt install -y git wget apt-transport-https gnupg curl sudo tmux emacs mysql-client nano htop zsh tzdata
+
+RUN ln -fs /usr/share/zoneinfo/Europe/Stockholm /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
 RUN mkdir -p /etc/apt/keyrings
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
 RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
