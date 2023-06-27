@@ -7,6 +7,8 @@ cd backend
 
 export TERM=xterm
 
+rm -rf target
+
 while true; do
   mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=development -Dspring-boot.run.jvmArguments=-XX:+UseG1GC -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" &
 

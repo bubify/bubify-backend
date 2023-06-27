@@ -5,4 +5,6 @@ cd /home/bubify
 sudo chown -R bubify:bubify .m2
 cd backend
 
+rm -rf target
+
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=production -Dspring-boot.run.jvmArguments=-XX:+UseG1GC
