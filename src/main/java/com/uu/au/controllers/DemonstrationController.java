@@ -317,21 +317,15 @@ class DemonstrationController {
 
     @GetMapping("/demonstrations/activeAndSubmittedOrPickedUp")
     public List<Demonstration> activeAndSubmittedOrPickedUp() {
-        var demoList = demonstrations
-            .findAll()
-            .stream()
-            .filter(d -> d.isActiveAndSubmittedOrClaimed() && (d.getStatus() == DemonstrationStatus.SUBMITTED || d.getStatus() == DemonstrationStatus.CLAIMED))
-            .collect(Collectors.toList());
-
-        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), demoList, Demonstration.class);
+        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), pending(), Demonstration.class);
     }
 
     public List<Demonstration> pending() {
         return demonstrations
-                .findAll()
-                .stream()
-                .filter(d -> d.isActiveAndSubmittedOrClaimed() && (d.getStatus() == DemonstrationStatus.SUBMITTED))
-                .collect(Collectors.toList());
+            .findAll()
+            .stream()
+            .filter(d -> d.isActiveAndSubmittedOrClaimed() && (d.getStatus() == DemonstrationStatus.SUBMITTED || d.getStatus() == DemonstrationStatus.CLAIMED))
+            .collect(Collectors.toList());
     }
 
     // TODO keep?

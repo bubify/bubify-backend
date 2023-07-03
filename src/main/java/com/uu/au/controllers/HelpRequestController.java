@@ -75,19 +75,14 @@ class HelpRequestController {
     @CrossOrigin
     @GetMapping("/helpRequests/active")
     List<HelpRequest> active() {
-        var hr = helpRequests
-                .findAll()
-                .stream()
-                .filter(HelpRequest::isActiveAndSubmittedOrClaimed)
-                .collect(Collectors.toList());
-        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, HelpRequestController.filterStudent), hr, HelpRequest.class);
+        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, HelpRequestController.filterStudent), pending(), HelpRequest.class);
     }
 
     List<HelpRequest> pending() {
         return helpRequests
                 .findAll()
                 .stream()
-                .filter(h -> h.getStatus() == DemonstrationStatus.SUBMITTED)
+                .filter(HelpRequest::isActiveAndSubmittedOrClaimed)
                 .collect(Collectors.toList());
     }
 
