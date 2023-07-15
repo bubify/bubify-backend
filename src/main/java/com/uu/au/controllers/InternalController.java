@@ -54,6 +54,7 @@ public class InternalController {
     @CrossOrigin
     @GetMapping("/internal/restart")
     public @ResponseBody String restartGet(HttpServletRequest request) {
+        if (!isLocalhost((request))) return "ERROR: Only callable from host";
         logger.info("Restarting backend");
         Restarter.getInstance().restart();
         return "OK restarting";
