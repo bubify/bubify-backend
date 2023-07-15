@@ -10,6 +10,10 @@ import com.uu.au.enums.errors.*;
 import com.uu.au.enums.Role;
 import com.uu.au.models.*;
 import com.uu.au.repository.*;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,11 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 @CrossOrigin
 @RestController
@@ -307,6 +316,9 @@ class DemonstrationController {
         return saveAndNotify(demo);
     }
 
+    @Autowired
+    private EntityManager entityManager;
+
     public List<Demonstration> activeAndSubmitted() {
         return demonstrations
                 .findAll()
@@ -321,11 +333,20 @@ class DemonstrationController {
     }
 
     public List<Demonstration> pending() {
-        return demonstrations
-            .findAll()
-            .stream()
-            .filter(d -> d.isActiveAndSubmittedOrClaimed() && (d.getStatus() == DemonstrationStatus.SUBMITTED || d.getStatus() == DemonstrationStatus.CLAIMED))
-            .collect(Collectors.toList());
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Demonstration> criteriaQuery = criteriaBuilder.createQuery(Demonstration.class);
+        Root<Demonstration> root = criteriaQuery.from(Demonstration.class);
+        LocalDateTime nowMinus24Hours = LocalDateTime.now().minusHours(24);
+
+        javax.persistence.criteria.Predicate isActiveAndSubmittedOrClaimed = criteriaBuilder.and(
+                criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("status"), DemonstrationStatus.SUBMITTED),
+                        criteriaBuilder.equal(root.get("status"), DemonstrationStatus.CLAIMED)
+                ),
+                criteriaBuilder.greaterThan(root.get("requestTime"), nowMinus24Hours)
+        );
+        criteriaQuery.select(root).where(isActiveAndSubmittedOrClaimed);
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     // TODO keep?

@@ -19,6 +19,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = @Index(name = "idx_status", columnList = "status"))
 public class HelpRequest {
     @Id
     @GeneratedValue
@@ -49,6 +50,7 @@ public class HelpRequest {
     private String physicalRoom;
 
     @Builder.Default
+    @Column(name = "status")
     private DemonstrationStatus status = DemonstrationStatus.SUBMITTED;
 
     @JsonIgnore

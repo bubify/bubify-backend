@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 class HelpRequestController {
@@ -48,6 +53,9 @@ class HelpRequestController {
 
     @Autowired
     private WebSocketController webSocketController;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -79,11 +87,29 @@ class HelpRequestController {
     }
 
     List<HelpRequest> pending() {
-        return helpRequests
-                .findAll()
-                .stream()
-                .filter(HelpRequest::isActiveAndSubmittedOrClaimed)
-                .collect(Collectors.toList());
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<HelpRequest> criteriaQuery = criteriaBuilder.createQuery(HelpRequest.class);
+        Root<HelpRequest> root = criteriaQuery.from(HelpRequest.class);
+
+        javax.persistence.criteria.Predicate isActiveAndSubmittedOrClaimed = criteriaBuilder.and(
+                callIsActiveMethod(root, criteriaBuilder),
+                criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("status"), DemonstrationStatus.SUBMITTED),
+                        criteriaBuilder.equal(root.get("status"), DemonstrationStatus.CLAIMED)
+                )
+        );
+
+        criteriaQuery.select(root).where(isActiveAndSubmittedOrClaimed);
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+   private javax.persistence.criteria.Predicate callIsActiveMethod(Root<HelpRequest> root, CriteriaBuilder criteriaBuilder) {
+        LocalDateTime nowMinus24Hours = LocalDateTime.now().minusHours(24);
+        return criteriaBuilder.and(
+                criteriaBuilder.isNull(root.get("reportTime")),
+                criteriaBuilder.greaterThan(root.get("requestTime"), nowMinus24Hours),
+                criteriaBuilder.notEqual(root.get("status"), DemonstrationStatus.IN_FLIGHT)
+        );
     }
 
     @CrossOrigin
