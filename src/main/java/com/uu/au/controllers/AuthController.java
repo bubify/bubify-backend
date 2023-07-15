@@ -9,6 +9,8 @@ import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.Environment;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -42,13 +45,36 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 
 @Controller
 public class AuthController {
-    @Autowired
-    private UserRepository userRepository;
-
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final Map<String, Pair<LocalTime, String>> unAuthorizedKeys = new ConcurrentHashMap<>();
     private final Map<String, Pair<LocalTime, String>> authorizedKeys = new ConcurrentHashMap<>();
+
+    @Autowired
+    UserRepository users;
+
+    private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private Key devKey = Keys.hmacShaKeyFor("development_keyjidwfniowdjiojewdioewdewdedwoij".getBytes());
+    @Autowired
+    public Environment environment;
+
+    private Key getKey() {
+        String[] activeProfiles = environment.getActiveProfiles();
+        boolean isDevelopmentProfileActive = false;
+
+        for (String profile : activeProfiles) {
+            if (profile.equals("development")) {
+                isDevelopmentProfileActive = true;
+                break;
+            }
+        }
+
+        if (isDevelopmentProfileActive) {
+            return devKey;
+        } else {
+            return key;
+        }
+    }
 
     @Scheduled(fixedRate = 60000, initialDelay = 60000)
     public void deleteStaleKeys() {
@@ -156,18 +182,13 @@ public class AuthController {
         }
     }
 
-    @Autowired
-    UserRepository users;
-
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
     public String keyFromUserId(long uid) {
         var issuedTime = System.currentTimeMillis();
-        return Jwts.builder().setSubject(Long.toString(uid)).setIssuedAt(new Date(issuedTime)).setIssuer("com.uu.au").signWith(key).setExpiration(new Date(issuedTime+60*1000*60*12*4)).compact(); //48 hours expiration
+        return Jwts.builder().setSubject(Long.toString(uid)).setIssuedAt(new Date(issuedTime)).setIssuer("com.uu.au").signWith(getKey()).setExpiration(new Date(issuedTime+60*1000*60*12*4)).compact(); //48 hours expiration
     }
 
     public String keyFromUserIdWithAudience(long uid, String audience) {
-        return Jwts.builder().setSubject(Long.toString(uid)).setAudience(audience).signWith(key).compact();
+        return Jwts.builder().setSubject(Long.toString(uid)).setAudience(audience).signWith(getKey()).compact();
     }
 
     private Optional<String> generateKey() {
@@ -204,7 +225,7 @@ public class AuthController {
 
     public AUUser installUserFromToken(String token) {
         try {
-            var username = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+            var username = Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody().getSubject();
             var userId = Long.parseLong(username);
             return installUser(userId).orElseThrow(() -> UserErrors.malformedUserName(token));
         } catch (ExpiredJwtException e) {
