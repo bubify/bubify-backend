@@ -43,9 +43,6 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -898,10 +895,12 @@ class GodController {
     @PreAuthorize("hasAuthority('Teacher')")
     @PostMapping("/import/partial")
     public void importPartial(@RequestParam("file") MultipartFile file) throws IOException {
-        String content = new String(file.getBytes());
+        String content = new String(file.getBytes(), "UTF-8");
         JsonArray jArr = JsonParser.parseString(content).getAsJsonArray();
         for (var e : jArr) {
             JsonObject j = e.getAsJsonObject();
+            if (j.get("lastLogin").isJsonNull()) continue;
+
             var u = User.builder()
                         .firstName(j.get("firstName").getAsString())
                         .lastName(j.get("lastName").getAsString())
