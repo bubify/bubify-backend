@@ -1,19 +1,19 @@
 #!/bin/sh
 
-SECRET_TOKEN=<TODO>
+SECRET_TOKEN="${AU_GITHUB_CLIENT_SECRET}"
 GITHUB_NAME=$1
 UU_NAME=$2
-USERNAME_ME=<TODO> (e.g. TobiasWrigstad)
+USERNAME_ME="${AU_GITHUB_USER}"
 
-REPO_URL="https://api.github.com/repos/IOOPM-UU/$UU_NAME"
+REPO_URL="https://api.github.com/repos/$AU_GITHUB_ORG/$UU_NAME"
 
 # Create repo from template
 curl \
 -u "$USERNAME_ME:$SECRET_TOKEN" \
 -X POST \
 -H "Accept: application/vnd.github.baptiste-preview+json" \
-https://api.github.com/repos/IOOPM-UU/Vanilla.Student.Repo/generate \
--d "{\"name\":\"$UU_NAME\", \"owner\":\"IOOPM-UU\", \"private\" : true }"
+https://api.github.com/repos/$AU_GITHUB_ORG/Vanilla.Student.Repo/generate \
+-d "{\"name\":\"$UU_NAME\", \"owner\":\"$AU_GITHUB_ORG\", \"private\" : true }"
 
 sleep 5
 
