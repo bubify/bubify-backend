@@ -53,11 +53,13 @@ ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
 ENV AU_BACKUP_DIR=/home/bubify/au_backups/
 
 WORKDIR /home/bubify
-COPY --chown=bubify:bubify start_production.sh /home/bubify
 
+COPY --chown=bubify:bubify start_production.sh /home/bubify
 COPY --chown=bubify:bubify github_invite.sh /home/bubify
 COPY --chown=bubify:bubify github_invite_accepted_actions.sh /home/bubify
 
 RUN chmod +x start_production.sh
+RUN chmod +x github_invite.sh
+RUN chmod +x github_invite_accepted_actions.sh
 
 CMD ["./start_production.sh"]
