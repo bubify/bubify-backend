@@ -674,7 +674,8 @@ class GodController {
         var requests = demonstrations.size();
         var list = demonstrations.subList((requests < 5) ? 0 : (requests - 5), requests);
         Collections.reverse(list);
-        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), list, Demonstration.class);
+        return list;
+//        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), list, Demonstration.class);
     }
 
     @GetMapping("/recent/help")

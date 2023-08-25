@@ -212,7 +212,9 @@ class DemonstrationController {
     private Demonstration saveAndNotify(Demonstration demo) {
         var result = demonstrations.save(demo);
         webSocketController.notifyDemoListSubscribers();
-        return SquigglyUtils.objectify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), result, Demonstration.class);
+
+        return result;
+        // return SquigglyUtils.objectify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), result, Demonstration.class);
     }
 
     /// results has this structure:
@@ -329,7 +331,8 @@ class DemonstrationController {
 
     @GetMapping("/demonstrations/activeAndSubmittedOrPickedUp")
     public List<Demonstration> activeAndSubmittedOrPickedUp() {
-        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), pending(), Demonstration.class);
+        return pending();
+        //return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, DemonstrationController.filterStudent), pending(), Demonstration.class);
     }
 
     public List<Demonstration> pending() {
