@@ -100,7 +100,9 @@ class HelpRequestController {
         );
 
         criteriaQuery.select(root).where(isActiveAndSubmittedOrClaimed);
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        var list = entityManager.createQuery(criteriaQuery).getResultList();
+        list.sort(Comparator.comparing(HelpRequest::getRequestTime));
+        return list;
     }
 
    private javax.persistence.criteria.Predicate callIsActiveMethod(Root<HelpRequest> root, CriteriaBuilder criteriaBuilder) {

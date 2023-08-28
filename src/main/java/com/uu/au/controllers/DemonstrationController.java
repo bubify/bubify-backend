@@ -9,6 +9,7 @@ import com.uu.au.enums.Result;
 import com.uu.au.enums.errors.*;
 import com.uu.au.enums.Role;
 import com.uu.au.models.*;
+import com.uu.au.models.Json.DemonstrationRequest;
 import com.uu.au.repository.*;
 
 import org.hibernate.Criteria;
@@ -349,7 +350,10 @@ class DemonstrationController {
                 criteriaBuilder.greaterThan(root.get("requestTime"), nowMinus24Hours)
         );
         criteriaQuery.select(root).where(isActiveAndSubmittedOrClaimed);
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        var list = entityManager.createQuery(criteriaQuery).getResultList();
+
+        list.sort(Comparator.comparing(Demonstration::getRequestTime));
+        return list;
     }
 
     // TODO keep?
