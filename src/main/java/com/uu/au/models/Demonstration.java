@@ -62,6 +62,11 @@ public class Demonstration {
         return reportTime != null;
     }
 
+    @JsonIgnore
+    public boolean isClaimed() {
+        return status.equals(DemonstrationStatus.CLAIMED);
+    }
+
     private boolean isFlagged() {
         return (submitters.size() != 2) || (achievements.size() > 4) || (achievements.size() < 2);
     }
