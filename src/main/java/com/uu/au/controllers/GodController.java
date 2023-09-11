@@ -302,7 +302,7 @@ class GodController {
 
         var qos = Json.QOSResult
             .builder()
-            .demonstrationsPending(demonstrationController.pending().stream().filter(p -> !p.isClaimed()).collect(Collectors.toList()).size())
+            .demonstrationsPending(demonstrationController.pending().stream().filter(p -> !p.isActiveAndClaimed()).collect(Collectors.toList()).size())
             .helpRequestsPending(helpRequestController.pending().stream().filter(p -> !p.isActiveAndClaimed()).collect(Collectors.toList()).size())
             .demonstrationsPickupTime(avg(totalTimeDemosPickedUp, demosPickedUp))
             .demonstrationsRoundtripTime(avg(totalTimeDemosReported, demosReported))
