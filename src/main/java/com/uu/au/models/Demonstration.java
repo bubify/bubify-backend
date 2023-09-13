@@ -53,6 +53,13 @@ public class Demonstration {
     }
 
     @JsonIgnore
+    public boolean isActive() {
+        return reportTime == null
+                && requestTime.isAfter(LocalDateTime.now().minusHours(24))
+                && !status.equals(DemonstrationStatus.IN_FLIGHT);
+    }
+
+    @JsonIgnore
     public boolean isPickedUp() {
         return pickupTime != null;
     }
@@ -60,6 +67,11 @@ public class Demonstration {
     @JsonIgnore
     public boolean isReported() {
         return reportTime != null;
+    }
+
+    @JsonIgnore
+    public boolean isActiveAndClaimed() {
+        return isActive() && status.equals(DemonstrationStatus.CLAIMED);
     }
 
     private boolean isFlagged() {

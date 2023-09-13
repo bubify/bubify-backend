@@ -1,6 +1,7 @@
 package com.uu.au.controllers;
 
 import com.uu.au.AUPortal;
+import com.uu.au.enums.DemonstrationStatus;
 import com.uu.au.enums.Level;
 import com.uu.au.enums.Result;
 import com.uu.au.enums.Role;
@@ -301,8 +302,8 @@ class GodController {
 
         var qos = Json.QOSResult
             .builder()
-            .demonstrationsPending(demonstrationController.pending().size())
-            .helpRequestsPending(helpRequestController.pending().size())
+            .demonstrationsPending(demonstrationController.pending().stream().filter(p -> !p.isActiveAndClaimed()).collect(Collectors.toList()).size())
+            .helpRequestsPending(helpRequestController.pending().stream().filter(p -> !p.isActiveAndClaimed()).collect(Collectors.toList()).size())
             .demonstrationsPickupTime(avg(totalTimeDemosPickedUp, demosPickedUp))
             .demonstrationsRoundtripTime(avg(totalTimeDemosReported, demosReported))
             .helpRequestsPickupTime(avg(totalTimeHelpRequestsPickedUp, helpRequestsPickedUp))
