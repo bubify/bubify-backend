@@ -83,7 +83,8 @@ class HelpRequestController {
     @CrossOrigin
     @GetMapping("/helpRequests/active")
     List<HelpRequest> active() {
-        return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, HelpRequestController.filterStudent), pending(), HelpRequest.class);
+        return pending();
+        //return SquigglyUtils.listify(Squiggly.init(AUPortal.OBJECT_MAPPER, HelpRequestController.filterStudent), pending(), HelpRequest.class);
     }
 
     List<HelpRequest> pending() {
