@@ -59,7 +59,7 @@ class HelpRequestController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    public static final String filterStudent = "**,submitters[id,firstName,lastName,verifiedProfilePic],helper[id,firstName,lastName]";
+    public static final String filterStudent = "**,submitters[id,firstName,lastName,verifiedProfilePic,needsProfilePic],helper[id,firstName,lastName]";
 
     public List<HelpRequest> helpRequestsCurrentCourseInstance() {
         var currentCourseStartDate = courses.currentCourseInstance().getStartDate().atStartOfDay();
