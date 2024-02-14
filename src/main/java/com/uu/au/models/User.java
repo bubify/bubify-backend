@@ -117,12 +117,6 @@ public class User {
         return role.equals(Role.TEACHER) || role.equals(Role.SENIOR_TA);
     }
 
-    public String emailAddress() {
-        return isPriviliged()
-                ? firstName + "." + lastName + "@it.uu.se"
-                : firstName + "." + lastName + "." + userName.substring(4) + "@student.uu.se";
-    }
-
     @JsonIgnore
     public Optional<Enrolment> lastEnrolment() {
         if (enrolments == null) return Optional.empty();
