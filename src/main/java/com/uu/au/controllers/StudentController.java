@@ -168,6 +168,21 @@ public class StudentController {
         return remainingAll(achievements.findAll(), users.findOrThrow(userid),false, true);
     }
 
+    @PreAuthorize("hasAuthority('Senior_TA') or hasAuthority('Teacher') or hasAuthority('Junior_TA')")
+    @GetMapping("/remaining/alreadyPassed/{userid}")
+    public Map<Long, Boolean> remainingAlreadyPassed(@PathVariable Long userid, @RequestParam List<Long> achievementIds) {
+        List<Achievement> achievementList = achievements.findAllById(achievementIds);
+        List<String> passedAchievements = users
+                .findOrThrow(userid)
+                .passedAchievements(achievementList);
+
+        Map<Long, Boolean> passStatusMap = new HashMap<>();
+        for (Achievement achievement : achievementList) {
+                passStatusMap.put(achievement.getId(), passedAchievements.contains(achievement.getCode()));
+        }
+
+        return passStatusMap;
+    }
 
     @Autowired
      private AchievementPushedBackRepository achievementPushedBackRepository;
