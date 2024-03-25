@@ -1,0 +1,67 @@
+FROM ubuntu:22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# LABEL maintainer="jonas.norlinder@it.uu.se"
+LABEL maintainer="erik.magnehed.7725@student.uu.se"
+
+RUN apt update
+RUN apt upgrade -y
+
+RUN apt install -y nginx maven
+#git && \
+# rm -rf /var/lib/apt/lists/* && \
+# apt clean
+
+RUN apt install -y git wget apt-transport-https gnupg curl sudo tmux emacs mysql-client nano htop zsh tzdata
+
+RUN ln -fs /usr/share/zoneinfo/Europe/Stockholm /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+RUN mkdir -p /etc/apt/keyrings
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+RUN apt-get update
+RUN apt install -y temurin-17-jdk
+
+RUN useradd -ms /bin/bash bubify
+RUN usermod -aG sudo bubify
+
+RUN echo "bubify     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+WORKDIR /home/bubify
+
+USER bubify
+
+RUN mkdir -p au_backups
+RUN mkdir -p profile_pictures
+RUN mkdir -p keystore
+RUN mkdir -p backend
+RUN mkdir -p backend/target
+RUN mkdir -p logs
+
+# Setup intermediate certificate -- only needed for deployment
+WORKDIR /home/bubify/keystore
+RUN keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -keystore keystore.jks -validity 3650 -storepass password -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown"
+RUN keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore.p12 -validity 3650 -storepass password -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown"
+
+ENV AU_KEY_ALIAS=tomcat
+ENV AU_KEY_STORE=/home/bubify/keystore/keystore.p12
+ENV AU_KEY_STORE_PASSWORD=password
+ENV AU_KEY_STORE_TYPE=PKCS12
+
+ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
+ENV AU_BACKUP_DIR=/home/bubify/au_backups/
+
+WORKDIR /home/bubify
+
+COPY --chown=bubify:bubify start_development.sh /home/bubify
+COPY --chown=bubify:bubify github_invite.sh /home/bubify
+COPY --chown=bubify:bubify github_invite_accepted_actions.sh /home/bubify
+
+RUN chmod +x start_development.sh
+RUN chmod +x github_invite.sh
+RUN chmod +x github_invite_accepted_actions.sh
+
+EXPOSE 8900
+CMD ["./start_testing.sh"]
