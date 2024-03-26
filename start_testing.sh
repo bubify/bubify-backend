@@ -10,4 +10,4 @@ export TERM=xterm
 rm -rf target
 
 # Start tests and stores a copy of results to a file
-mvn test -Dspring.profiles.active=application-test -Dmaven.test.failure.ignore=true | tee /home/bubify/backend/test_results.txt
+mvn test -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true | tee /home/bubify/backend/test_results.txt
