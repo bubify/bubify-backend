@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JpaConfig {
 
+    @Value("${spring.datasource.driver-class-name}")
+    private String springDatasourceDriverClassName;
+
     @Value("${spring.datasource.url}")
     private String springDatasourceURL;
 
@@ -23,7 +26,7 @@ public class JpaConfig {
     public DataSource getDataSource()
     {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
+        dataSourceBuilder.driverClassName(springDatasourceDriverClassName);
         dataSourceBuilder.url(springDatasourceURL);
         dataSourceBuilder.username(springDatasourceUsername);
         dataSourceBuilder.password(springDatasourcePassword);

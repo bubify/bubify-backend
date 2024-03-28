@@ -19,7 +19,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(name = "idx_status", columnList = "status"))
+// @Table(indexes = @Index(name = "idx_status", columnList = "status")) // BUG? Same column name as in Demonstration!
+@Table(indexes = @Index(name = "idx_status_help", columnList = "status"))
 public class HelpRequest {
     @Id
     @GeneratedValue
