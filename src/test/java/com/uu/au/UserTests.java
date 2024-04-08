@@ -150,4 +150,42 @@ public class UserTests {
         String prefix = user.emailPrefix();
         assertEquals("j.d", prefix);
     }
+
+    @Test
+    public void testNeedsZoomLink() {
+        // Test the return from getNeedsZoomLink-method
+        User user = new User();
+        assertTrue(user.getNeedsZoomLink());
+
+        user.setZoomRoom("ZoomRoom123");
+        assertFalse(user.getNeedsZoomLink());
+    }
+
+    @Test
+    public void testNeedsProfilePic() {
+        // Test the return from getNeedsProfilePic-method
+        User user = new User();
+        assertTrue(user.getNeedsProfilePic());
+
+        user.setProfilePic("profile.jpg");
+        assertFalse(user.getNeedsProfilePic());
+    }
+
+    @Test
+    public void testThumbnail() {
+        // Test the return from getThumbnail-method
+        User user = new User();
+        user.setProfilePic("profile.jpg");
+        assertEquals("profile.jpg", user.getThumbnail());
+
+        user.setProfilePicThumbnail("thumbnail.jpg");
+        assertEquals("thumbnail.jpg", user.getThumbnail());
+    }
+
+    // TODO: Add tests for these by mocking achievements and enrolments:
+    // achievementsUnlocked
+    // achievementsPushedBack
+    // currentCourseInstance
+    // currentEnrolment
+    // lastEnrolment
 }
