@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
 
 public class CourseTests {
     @Test
@@ -78,7 +77,7 @@ public class CourseTests {
         assertTrue(course.isProfilePictures());
         assertEquals(LocalDate.of(2024, 12, 31), course.getCodeExamDemonstrationBlocker());
         assertTrue(course.isClearQueuesUsingCron());
-        assertEquals("BOTH", course.getRoomSetting());
+        assertEquals("PHYSICAL", course.getRoomSetting());
         assertNotNull(course.getCreatedDateTime());
         assertNotNull(course.getUpdatedDateTime());
     }
@@ -88,11 +87,12 @@ public class CourseTests {
         // Create a new Course and test codeExamDemonstrationBlocker method
         Course course = new Course();
         
+        course.setCodeExamDemonstrationBlocker(null);
         course.setStartDate(LocalDate.of(2024, 01, 01));
-        assertEquals(LocalDate.of(2024, 01, 01), course.getCodeExamDemonstrationBlocker());
+        assertEquals(LocalDate.of(2024, 01, 01), course.codeExamDemonstrationBlocker());
 
         course.setCodeExamDemonstrationBlocker(LocalDate.of(2024, 12, 31));
-        assertEquals(LocalDate.of(2024, 12, 31), course.getCodeExamDemonstrationBlocker());
+        assertEquals(LocalDate.of(2024, 12, 31), course.codeExamDemonstrationBlocker());
     }
 
     @Test
@@ -108,10 +108,11 @@ public class CourseTests {
     public void testCurrentCourseWeek(){
         // Create a new Course and test currentCourseWeek method
         Course course = new Course();
-        course.setStartDate(LocalDate.of(2024, 01, 01));
-
-        // currentCourseWeek uses LocalDate.now() internally so we can only assert that the result is greater than or equal to 0
-        assertTrue(course.currentCourseWeek() >= 0);
+        course.setStartDate(LocalDate.now().minusWeeks(4));
+        assertEquals(4, course.currentCourseWeek());
+        
+        course.setStartDate(LocalDate.now().plusWeeks(2));
+        assertEquals(0, course.currentCourseWeek());
     }
 
     @Test
