@@ -174,6 +174,74 @@ public class EnrolmentTests {
         // Create an Enrolment and test the burnDown method
         Enrolment enrolment = new Enrolment();
 
-        // TODO
+        Course course = new Course();
+        course.setId(1L);
+        course.setStartDate(LocalDate.now().minusWeeks(2));
+        enrolment.setCourseInstance(course);
+        
+        // Create some achievements with different levels and set unlock times
+        Achievement achiveOneLevel3 = new Achievement();
+        achiveOneLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auOneLevel3 = new AchievementUnlocked();
+        auOneLevel3.setUnlockTime(LocalDateTime.now().minusWeeks(2));
+        auOneLevel3.setAchievement(achiveOneLevel3);
+
+        Achievement achiveTwoLevel3 = new Achievement();
+        achiveTwoLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auTwoLevel3 = new AchievementUnlocked();
+        auTwoLevel3.setUnlockTime(LocalDateTime.now().minusWeeks(1));
+        auTwoLevel3.setAchievement(achiveTwoLevel3);
+
+        Achievement achiveOneLevel4 = new Achievement();
+        achiveOneLevel4.setLevel(Level.GRADE_4);
+        AchievementUnlocked auOneLevel4 = new AchievementUnlocked();
+        auOneLevel4.setUnlockTime(LocalDateTime.now().minusWeeks(1));
+        auOneLevel4.setAchievement(achiveOneLevel4);
+
+        Achievement achiveTwoLevel4 = new Achievement();
+        achiveTwoLevel4.setLevel(Level.GRADE_4);
+        AchievementUnlocked auTwoLevel4 = new AchievementUnlocked();
+        auTwoLevel4.setUnlockTime(LocalDateTime.now().minusWeeks(0));
+        auTwoLevel4.setAchievement(achiveTwoLevel4);
+
+        Achievement achiveOneLevel5 = new Achievement();
+        achiveOneLevel5.setLevel(Level.GRADE_5);
+        AchievementUnlocked auOneLevel5 = new AchievementUnlocked();
+        auOneLevel5.setUnlockTime(LocalDateTime.now().minusWeeks(1));
+        auOneLevel5.setAchievement(achiveOneLevel5);
+        
+        // Add the achievements to the enrolment
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        setAU.add(auOneLevel3);
+        setAU.add(auTwoLevel3);
+        setAU.add(auOneLevel4);
+        setAU.add(auTwoLevel4);
+        setAU.add(auOneLevel5);
+        enrolment.setAchievementsUnlocked(setAU);
+
+        final var levelToTarget = new HashMap<Level, Integer>();
+        levelToTarget.put(Level.GRADE_3, 2);
+        levelToTarget.put(Level.GRADE_4, 4); // Note: 2 GRADE_3 achievements are also included
+        levelToTarget.put(Level.GRADE_5, 5); // Note: 4 GRADE_3 and 2 GRADE_4 achievements are also included
+
+        // Check the burnDown per week and per level, first week is duplicated so week 0 and 1 are the same
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnDown = enrolment.burnDown(levelToTarget);
+        assertEquals((2-1), burnDown.get(Level.GRADE_3).get(0)); // Duplicate of week 1
+        assertEquals((2-1), burnDown.get(Level.GRADE_3).get(1));
+        assertEquals((2-2), burnDown.get(Level.GRADE_3).get(2));
+        assertEquals((2-2), burnDown.get(Level.GRADE_3).get(3));
+        
+        // Note: GRADE_3 achievements are also included in GRADE_4
+        assertEquals((4-1), burnDown.get(Level.GRADE_4).get(0)); // Duplicate of week 1
+        assertEquals((4-1), burnDown.get(Level.GRADE_4).get(1));
+        assertEquals((4-3), burnDown.get(Level.GRADE_4).get(2));
+        assertEquals((4-4), burnDown.get(Level.GRADE_4).get(3));
+        
+        // Note: GRADE_3 and GRADE_4 achievements are also included in GRADE_5
+        assertEquals((5-1), burnDown.get(Level.GRADE_5).get(0)); // Duplicate of week 1
+        assertEquals((5-1), burnDown.get(Level.GRADE_5).get(1));
+        assertEquals((5-4), burnDown.get(Level.GRADE_5).get(2));
+        assertEquals((5-5), burnDown.get(Level.GRADE_5).get(3));
     }
 }
