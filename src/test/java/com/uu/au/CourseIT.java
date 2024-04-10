@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 @SpringBootTest("server.port=8900")
 @AutoConfigureMockMvc
-public class CourseAPITests {
+public class CourseIT {
     private static String token;
 
     @Autowired
