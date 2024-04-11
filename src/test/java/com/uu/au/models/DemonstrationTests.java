@@ -168,6 +168,9 @@ public class DemonstrationTests {
         
         demonstration.setStatus(DemonstrationStatus.SUBMITTED);
         assertFalse(demonstration.isActiveAndClaimed());
+
+        demonstration.setStatus(DemonstrationStatus.IN_FLIGHT);
+        assertFalse(demonstration.isActiveAndClaimed());
     }
 
     @Test

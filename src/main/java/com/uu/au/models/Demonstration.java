@@ -75,6 +75,7 @@ public class Demonstration {
         return isActive() && status.equals(DemonstrationStatus.CLAIMED);
     }
 
+    // FIXME: Function unused
     private boolean isFlagged() {
         return (submitters.size() != 2) || (achievements.size() > 4) || (achievements.size() < 2);
     }

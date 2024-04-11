@@ -97,6 +97,10 @@ public class EnrolmentTests {
         enrolment.setCourseInstance(course);
         assertTrue(enrolment.thisYear());
         
+        // Previous year is also considered this year
+        course.setStartDate(LocalDate.now().minusYears(1));
+        assertTrue(enrolment.thisYear());
+        
         course.setStartDate(LocalDate.of(2000, 1, 1));
         assertFalse(enrolment.thisYear());
     }

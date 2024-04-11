@@ -135,6 +135,12 @@ public class HelpRequestTests {
         helpRequest.setReportTime(null);
         helpRequest.setStatus(DemonstrationStatus.CANCELLED_BY_TEACHER);
         assertFalse(helpRequest.isActiveAndSubmitted());
+
+        // ReportTime is not null, RequestTime within 24 hours and status is SUBMITTED
+        helpRequest.setRequestTime(LocalDateTime.now());
+        helpRequest.setReportTime(LocalDateTime.now());
+        helpRequest.setStatus(DemonstrationStatus.COMPLETED);
+        assertFalse(helpRequest.isActiveAndSubmitted());
     }
 
     @Test
@@ -153,6 +159,12 @@ public class HelpRequestTests {
         helpRequest.setRequestTime(LocalDateTime.now());
         helpRequest.setReportTime(null);
         helpRequest.setStatus(DemonstrationStatus.SUBMITTED);
+        assertFalse(helpRequest.isActiveAndClaimed());
+
+        // ReportTime is not null, RequestTime within 24 hours and status is CLAIMED
+        helpRequest.setRequestTime(LocalDateTime.now());
+        helpRequest.setReportTime(LocalDateTime.now());
+        helpRequest.setStatus(DemonstrationStatus.CLAIMED);
         assertFalse(helpRequest.isActiveAndClaimed());
     }
 
@@ -180,6 +192,12 @@ public class HelpRequestTests {
         helpRequest.setReportTime(null);
         helpRequest.setStatus(DemonstrationStatus.CANCELLED_BY_STUDENT);
         assertFalse(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
+        
+        // ReportTime is not null, RequestTime within 24 hours and status is not SUBMITTED, CLAIMED or IN_FLIGHT
+        helpRequest.setRequestTime(LocalDateTime.now());
+        helpRequest.setReportTime(LocalDateTime.now());
+        helpRequest.setStatus(DemonstrationStatus.COMPLETED);
+        assertFalse(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
     }
 
     @Test
@@ -201,6 +219,12 @@ public class HelpRequestTests {
         helpRequest.setRequestTime(LocalDateTime.now());
         helpRequest.setReportTime(null);
         helpRequest.setStatus(DemonstrationStatus.CANCELLED_BY_TEACHER);
+        assertFalse(helpRequest.isActiveAndSubmittedOrClaimed());
+
+        // ReportTime is not null, RequestTime within 24 hours and status is not SUBMITTED or CLAIMED
+        helpRequest.setRequestTime(LocalDateTime.now());
+        helpRequest.setReportTime(LocalDateTime.now());
+        helpRequest.setStatus(DemonstrationStatus.COMPLETED);
         assertFalse(helpRequest.isActiveAndSubmittedOrClaimed());
     }
 

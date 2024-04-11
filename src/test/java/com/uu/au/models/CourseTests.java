@@ -130,5 +130,40 @@ public class CourseTests {
         assertTrue(course1.equals((Object) course2));
 
         assertFalse(course1.equals((Object) course3));
+
+        assertFalse(course1.equals(null));
+    }
+
+    @Test
+    public void testHashCode(){
+        // Create a new Course and test hashCode method
+        Course course = new Course();
+        course.setId(1L);
+        assertNotNull(course.hashCode());
+    }
+
+    @Test
+    public void testToString(){
+        // Create a new Course and test toString method
+        Course course = new Course();
+        course.setId(1L);
+        course.setStartDate(LocalDate.of(2024, 01, 01));
+        course.setName("Course 1");
+        course.setGitHubOrgURL("http://github.com/org1");
+        course.setCourseWebURL("http://example.com/course1");
+        course.setHelpModule(false);
+        course.setDemoModule(false);
+        course.setOnlyIntroductionTasks(false);
+        course.setBurndownModule(false);
+        course.setStatisticsModule(false);
+        course.setExamMode(true);
+        course.setProfilePictures(false);
+        course.setCodeExamDemonstrationBlocker(LocalDate.of(2024, 12, 31));
+        course.setClearQueuesUsingCron(false);
+        course.setRoomSetting("PHYSICAL");
+        course.setCreatedDateTime(null);
+        course.setUpdatedDateTime(null);
+
+        assertEquals("Course(id=1, startDate=2024-01-01, name=Course 1, gitHubOrgURL=http://github.com/org1, courseWebURL=http://example.com/course1, helpModule=false, demoModule=false, onlyIntroductionTasks=false, burndownModule=false, statisticsModule=false, examMode=true, profilePictures=false, codeExamDemonstrationBlocker=2024-12-31, clearQueuesUsingCron=false, roomSetting=PHYSICAL, createdDateTime=null, updatedDateTime=null)", course.toString());
     }
 }
