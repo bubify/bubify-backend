@@ -26,7 +26,7 @@
 [[1;34mINFO[m] 
 [[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.8.1:testCompile[m [1m(default-testCompile)[m @ [36mau[0;1m ---[m
 [[1;34mINFO[m] Changes detected - recompiling the module!
-[[1;34mINFO[m] Compiling 16 source files to /home/bubify/backend/target/test-classes
+[[1;34mINFO[m] Compiling 17 source files to /home/bubify/backend/target/test-classes
 [[1;34mINFO[m] 
 [[1;34mINFO[m] [1m--- [0;32mmaven-surefire-plugin:2.22.2:test[m [1m(default-test)[m @ [36mau[0;1m ---[m
 [[1;34mINFO[m] 
@@ -34,38 +34,40 @@
 [[1;34mINFO[m]  T E S T S
 [[1;34mINFO[m] -------------------------------------------------------
 [[1;34mINFO[m] Running com.uu.au.models.[1mEnrolmentTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m7[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.11 s - in com.uu.au.models.[1mEnrolmentTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m10[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.149 s - in com.uu.au.models.[1mEnrolmentTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mAchievementFailedTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m3[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mAchievementFailedTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m5[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in com.uu.au.models.[1mAchievementFailedTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mDemoListClearedTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m2[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mDemoListClearedTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m5[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s - in com.uu.au.models.[1mDemoListClearedTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mLadokEntryTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m3[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mLadokEntryTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m6[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s - in com.uu.au.models.[1mLadokEntryTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mHelpRequestTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m11[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mHelpRequestTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m14[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s - in com.uu.au.models.[1mHelpRequestTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mUserTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m19[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s - in com.uu.au.models.[1mUserTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m24[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s - in com.uu.au.models.[1mUserTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mCourseTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m6[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in com.uu.au.models.[1mCourseTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m8[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mCourseTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mAchievementPushedBackTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m4[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s - in com.uu.au.models.[1mAchievementPushedBackTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m6[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 s - in com.uu.au.models.[1mAchievementPushedBackTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mAchievementTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m8[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s - in com.uu.au.models.[1mAchievementTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m10[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s - in com.uu.au.models.[1mAchievementTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mCourseInstanceTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m1[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 s - in com.uu.au.models.[1mCourseInstanceTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m11[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in com.uu.au.models.[1mCourseInstanceTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mHelpListClearedTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m2[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s - in com.uu.au.models.[1mHelpListClearedTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m5[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s - in com.uu.au.models.[1mHelpListClearedTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mAchievementUnlockedTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m3[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s - in com.uu.au.models.[1mAchievementUnlockedTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m5[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s - in com.uu.au.models.[1mAchievementUnlockedTests[m
 [[1;34mINFO[m] Running com.uu.au.models.[1mDemonstrationTests[m
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m9[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s - in com.uu.au.models.[1mDemonstrationTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m12[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in com.uu.au.models.[1mDemonstrationTests[m
+[[1;34mINFO[m] Running com.uu.au.models.[1mTargetLevelTests[m
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m5[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s - in com.uu.au.models.[1mTargetLevelTests[m
 [[1;34mINFO[m] Running com.uu.au.[1mCASTests[m
-20:47:12.942 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.CASTests], using SpringBootContextLoader
-20:47:12.967 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.CASTests]: no resource found for suffixes {-context.xml, Context.groovy}.
-20:47:12.975 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.CASTests]: CASTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-20:47:13.238 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.CASTests
-20:47:13.406 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-20:47:13.439 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@fb2e3fd, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@43a09ce2, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@3f183caa, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@7b66322e, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@63538bb4, org.springframework.test.context.support.DirtiesContextTestExecutionListener@24534cb0, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5a50d9fc, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@106d77da, org.springframework.test.context.event.EventPublishingTestExecutionListener@6f9c5048, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@5114b7c7, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@dd71b20, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@767f6ee7, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@7b6c6e70, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@f324455, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@3a894088]
+16:04:17.520 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.CASTests], using SpringBootContextLoader
+16:04:17.534 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.CASTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+16:04:17.537 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.CASTests]: CASTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:04:17.761 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.CASTests
+16:04:17.947 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+16:04:17.983 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@35c9a231, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@7a4d582c, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@5626d18c, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@45e9b12d, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@3dc95b8b, org.springframework.test.context.support.DirtiesContextTestExecutionListener@2d55e826, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4d1ff6b1, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@45f756e6, org.springframework.test.context.event.EventPublishingTestExecutionListener@329548d0, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@3003827c, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@29b40b3, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@7d247660, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@656f62dc, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@49d30c6f, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@1115433e]
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -75,44 +77,44 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.6.1)
 
-20:47:14.002 [main] INFO  com.uu.au.CASTests - Starting CASTests using Java 17.0.10 on b0e1c703fca2 with PID 76 (started by bubify in /home/bubify/backend)
-20:47:14.002 [main] INFO  com.uu.au.CASTests - The following profiles are active: test
-20:47:15.753 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-20:47:15.901 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 130 ms. Found 13 JPA repository interfaces.
-20:47:17.364 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-20:47:17.466 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
-20:47:17.720 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-20:47:17.890 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-20:47:18.310 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-20:47:18.368 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-20:47:20.493 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-20:47:20.509 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-20:47:21.983 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-20:47:22.039 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-20:47:22.057 [main] INFO  com.uu.au.AUPortal - ticketValidator
-20:47:22.072 [main] INFO  com.uu.au.AUPortal - service properties
-20:47:22.080 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-20:47:23.094 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-20:47:23.390 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@38dd3dd5, org.springframework.security.web.context.SecurityContextPersistenceFilter@a429406, org.springframework.security.web.header.HeaderWriterFilter@5acb81ef, org.springframework.web.filter.CorsFilter@75ec71eb, org.springframework.security.web.authentication.logout.LogoutFilter@251ddb57, org.springframework.security.web.authentication.logout.LogoutFilter@31b7d7d0, org.jasig.cas.client.session.SingleSignOutFilter@4fe3058, org.springframework.security.web.session.ConcurrentSessionFilter@3f1bfe98, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@31a57be9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3f9c5ea9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2f850d83, org.springframework.security.web.session.SessionManagementFilter@703bd69c, org.springframework.security.web.access.ExceptionTranslationFilter@3131b41, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@71644fdf]
-20:47:23.541 [main] INFO  com.uu.au.AUPortal - filter!
-20:47:24.316 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-20:47:24.458 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-20:47:24.460 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@91f5ac6]]
-20:47:24.463 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-20:47:24.495 [main] INFO  com.uu.au.CASTests - Started CASTests in 10.972 seconds (JVM running for 13.934)
-20:47:24.519 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-20:47:24.520 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m1[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.481 s - in com.uu.au.[1mCASTests[m
-20:47:24.807 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-20:47:24.808 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@91f5ac6]]
-20:47:24.833 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-20:47:24.848 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-20:47:24.856 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-20:47:24.869 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+16:04:18.446 [main] INFO  com.uu.au.CASTests - Starting CASTests using Java 17.0.10 on c390cd119377 with PID 71 (started by bubify in /home/bubify/backend)
+16:04:18.447 [main] INFO  com.uu.au.CASTests - The following profiles are active: test
+16:04:19.973 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+16:04:20.133 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 133 ms. Found 13 JPA repository interfaces.
+16:04:21.300 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+16:04:21.456 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
+16:04:21.732 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+16:04:21.905 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+16:04:22.314 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+16:04:22.345 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+16:04:23.961 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+16:04:23.975 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+16:04:25.158 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+16:04:25.232 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
+16:04:25.250 [main] INFO  com.uu.au.AUPortal - ticketValidator
+16:04:25.263 [main] INFO  com.uu.au.AUPortal - service properties
+16:04:25.271 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
+16:04:26.125 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+16:04:26.517 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3a524163, org.springframework.security.web.context.SecurityContextPersistenceFilter@4edbf855, org.springframework.security.web.header.HeaderWriterFilter@58a9b1b9, org.springframework.web.filter.CorsFilter@318adb06, org.springframework.security.web.authentication.logout.LogoutFilter@571dab6a, org.springframework.security.web.authentication.logout.LogoutFilter@f983c87, org.jasig.cas.client.session.SingleSignOutFilter@5fefc31, org.springframework.security.web.session.ConcurrentSessionFilter@4b45f781, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3bf8d9d2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5ad0c7df, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@527864c8, org.springframework.security.web.session.SessionManagementFilter@3a86ccb0, org.springframework.security.web.access.ExceptionTranslationFilter@be947b2, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@27407cd2]
+16:04:26.675 [main] INFO  com.uu.au.AUPortal - filter!
+16:04:27.479 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
+16:04:27.628 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+16:04:27.629 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2913f37f]]
+16:04:27.630 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+16:04:27.655 [main] INFO  com.uu.au.CASTests - Started CASTests in 9.593 seconds (JVM running for 12.312)
+16:04:27.678 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
+16:04:27.678 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m1[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.764 s - in com.uu.au.[1mCASTests[m
+16:04:28.121 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+16:04:28.121 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2913f37f]]
+16:04:28.122 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+16:04:28.138 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+16:04:28.150 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+16:04:28.155 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
 [[1;34mINFO[m] 
 [[1;34mINFO[m] Results:
 [[1;34mINFO[m] 
-[[1;34mINFO[m] [1;32mTests run: 79, Failures: 0, Errors: 0, Skipped: 0[m
+[[1;34mINFO[m] [1;32mTests run: 127, Failures: 0, Errors: 0, Skipped: 0[m
 [[1;34mINFO[m] 
 [[1;34mINFO[m] 
 [[1;34mINFO[m] [1m--- [0;32mjacoco-maven-plugin:0.8.12:report[m [1m(report)[m @ [36mau[0;1m ---[m
@@ -121,6 +123,6 @@
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
 [[1;34mINFO[m] [1;32mBUILD SUCCESS[m
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
-[[1;34mINFO[m] Total time:  40.480 s
-[[1;34mINFO[m] Finished at: 2024-04-10T20:47:26+02:00
+[[1;34mINFO[m] Total time:  37.701 s
+[[1;34mINFO[m] Finished at: 2024-04-12T16:04:30+02:00
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m

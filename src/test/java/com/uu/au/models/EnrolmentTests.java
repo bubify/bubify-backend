@@ -10,19 +10,23 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class EnrolmentTests {
-    @Test
-    public void testEnrolment (){
-        // Create an Enrolment and check ALL setters and getters
+
+    private Enrolment createBasicEnrolment() {
+        // Create a basic Enrolment used as a basis in the tests
         Enrolment enrolment = new Enrolment();
+        enrolment.setId(1L);
+
         Course course = new Course();
         course.setId(1L);
 
         Set<AchievementUnlocked> setAU = new HashSet<>();
         AchievementUnlocked achievementUnlocked = new AchievementUnlocked();
+        achievementUnlocked.setId(1L);
         setAU.add(achievementUnlocked);
 
         Set<AchievementPushedBack> setAPB = new HashSet<>();
         AchievementPushedBack achievementPushedBack = new AchievementPushedBack();
+        achievementPushedBack.setId(1L);
         setAPB.add(achievementPushedBack);
         
         enrolment.setId(1L);
@@ -30,22 +34,34 @@ public class EnrolmentTests {
         enrolment.setAchievementsUnlocked(setAU);
         enrolment.setAchievementsPushedBack(setAPB);
 
+        return enrolment;
+    }
+
+    @Test
+    public void testEnrolment (){
+        // Create an Enrolment and check ALL setters and getters
+        Enrolment enrolment = createBasicEnrolment();
+
         assertEquals(1L, enrolment.getId());
-        assertEquals(course, enrolment.getCourseInstance());
-        assertEquals(setAU, enrolment.getAchievementsUnlocked());
-        assertEquals(setAPB, enrolment.getAchievementsPushedBack());
+        assertEquals(1L, enrolment.getCourseInstance().getId());
+        assertEquals(1L, enrolment.getAchievementsUnlocked().iterator().next().getId());
+        assertEquals(1L, enrolment.getAchievementsPushedBack().iterator().next().getId());
     }
 
     @Test
     public void testEnrolmentByBuilder (){
         // Create an Enrolment by builder and check 1 getter
         Course course = new Course();
+        course.setId(1L);
+
         Set<AchievementUnlocked> setAU = new HashSet<>();
         AchievementUnlocked achievementUnlocked = new AchievementUnlocked();
+        achievementUnlocked.setId(1L);
         setAU.add(achievementUnlocked);
 
         Set<AchievementPushedBack> setAPB = new HashSet<>();
         AchievementPushedBack achievementPushedBack = new AchievementPushedBack();
+        achievementPushedBack.setId(1L);
         setAPB.add(achievementPushedBack);
 
         Enrolment enrolment = Enrolment.builder()
@@ -59,30 +75,58 @@ public class EnrolmentTests {
     }
 
     @Test
+    public void testEnrolmentEquals() {
+        // Create Enrolment objects and test the equals method
+        Enrolment enrolment1 = createBasicEnrolment();
+        Enrolment enrolment2 = createBasicEnrolment();
+        Enrolment enrolment3 = createBasicEnrolment();
+        enrolment3.setId(2L);
+
+        // This class has the @EqualsAndHashCode(of={"id"}) annotation
+        assertEquals(enrolment1, enrolment2);
+        assertNotEquals(enrolment1, enrolment3);
+    }
+
+    @Test
+    public void testEnrolmentHashCode() {
+        // Create Enrolment objects and test the hashCode method
+        Enrolment enrolment1 = createBasicEnrolment();
+        Enrolment enrolment2 = createBasicEnrolment();
+        Enrolment enrolment3 = createBasicEnrolment();
+        enrolment3.setId(2L);
+
+        // This class has the @EqualsAndHashCode(of={"id"}) annotation
+        assertEquals(enrolment1.hashCode(), enrolment2.hashCode());
+        assertNotEquals(enrolment1.hashCode(), enrolment3.hashCode());
+    }
+
+    @Test
+    public void testEnrolmentToString() {
+        // Create an Enrolment and test the toString method
+        Enrolment enrolment = createBasicEnrolment();
+
+        assertTrue(enrolment.toString().startsWith("Enrolment(id=1"));
+    }
+
+    @Test
     public void testGetYear() {
         // Create a new enrolment and test the getYear method
-        Enrolment enrolment = new Enrolment();
+        Enrolment enrolment = createBasicEnrolment();
         
-        Course course = new Course();
-        course.setStartDate(LocalDate.of(2024, 1, 1));
-
-        enrolment.setCourseInstance(course);
-
+        enrolment.getCourseInstance().setStartDate(LocalDate.of(2024, 1, 1));
+        
         assertEquals(2024, enrolment.getYear());
     }
 
     @Test
     public void testIsUnlocked() {
         // Create an Enrolment and test the isUnlocked method
-        Enrolment enrolment = new Enrolment();
+        Enrolment enrolment = createBasicEnrolment();
 
         Achievement achievement = new Achievement();
-        AchievementUnlocked achievementUnlocked = new AchievementUnlocked();
-        achievementUnlocked.setAchievement(achievement);
+        achievement.setId(1L);
 
-        Set<AchievementUnlocked> setAU = new HashSet<>();
-        setAU.add(achievementUnlocked);
-        enrolment.setAchievementsUnlocked(setAU);
+        enrolment.getAchievementsUnlocked().iterator().next().setAchievement(achievement);
 
         assertTrue(enrolment.isUnlocked(achievement));
     }
@@ -90,11 +134,10 @@ public class EnrolmentTests {
     @Test
     public void testThisYear() {
         // Create an Enrolment and test the thisYear method
-        Enrolment enrolment = new Enrolment();
+        Enrolment enrolment = createBasicEnrolment();
 
-        Course course = new Course();
+        Course course = enrolment.getCourseInstance();
         course.setStartDate(LocalDate.now());
-        enrolment.setCourseInstance(course);
         assertTrue(enrolment.thisYear());
         
         // Previous year is also considered this year
@@ -108,12 +151,10 @@ public class EnrolmentTests {
     @Test
     public void testBurnUp() {
         // Create an Enrolment and test the burnUp method
-        Enrolment enrolment = new Enrolment();
+        Enrolment enrolment = createBasicEnrolment();
 
-        Course course = new Course();
-        course.setId(1L);
+        Course course = enrolment.getCourseInstance();
         course.setStartDate(LocalDate.now().minusWeeks(2));
-        enrolment.setCourseInstance(course);
         
         // Create some achievements with different levels and set unlock times
         Achievement achiveOneLevel3 = new Achievement();
@@ -176,12 +217,10 @@ public class EnrolmentTests {
     @Test
     public void testBurnDown() {
         // Create an Enrolment and test the burnDown method
-        Enrolment enrolment = new Enrolment();
+        Enrolment enrolment = createBasicEnrolment();
 
-        Course course = new Course();
-        course.setId(1L);
+        Course course = enrolment.getCourseInstance();
         course.setStartDate(LocalDate.now().minusWeeks(2));
-        enrolment.setCourseInstance(course);
         
         // Create some achievements with different levels and set unlock times
         Achievement achiveOneLevel3 = new Achievement();

@@ -10,45 +10,46 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class HelpRequestTests {
-    @Test
-    public void testHelpRequest (){
-        // Create a new HelpRequest and check ALL getters and setters
+
+    private HelpRequest createBasicHelpRequest() {
+        // Create a basic HelpRequest used as a basis in the tests
         HelpRequest helpRequest = new HelpRequest();
         helpRequest.setId(1L);
-        LocalDateTime requestTime = LocalDateTime.now();
-        helpRequest.setRequestTime(requestTime);
-        LocalDateTime pickupTime = LocalDateTime.now();
-        helpRequest.setPickupTime(pickupTime);
-        LocalDateTime reportTime = LocalDateTime.now();
-        helpRequest.setReportTime(reportTime);
-
+        helpRequest.setRequestTime(LocalDateTime.of(2024, 1, 1, 12, 0));
+        helpRequest.setPickupTime(null);
+        helpRequest.setReportTime(null);
+        
         User user = new User();
         user.setId(1L);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setUserName("jdoe");
-        user.setEmail("j.d@uu.se");
-        user.setRole(Role.STUDENT);
-
         User helper = new User();
         helper.setId(2L);
-        helper.setFirstName("Jane");
-        helper.setLastName("Anderson");
-        helper.setUserName("janderson");
-        helper.setEmail("j.a@uu.se");
-        helper.setRole(Role.JUNIOR_TA);
+        Set<User> submitters = new HashSet<>();
+        submitters.add(user);
 
-        helpRequest.setSubmitters(Set.of(user));
+        helpRequest.setSubmitters(submitters);
         helpRequest.setHelper(helper);
         helpRequest.setMessage("Help me!");
         helpRequest.setZoomRoom("1234567890");
         helpRequest.setZoomPassword("password");
         helpRequest.setPhysicalRoom("Room 1");
         helpRequest.setStatus(DemonstrationStatus.SUBMITTED);
-
+        
+        return helpRequest;
+    }
+    
+    @Test
+    public void testHelpRequest (){
+        // Create a new HelpRequest and check ALL getters and setters
+        HelpRequest helpRequest = createBasicHelpRequest();
+        helpRequest.setPickupTime(LocalDateTime.of(2024, 1, 1, 13, 0));
+        helpRequest.setReportTime(LocalDateTime.of(2024, 1, 1, 14, 0));
+        
         assertEquals(1L, helpRequest.getId());
-        assertEquals(Set.of(user), helpRequest.getSubmitters());
-        assertEquals(helper, helpRequest.getHelper());
+        assertEquals(LocalDateTime.of(2024, 1, 1, 12, 0), helpRequest.getRequestTime());
+        assertEquals(LocalDateTime.of(2024, 1, 1, 13, 0), helpRequest.getPickupTime());
+        assertEquals(LocalDateTime.of(2024, 1, 1, 14, 0), helpRequest.getReportTime());
+        assertEquals(1, helpRequest.getSubmitters().size());
+        assertEquals(2L, helpRequest.getHelper().getId());
         assertEquals("Help me!", helpRequest.getMessage());
         assertEquals("1234567890", helpRequest.getZoomRoom());
         assertEquals("password", helpRequest.getZoomPassword());
@@ -86,12 +87,40 @@ public class HelpRequestTests {
         assertEquals(1L, helpRequest.getId());
     }
 
+    @Test
+    public void testHelpRequestEquals (){
+        // Create HelpRequest objects and test equals
+        HelpRequest helpRequest1 = createBasicHelpRequest();
+        HelpRequest helpRequest2 = createBasicHelpRequest();
+        helpRequest2.setId(2L);
+
+        assertEquals(helpRequest1, helpRequest1);
+        assertNotEquals(helpRequest1, helpRequest2);
+    }
+
+    @Test
+    public void testHelpRequestHashCode (){
+        // Create HelpRequest objects and test the hashCode method
+        HelpRequest helpRequest1 = createBasicHelpRequest();
+        HelpRequest helpRequest2 = createBasicHelpRequest();
+        helpRequest2.setId(2L);
+
+        assertEquals(helpRequest1.hashCode(), helpRequest1.hashCode());
+        assertNotEquals(helpRequest1.hashCode(), helpRequest2.hashCode());
+    }
+
+    @Test
+    public void testHelpRequestToString (){
+        // Create a new HelpRequest and test the toString method
+        HelpRequest helpRequest = createBasicHelpRequest();
+        
+        assertTrue(helpRequest.toString().startsWith("HelpRequest(id=1"));
+    }
 
     @Test
     public void testHelpRequestIsActive (){
         // Create a new HelpRequest and check if it is active
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // ReportTime is null, RequestTime within 24 hours and status is not IN_FLIGHT
         helpRequest.setRequestTime(LocalDateTime.now());
@@ -121,8 +150,7 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIsActiveAndSubmitted (){
         // Create a new HelpRequest and check if it is active and submitted
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // ReportTime is null, RequestTime within 24 hours and status is SUBMITTED
         helpRequest.setRequestTime(LocalDateTime.now());
@@ -146,8 +174,7 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIsActiveAndClaimed (){
         // Create a new HelpRequest and check if it is active and claimed
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // ReportTime is null, RequestTime within 24 hours and status is CLAIMED
         helpRequest.setRequestTime(LocalDateTime.now());
@@ -171,8 +198,7 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIsActiveAndSubmittedOrClaimedOrInFlight (){
         // Create a new HelpRequest and check if it is active and submitted or claimed or in flight
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // ReportTime is null, RequestTime within 24 hours and status is SUBMITTED/CLAIMED/IN_FLIGHT
         helpRequest.setRequestTime(LocalDateTime.now());
@@ -203,8 +229,7 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIsActiveAndSubmittedOrClaimed (){
         // Create a new HelpRequest and check if it is active and submitted or claimed
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // ReportTime is null, RequestTime within 24 hours and status is SUBMITTED/CLAIMED
         helpRequest.setRequestTime(LocalDateTime.now());
@@ -231,8 +256,7 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIsPickedUp (){
         // Create a new HelpRequest and check if it is picked up
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         // Status is CLAIMED
         helpRequest.setStatus(DemonstrationStatus.CLAIMED);
@@ -246,45 +270,33 @@ public class HelpRequestTests {
     @Test
     public void testHelpRequestIncludesSubmitter (){
         // Create a new HelpRequest and check if it includes a submitter
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
+        helpRequest.setSubmitters(null);
         
         User user = new User();
         user.setId(1L);
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setUserName("jdoe");
-        user.setEmail("j.d@uu.se");
-        user.setRole(Role.STUDENT);
+        Set<User> submitters = new HashSet<>();
+        submitters.add(user);
 
         // Submitters is null
         assertFalse(helpRequest.includesSubmitter(user));
 
         // Submitters is not null and contains the user
-        helpRequest.setSubmitters(Set.of(user));
+        helpRequest.setSubmitters(submitters);
         assertTrue(helpRequest.includesSubmitter(user));
         
         // Submitters is not null, contains 2 submitters but not the user
         User user2 = new User();
         user2.setId(2L);
-        user2.setFirstName("Jane");
-        user2.setLastName("Anderson");
-        user2.setUserName("janderson");
-        user2.setEmail("j.a@uu.se");
-        user2.setRole(Role.STUDENT);
+        submitters.add(user2);
+        helpRequest.setSubmitters(submitters);
         
-        helpRequest.setSubmitters(Set.of(user, user2));
         assertTrue(helpRequest.includesSubmitter(user));
         assertTrue(helpRequest.includesSubmitter(user2));
         
         // Submitters is not null but does not contain the user
         User user3 = new User();
         user3.setId(3L);
-        user3.setFirstName("John");
-        user3.setLastName("Doe");
-        user3.setUserName("jdoe");
-        user3.setEmail("j.d@uu.se");
-        user3.setRole(Role.STUDENT);
 
         assertFalse(helpRequest.includesSubmitter(user3));
     }
@@ -292,8 +304,7 @@ public class HelpRequestTests {
     @Test
     public void testPickupTimeInMinutes (){
         // Create a new HelpRequest and check pickup times
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         helpRequest.setRequestTime(LocalDateTime.now().minusMinutes(5));
         helpRequest.setPickupTime(LocalDateTime.now());
@@ -316,8 +327,7 @@ public class HelpRequestTests {
     @Test
     public void testRoundTripTimeInMinutes (){
         // Create a new HelpRequest and check round trip times
-        HelpRequest helpRequest = new HelpRequest();
-        helpRequest.setId(1L);
+        HelpRequest helpRequest = createBasicHelpRequest();
         
         helpRequest.setRequestTime(LocalDateTime.now().minusMinutes(5));
         helpRequest.setReportTime(LocalDateTime.now());
