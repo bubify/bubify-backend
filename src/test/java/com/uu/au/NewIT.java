@@ -2,6 +2,7 @@ package com.uu.au;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +10,21 @@ import org.springframework.web.client.RestTemplate;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.http.*;
 
+import org.springframework.test.web.servlet.MockMvc;
+
 import com.uu.au.models.User;
 import com.uu.au.enums.Role;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class NewIT {
     private static String token;
+
+    @Autowired
+    private MockMvc mockmvc;
 
     @Autowired
     private TestRestTemplate restTemplate;

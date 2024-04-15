@@ -10,9 +10,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import javax.validation.ConstraintViolation;
+
 public class UserTests {
 
-    private User createBasicUser() {
+    private User createBasicUser(Role role) {
         // Create a basic user used as a basis in the tests
         User user = new User();
         user.setId(1L);
@@ -20,14 +22,14 @@ public class UserTests {
         user.setLastName("Doe");
         user.setUserName("jdoe");
         user.setEmail("j.d@uu.se");
-        user.setRole(Role.STUDENT);
+        user.setRole(role);
         return user;
     }
 
     @Test
     public void testUser() {
         // Create a new user and test BASIC getters and setters
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         
         assertEquals(1L, user.getId());
         assertEquals("John", user.getFirstName());
@@ -40,7 +42,7 @@ public class UserTests {
     @Test
     public void testUserExtended() {
         // Create a new user and test ALL getters and setters
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         user.setGitHubHandle("johndoe");
         user.setGitHubFlowSuccessful(true);
@@ -110,9 +112,9 @@ public class UserTests {
     @Test
     public void testUserEquals() {
         // Test the equals-method
-        User user1 = createBasicUser();
-        User user2 = createBasicUser();
-        User user3 = createBasicUser();
+        User user1 = createBasicUser(Role.STUDENT);
+        User user2 = createBasicUser(Role.STUDENT);
+        User user3 = createBasicUser(Role.STUDENT);
         user3.setId(2L);
 
         // This class has the @EqualsAndHashCode(of={"id"}) annotation
@@ -123,9 +125,9 @@ public class UserTests {
     @Test
     public void testUserHashCode() {
         // Test the hashCode-method
-        User user1 = createBasicUser();
-        User user2 = createBasicUser();
-        User user3 = createBasicUser();
+        User user1 = createBasicUser(Role.STUDENT);
+        User user2 = createBasicUser(Role.STUDENT);
+        User user3 = createBasicUser(Role.STUDENT);
         user3.setId(2L);
 
         // This class has the @EqualsAndHashCode(of={"id"}) annotation
@@ -136,7 +138,7 @@ public class UserTests {
     @Test
     public void testUserToString() {
         // Test the toString-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         assertTrue(user.toString().startsWith("User(id=1"));
     }
@@ -144,7 +146,7 @@ public class UserTests {
     @Test
     public void testGetNeedsGitHubHandle () {
         // Test the return from getNeedsGitHubHandle-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         assertTrue(user.getNeedsGitHubHandle());
 
         user.setGitHubHandle("johndoe");
@@ -154,21 +156,38 @@ public class UserTests {
     @Test
     public void testGetGitHubRepoURL() {
         // Test the return from getGitHubRepoURL-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         
-        Course course = new Course();
-        course.setId(1L);
-        course.setGitHubOrgURL("http://github.com/");
+        // Test when having 1 course enrolled
+        Course course1 = new Course();
+        course1.setId(1L);
+        course1.setStartDate(LocalDate.of(2023, 1, 1));
+        course1.setGitHubOrgURL("http://github.com/");
         
-        Enrolment enrolment = new Enrolment();
-        enrolment.setId(1L);
-        enrolment.setCourseInstance(course);
+        Enrolment enrolment1 = new Enrolment();
+        enrolment1.setId(1L);
+        enrolment1.setCourseInstance(course1);
         
         Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment);
+        enrolments.add(enrolment1);
         user.setEnrolments(enrolments);
         
         assertEquals("http://github.com/j.d", user.getGitHubRepoURL().get());
+        
+        // Test when having 2 courses enrolled, the course with the most recent start year should be used
+        Course course2 = new Course();
+        course2.setId(2L);
+        course2.setStartDate(LocalDate.of(2024, 1, 1));
+        course2.setGitHubOrgURL("http://example.com/");
+        
+        Enrolment enrolment2 = new Enrolment();
+        enrolment2.setId(2L);
+        enrolment2.setCourseInstance(course2);
+
+        enrolments.add(enrolment2);
+        user.setEnrolments(enrolments);
+        
+        assertEquals("http://example.com/j.d", user.getGitHubRepoURL().get());
         
         // Test optional empty when no course is set
         user.setEnrolments(null);
@@ -176,36 +195,42 @@ public class UserTests {
     }
 
     @Test
-    public void testUserRoles() {
+    public void testUserRolesStudent() {
         // Test all roles with the "is"-methods
-        User user = createBasicUser();
-        
-        // STUDENT
-        user.setRole(Role.STUDENT);
+        User user = createBasicUser(Role.STUDENT);
         assertFalse(user.isPriviliged());
         assertFalse(user.isJuniorTA());
         assertTrue(user.isStudent());
         assertFalse(user.isTeacher());
         assertFalse(user.isSeniorTAOrTeacher());
-        
-        // JUNIOR_TA
-        user.setRole(Role.JUNIOR_TA);
+    }
+    
+    @Test
+    public void testUserRolesJuniorTA() {
+        // Test all roles with the "is"-methods
+        User user = createBasicUser(Role.JUNIOR_TA);
         assertFalse(user.isPriviliged());
         assertTrue(user.isJuniorTA());
         assertFalse(user.isStudent());
         assertTrue(user.isTeacher());
         assertFalse(user.isSeniorTAOrTeacher());
+    }
         
-        // SENIOR_TA
-        user.setRole(Role.SENIOR_TA);
+    @Test
+    public void testUserRolesSeniorTA() {
+        // Test all roles with the "is"-methods
+        User user = createBasicUser(Role.SENIOR_TA);
         assertTrue(user.isPriviliged());
         assertFalse(user.isJuniorTA());
         assertFalse(user.isStudent());
         assertTrue(user.isTeacher());
         assertTrue(user.isSeniorTAOrTeacher());
-        
-        // TEACHER
-        user.setRole(Role.TEACHER);
+    }
+    
+    @Test
+    public void testUserRolesTeacher() {
+        // Test all roles with the "is"-methods
+        User user = createBasicUser(Role.TEACHER);
         assertTrue(user.isPriviliged());
         assertFalse(user.isJuniorTA());
         assertFalse(user.isStudent());
@@ -216,15 +241,31 @@ public class UserTests {
     @Test
     public void testEmailPrefix() {
         // Test the return from emailPrefix-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
+        
+        // Normal case
+        user.setEmail("j.d@uu.se");
+        assertEquals("j.d", user.emailPrefix());
+        
+        // E-mail is annotated @NotBlank so it should not be null or empty
 
+        // Empty email
+        // user.setEmail(null);
+        // assertEquals("", user.emailPrefix());
+
+        // No @-sign in email
+        // user.setEmail("j.d-uu.se");
+        // assertEquals("j.d", user.emailPrefix());
+
+        // Double @-sign in email
+        user.setEmail("j.d@uu@se");
         assertEquals("j.d", user.emailPrefix());
     }
 
     @Test
     public void testNeedsZoomLink() {
         // Test the return from getNeedsZoomLink-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         assertTrue(user.getNeedsZoomLink());
 
         user.setZoomRoom("ZoomRoom123");
@@ -234,7 +275,7 @@ public class UserTests {
     @Test
     public void testNeedsProfilePic() {
         // Test the return from getNeedsProfilePic-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         assertTrue(user.getNeedsProfilePic());
 
         user.setProfilePic("profile.jpg");
@@ -244,7 +285,7 @@ public class UserTests {
     @Test
     public void testThumbnail() {
         // Test the return from getThumbnail-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         user.setProfilePic("profile.jpg");
         assertEquals("profile.jpg", user.getThumbnail());
 
@@ -255,7 +296,7 @@ public class UserTests {
     @Test
     public void testLastEnrolment() {
         // Test the return from lastEnrolment-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Test the return when no enrolments are set
         assertNull(user.lastEnrolment().orElse(null));
@@ -293,7 +334,7 @@ public class UserTests {
     @Test
     public void testCurrentEnrolment() {
         // Test the return from currentEnrolment-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Test the return when no enrolments are set
         assertNull(user.currentEnrolment().orElse(null));
@@ -317,7 +358,7 @@ public class UserTests {
     @Test
     public void testCurrentCourseInstance() {
         // Test the return from currentCourseInstance-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Test the return when no enrolments are set
         assertNull(user.currentCourseInstance().orElse(null));
@@ -341,7 +382,7 @@ public class UserTests {
     @Test
     public void testAchievementsUnlocked() {
         // Test the return from achievementsUnlocked-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Test the return when no enrolments are set
         assertEquals(0, user.achievementsUnlocked().size());
@@ -398,7 +439,7 @@ public class UserTests {
     @Test
     public void testAchievementsPushedBack() {
         // Test the return from achievementsPushedBack-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Test the return when no enrolments are set
         assertEquals(0, user.achievementsPushedBack().size());
@@ -460,7 +501,7 @@ public class UserTests {
     @Test
     public void testCurrentResult () {
         // Test the return from currentResult-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
         Course course1 = new Course();
@@ -516,7 +557,7 @@ public class UserTests {
     @Test
     public void testProgress() {
         // Test the return from progress-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
         Course course1 = new Course();
@@ -580,7 +621,7 @@ public class UserTests {
     @Test
     public void testGetGradeAndDate() {
         // Test the return from getGradeAndDate-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
         
         Course course = new Course();
         course.setId(1L);
@@ -604,7 +645,7 @@ public class UserTests {
 
         // Test the return when no achievements are set
         // BUG? The list of achievements is empty, fails with java.util.NoSuchElementException
-        // user.getGradeAndDate(achievements);
+        user.getGradeAndDate(achievements);
         
         // Add a basic set of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
         Achievement achievement1 = new Achievement();
@@ -692,7 +733,7 @@ public class UserTests {
     @Test
     public void testGetHP() {
         // Test the return from getHP-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         List<Achievement> achievements = new ArrayList<Achievement>();
 
@@ -793,7 +834,7 @@ public class UserTests {
     @Test
     public void testPassedAchievements() {
         // Test the return from passedAchievements-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
         Course course1 = new Course();
@@ -856,7 +897,7 @@ public class UserTests {
     @Test
     public void filterPassedAchievements() {
         // Test the return from filterPassedAchievements-method
-        User user = createBasicUser();
+        User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
         Course course1 = new Course();
