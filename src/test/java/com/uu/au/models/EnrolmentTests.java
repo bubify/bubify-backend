@@ -123,12 +123,17 @@ public class EnrolmentTests {
         // Create an Enrolment and test the isUnlocked method
         Enrolment enrolment = createBasicEnrolment();
 
-        Achievement achievement = new Achievement();
-        achievement.setId(1L);
+        Achievement achievement1 = new Achievement();
+        achievement1.setId(1L);
+        
+        enrolment.getAchievementsUnlocked().iterator().next().setAchievement(achievement1);
+        
+        assertTrue(enrolment.isUnlocked(achievement1));
+        
+        Achievement achievement2 = new Achievement();
+        achievement2.setId(2L);
 
-        enrolment.getAchievementsUnlocked().iterator().next().setAchievement(achievement);
-
-        assertTrue(enrolment.isUnlocked(achievement));
+        assertFalse(enrolment.isUnlocked(achievement2));
     }
 
     @Test
@@ -149,8 +154,61 @@ public class EnrolmentTests {
     }
 
     @Test
-    public void testBurnUp() {
-        // Create an Enrolment and test the burnUp method
+    public void testBurnUpEmpty() {
+        // Create an Enrolment and test the burnUp method with no achievements unlocked
+        Enrolment enrolment = createBasicEnrolment();
+
+        Course course = enrolment.getCourseInstance();
+        course.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        enrolment.setAchievementsUnlocked(setAU);
+
+        // Check the burnUp per week for Grade 3, first week is week 0
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnUp = enrolment.burnUp();
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(0));
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(1));
+    }
+
+    @Test
+    public void testBurnUpOne() {
+        // Create an Enrolment and test the burnUp method with one achievement unlocked
+        Enrolment enrolment = createBasicEnrolment();
+
+        Course course = enrolment.getCourseInstance();
+        course.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        // Create one achievements and set unlock time
+        Achievement achiveOneLevel3 = new Achievement();
+        achiveOneLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auOneLevel3 = new AchievementUnlocked();
+        auOneLevel3.setUnlockTime(LocalDateTime.now());
+        auOneLevel3.setAchievement(achiveOneLevel3);
+        
+        // Add the achievement to the enrolment
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        setAU.add(auOneLevel3);
+        enrolment.setAchievementsUnlocked(setAU);
+
+        // Check the burnUp per week and per level, first week is week 0
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnUp = enrolment.burnUp();
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_3).get(1));
+
+        // Note: GRADE_3 achievements are also included in GRADE_4
+        assertEquals(0, burnUp.get(Level.GRADE_4).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_4).get(1));
+        
+        // Note: GRADE_3 and GRADE_4 achievements are also included in GRADE_5
+        assertEquals(0, burnUp.get(Level.GRADE_5).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_5).get(1));
+    }
+
+    @Test
+    public void testBurnUpMany() {
+        // Create an Enrolment and test the burnUp method with multiple achievements unlocked
         Enrolment enrolment = createBasicEnrolment();
 
         Course course = enrolment.getCourseInstance();
@@ -215,8 +273,75 @@ public class EnrolmentTests {
     }
 
     @Test
-    public void testBurnDown() {
-        // Create an Enrolment and test the burnDown method
+    public void testBurnDownEmpty() {
+        // Create an Enrolment and test the burnDown method with no achievements unlocked
+        Enrolment enrolment = createBasicEnrolment();
+
+        Course course = enrolment.getCourseInstance();
+        course.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        enrolment.setAchievementsUnlocked(setAU);
+
+        final var levelToTarget = new HashMap<Level, Integer>();
+        levelToTarget.put(Level.GRADE_3, 0);
+        levelToTarget.put(Level.GRADE_4, 0); // Note: 2 GRADE_3 achievements are also included
+        levelToTarget.put(Level.GRADE_5, 0); // Note: 4 GRADE_3 and 2 GRADE_4 achievements are also included
+
+        // Check the burnDown per week for Grade 3, first week is duplicated so week 0 and 1 are the same
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnDown = enrolment.burnDown(levelToTarget);
+        assertEquals(0, burnDown.get(Level.GRADE_3).get(0)); // Duplicate of week 1
+        assertEquals(0, burnDown.get(Level.GRADE_3).get(1));
+        assertEquals(0, burnDown.get(Level.GRADE_3).get(2));
+    }
+
+    @Test
+    public void testBurnDownOne() {
+        // Create an Enrolment and test the burnDown method with one achievement unlocked
+        Enrolment enrolment = createBasicEnrolment();
+
+        Course course = enrolment.getCourseInstance();
+        course.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        // Create one achievement and set unlock time
+        Achievement achiveOneLevel3 = new Achievement();
+        achiveOneLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auOneLevel3 = new AchievementUnlocked();
+        auOneLevel3.setUnlockTime(LocalDateTime.now());
+        auOneLevel3.setAchievement(achiveOneLevel3);
+        
+        // Add the achievement to the enrolment
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        setAU.add(auOneLevel3);
+        enrolment.setAchievementsUnlocked(setAU);
+
+        final var levelToTarget = new HashMap<Level, Integer>();
+        levelToTarget.put(Level.GRADE_3, 1);
+        levelToTarget.put(Level.GRADE_4, 1); // Note: 2 GRADE_3 achievements are also included
+        levelToTarget.put(Level.GRADE_5, 1); // Note: 4 GRADE_3 and 2 GRADE_4 achievements are also included
+
+        // Check the burnDown per week and per level, first week is duplicated so week 0 and 1 are the same
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnDown = enrolment.burnDown(levelToTarget);
+        assertEquals((1-0), burnDown.get(Level.GRADE_3).get(0)); // Duplicate of week 1
+        assertEquals((1-0), burnDown.get(Level.GRADE_3).get(1));
+        assertEquals((1-1), burnDown.get(Level.GRADE_3).get(2));
+        
+        // Note: GRADE_3 achievements are also included in GRADE_4
+        assertEquals((1-0), burnDown.get(Level.GRADE_4).get(0)); // Duplicate of week 1
+        assertEquals((1-0), burnDown.get(Level.GRADE_4).get(1));
+        assertEquals((1-1), burnDown.get(Level.GRADE_4).get(2));
+        
+        // Note: GRADE_3 and GRADE_4 achievements are also included in GRADE_5
+        assertEquals((1-0), burnDown.get(Level.GRADE_5).get(0)); // Duplicate of week 1
+        assertEquals((1-0), burnDown.get(Level.GRADE_5).get(1));
+        assertEquals((1-1), burnDown.get(Level.GRADE_5).get(2));
+    }
+
+    @Test
+    public void testBurnDownMany() {
+        // Create an Enrolment and test the burnDown method with multiple achievements unlocked
         Enrolment enrolment = createBasicEnrolment();
 
         Course course = enrolment.getCourseInstance();

@@ -200,19 +200,6 @@ public class HelpRequestTests {
         // Create a new HelpRequest and check if it is active and submitted or claimed or in flight
         HelpRequest helpRequest = createBasicHelpRequest();
         
-        // ReportTime is null, RequestTime within 24 hours and status is SUBMITTED/CLAIMED/IN_FLIGHT
-        helpRequest.setRequestTime(LocalDateTime.now());
-        helpRequest.setReportTime(null);
-        helpRequest.setStatus(DemonstrationStatus.SUBMITTED);
-        assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
-        
-        helpRequest.setStatus(DemonstrationStatus.CLAIMED);
-        assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
-        
-        // BUG? Could not be ACTIVE and IN_FLIGHT at the same time!
-        // helpRequest.setStatus(DemonstrationStatus.IN_FLIGHT);
-        // assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
-
         // ReportTime is null, RequestTime within 24 hours BUT status is not SUBMITTED, CLAIMED or IN_FLIGHT
         helpRequest.setRequestTime(LocalDateTime.now());
         helpRequest.setReportTime(null);
@@ -224,6 +211,19 @@ public class HelpRequestTests {
         helpRequest.setReportTime(LocalDateTime.now());
         helpRequest.setStatus(DemonstrationStatus.COMPLETED);
         assertFalse(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
+
+        // ReportTime is null, RequestTime within 24 hours and status is SUBMITTED/CLAIMED/IN_FLIGHT
+        helpRequest.setRequestTime(LocalDateTime.now());
+        helpRequest.setReportTime(null);
+        helpRequest.setStatus(DemonstrationStatus.SUBMITTED);
+        assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
+        
+        helpRequest.setStatus(DemonstrationStatus.CLAIMED);
+        assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
+        
+        // Given function name it should be possible to be ACTIVE and IN_FLIGHT at the same time
+        helpRequest.setStatus(DemonstrationStatus.IN_FLIGHT);
+        assertTrue(helpRequest.isActiveAndSubmittedOrClaimedOrInFlight());
     }
 
     @Test
@@ -285,7 +285,7 @@ public class HelpRequestTests {
         helpRequest.setSubmitters(submitters);
         assertTrue(helpRequest.includesSubmitter(user));
         
-        // Submitters is not null, contains 2 submitters but not the user
+        // Submitters is not null, contains both users
         User user2 = new User();
         user2.setId(2L);
         submitters.add(user2);

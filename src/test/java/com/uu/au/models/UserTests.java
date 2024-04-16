@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import javax.validation.ConstraintViolation;
-
 public class UserTests {
 
     private User createBasicUser(Role role) {
@@ -24,6 +22,55 @@ public class UserTests {
         user.setEmail("j.d@uu.se");
         user.setRole(role);
         return user;
+    }
+
+    private Set<Enrolment> createBasicEnrolmentsSet() {
+        // Create a basic set of enrolments used as a basis in the tests
+        Course course = new Course();
+        course.setId(1L);
+        course.setStartDate(LocalDate.of(2024, 1, 1));
+        
+        Enrolment enrolment = new Enrolment();
+        enrolment.setId(11L);
+        enrolment.setCourseInstance(course);
+
+        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
+        enrolment.setAchievementsUnlocked(achievementsUnlocked);
+        
+        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
+        enrolment.setAchievementsPushedBack(achievementsPushedBack);
+        
+        Set<Enrolment> enrolments = new HashSet<>();
+        enrolments.add(enrolment);
+
+        return enrolments;
+    }
+
+    private List<Achievement> createBasicAchievements() {
+        // Create a basic set of achievements used as a basis in the tests
+        Achievement achievement1 = new Achievement();
+        achievement1.setId(1L);
+        achievement1.setLevel(Level.GRADE_3);
+
+        Achievement achievement2 = new Achievement();
+        achievement2.setId(2L);
+        achievement2.setLevel(Level.GRADE_3);
+
+        Achievement achievement3 = new Achievement();
+        achievement3.setId(3L);
+        achievement3.setLevel(Level.GRADE_4);
+
+        Achievement achievement4 = new Achievement();
+        achievement4.setId(4L);
+        achievement4.setLevel(Level.GRADE_5);
+        
+        List<Achievement> achievements = new ArrayList<Achievement>();
+        achievements.add(achievement1);
+        achievements.add(achievement2);
+        achievements.add(achievement3);
+        achievements.add(achievement4);
+
+        return achievements;
     }
 
     @Test
@@ -266,8 +313,13 @@ public class UserTests {
     public void testNeedsZoomLink() {
         // Test the return from getNeedsZoomLink-method
         User user = createBasicUser(Role.STUDENT);
+        
+        user.setZoomRoom(null);
         assertTrue(user.getNeedsZoomLink());
 
+        user.setZoomRoom("");
+        assertFalse(user.getNeedsZoomLink());
+        
         user.setZoomRoom("ZoomRoom123");
         assertFalse(user.getNeedsZoomLink());
     }
@@ -276,8 +328,13 @@ public class UserTests {
     public void testNeedsProfilePic() {
         // Test the return from getNeedsProfilePic-method
         User user = createBasicUser(Role.STUDENT);
+
+        user.setProfilePic(null);
         assertTrue(user.getNeedsProfilePic());
 
+        user.setProfilePic("");
+        assertFalse(user.getNeedsProfilePic());
+        
         user.setProfilePic("profile.jpg");
         assertFalse(user.getNeedsProfilePic());
     }
@@ -286,9 +343,16 @@ public class UserTests {
     public void testThumbnail() {
         // Test the return from getThumbnail-method
         User user = createBasicUser(Role.STUDENT);
+        
+        // Test the return when no profile pic is set
+        user.setProfilePic(null);
+        assertNull(user.getThumbnail());
+
+        // Test the return when profile pic is set
         user.setProfilePic("profile.jpg");
         assertEquals("profile.jpg", user.getThumbnail());
 
+        // Test the return when profile pic thumbnail is set
         user.setProfilePicThumbnail("thumbnail.jpg");
         assertEquals("thumbnail.jpg", user.getThumbnail());
     }
@@ -353,6 +417,20 @@ public class UserTests {
         user.setEnrolments(enrolments);
         
         assertEquals(enrolment1, user.currentEnrolment().get());
+
+        // Add another course to enrolments and test the return
+        Course course2 = new Course();
+        course2.setId(2L);
+        course2.setStartDate(LocalDate.of(2024, 1, 1));
+
+        Enrolment enrolment2 = new Enrolment();
+        enrolment2.setId(22L);
+        enrolment2.setCourseInstance(course2);
+        
+        enrolments.add(enrolment2);
+        user.setEnrolments(enrolments);
+
+        assertEquals(enrolment2, user.currentEnrolment().get());
     }
     
     @Test
@@ -377,6 +455,20 @@ public class UserTests {
         user.setEnrolments(enrolments);
         
         assertEquals(course1, user.currentCourseInstance().get());
+
+        // Add another course to enrolments and test the return
+        Course course2 = new Course();
+        course2.setId(2L);
+        course2.setStartDate(LocalDate.of(2024, 1, 1));
+
+        Enrolment enrolment2 = new Enrolment();
+        enrolment2.setId(22L);
+        enrolment2.setCourseInstance(course2);
+
+        enrolments.add(enrolment2);
+        user.setEnrolments(enrolments);
+
+        assertEquals(course2, user.currentCourseInstance().get());
     }
     
     @Test
@@ -388,20 +480,11 @@ public class UserTests {
         assertEquals(0, user.achievementsUnlocked().size());
         
         // Add one course to enrolments but no unlocked assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
         
         assertEquals(0, user.achievementsUnlocked().size());
 
@@ -412,13 +495,14 @@ public class UserTests {
         AchievementUnlocked au1 = new AchievementUnlocked();
         au1.setId(1L);
         au1.setUnlockTime(LocalDateTime.now());
-        au1.setEnrolment(enrolment1);
+        au1.setEnrolment(enrolment);
         au1.setAchievement(achievement1);
 
         achievementsUnlocked.add(au1);
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
+        enrolment.setAchievementsUnlocked(achievementsUnlocked);
 
         assertEquals(1, user.achievementsUnlocked().size());
+        assertEquals(achievement1, user.achievementsUnlocked().iterator().next());
 
         // Add another unlocked assignment to enrolments and test the return
         Achievement achievement2 = new Achievement();
@@ -427,11 +511,11 @@ public class UserTests {
         AchievementUnlocked au2 = new AchievementUnlocked();
         au2.setId(2L);
         au2.setUnlockTime(LocalDateTime.now());
-        au2.setEnrolment(enrolment1);
+        au2.setEnrolment(enrolment);
         au2.setAchievement(achievement2);
 
         achievementsUnlocked.add(au2);
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
+        enrolment.setAchievementsUnlocked(achievementsUnlocked);
 
         assertEquals(2, user.achievementsUnlocked().size());
     }
@@ -445,20 +529,12 @@ public class UserTests {
         assertEquals(0, user.achievementsPushedBack().size());
         
         // Add one course to enrolments but no PushedBack assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+        Set<AchievementPushedBack> achievementsPushedBack = enrolments.iterator().next().getAchievementsPushedBack();
         
         assertEquals(0, user.achievementsPushedBack().size());
 
@@ -468,14 +544,15 @@ public class UserTests {
 
         AchievementPushedBack ap1 = new AchievementPushedBack();
         ap1.setId(1L);
-        ap1.setEnrolment(enrolment1);
+        ap1.setEnrolment(enrolment);
         ap1.setAchievement(achievement1);
         ap1.setPushedBackTime(LocalDateTime.now());
 
         achievementsPushedBack.add(ap1);
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        enrolment.setAchievementsPushedBack(achievementsPushedBack);
 
         assertEquals(1, user.achievementsPushedBack().size());
+        assertEquals(achievement1, user.achievementsPushedBack().iterator().next());
 
         // Add another PushedBack assignment to enrolments and test the return
         Achievement achievement2 = new Achievement();
@@ -483,12 +560,12 @@ public class UserTests {
 
         AchievementPushedBack ap2 = new AchievementPushedBack();
         ap2.setId(2L);
-        ap2.setEnrolment(enrolment1);
+        ap2.setEnrolment(enrolment);
         ap2.setAchievement(achievement2);
         ap2.setPushedBackTime(LocalDateTime.now());
 
         achievementsPushedBack.add(ap2);
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        enrolment.setAchievementsPushedBack(achievementsPushedBack);
 
         assertEquals(2, user.achievementsPushedBack().size());
 
@@ -504,23 +581,12 @@ public class UserTests {
         User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
-
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+        Set<AchievementPushedBack> achievementsPushedBack = enrolments.iterator().next().getAchievementsPushedBack();
 
         // Create an achievement
         Achievement achievement1 = new Achievement();
@@ -531,7 +597,7 @@ public class UserTests {
         // Test the return when the achievement is unlocked
         AchievementUnlocked au1 = new AchievementUnlocked();
         au1.setId(1L);
-        au1.setEnrolment(enrolment1);
+        au1.setEnrolment(enrolment);
         au1.setAchievement(achievement1);
         au1.setUnlockTime(LocalDateTime.now());
 
@@ -545,7 +611,7 @@ public class UserTests {
         
         AchievementPushedBack ap2 = new AchievementPushedBack();
         ap2.setId(2L);
-        ap2.setEnrolment(enrolment1);
+        ap2.setEnrolment(enrolment);
         ap2.setAchievement(achievement2);
         ap2.setPushedBackTime(LocalDateTime.now());
         
@@ -560,23 +626,12 @@ public class UserTests {
         User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
-
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+        Set<AchievementPushedBack> achievementsPushedBack = enrolments.iterator().next().getAchievementsPushedBack();
         
         List<Achievement> achievements = new ArrayList<Achievement>();
         
@@ -588,7 +643,7 @@ public class UserTests {
 
         AchievementUnlocked au1 = new AchievementUnlocked();
         au1.setId(1L);
-        au1.setEnrolment(enrolment1);
+        au1.setEnrolment(enrolment);
         au1.setAchievement(achievement1);
         au1.setUnlockTime(LocalDateTime.now());
 
@@ -606,7 +661,7 @@ public class UserTests {
         
         AchievementPushedBack ap2 = new AchievementPushedBack();
         ap2.setId(2L);
-        ap2.setEnrolment(enrolment1);
+        ap2.setEnrolment(enrolment);
         ap2.setAchievement(achievement2);
         ap2.setPushedBackTime(LocalDateTime.now());
         
@@ -619,115 +674,175 @@ public class UserTests {
     }
 
     @Test
-    public void testGetGradeAndDate() {
-        // Test the return from getGradeAndDate-method
+    public void testGetGradeAndDateEmptyList() {
+        // Test the return from getGradeAndDate-method when the list of achievements is empty
         User user = createBasicUser(Role.STUDENT);
         
-        Course course = new Course();
-        course.setId(1L);
-        course.setStartDate(LocalDate.of(2024, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course);
-
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
-        
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
-        
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
         List<Achievement> achievements = new ArrayList<Achievement>();
 
-        // Test the return when no achievements are set
-        // BUG? The list of achievements is empty, fails with java.util.NoSuchElementException
-        user.getGradeAndDate(achievements);
+        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
+        assertFalse(gradeAndDate.isPresent());
+    }
+
+    @Test
+    public void testGetGradeAndDateNoUnlocked() {
+        // Test the return from getGradeAndDate-method when no achievements are unlocked
+        User user = createBasicUser(Role.STUDENT);
         
-        // Add a basic set of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
-        Achievement achievement1 = new Achievement();
-        achievement1.setId(1L);
-        achievement1.setLevel(Level.GRADE_3);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
+        user.setEnrolments(enrolments);
 
-        Achievement achievement2 = new Achievement();
-        achievement2.setId(2L);
-        achievement2.setLevel(Level.GRADE_3);
-
-        Achievement achievement3 = new Achievement();
-        achievement3.setId(3L);
-        achievement3.setLevel(Level.GRADE_4);
-
-        Achievement achievement4 = new Achievement();
-        achievement4.setId(4L);
-        achievement4.setLevel(Level.GRADE_5);
-        
-        achievements.add(achievement1);
-        achievements.add(achievement2);
-        achievements.add(achievement3);
-        achievements.add(achievement4);
+        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        List<Achievement> achievements = createBasicAchievements();
 
         // Test the return when no achievements are unlocked
         Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
         assertFalse(gradeAndDate.isPresent());
+    }
+    
+    @Test
+    public void testGetGradeAndDateGrade3() {
+        // Test the return from getGradeAndDate-method when the grade is GRADE_3
+        User user = createBasicUser(Role.STUDENT);
+        
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
+        user.setEnrolments(enrolments);
+
+        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        List<Achievement> achievements = createBasicAchievements();
+
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
 
         // Add one GRADE_3 achievement to unlocked and test the return
-        AchievementUnlocked au1 = new AchievementUnlocked();
-        au1.setId(1L);
-        au1.setEnrolment(enrolment1);
-        au1.setAchievement(achievement1);
-        au1.setUnlockTime(LocalDateTime.of(2023, 1, 20, 12, 0));
+        AchievementUnlocked au1 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(0))
+            .unlockTime(LocalDateTime.of(2023, 1, 20, 12, 0))
+            .build();
+        achievementsUnlocked.add(au1);
+        
+        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
+        assertFalse(gradeAndDate.isPresent());
+        
+        // Add another GRADE_3 achievement to unlocked and test the return
+        AchievementUnlocked au2 = AchievementUnlocked.builder()
+            .id(2L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(1))
+            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
+            .build();
+        achievementsUnlocked.add(au2);
+        
+        gradeAndDate = user.getGradeAndDate(achievements);
+        assertEquals(Level.GRADE_3, gradeAndDate.get().getFirst());
+        assertEquals(LocalDate.of(2023, 1, 20), gradeAndDate.get().getSecond());
+    }
+
+    @Test
+    public void testGetGradeAndDateGrade4() {
+        // Test the return from getGradeAndDate-method when the grade is GRADE_4
+        User user = createBasicUser(Role.STUDENT);
+    
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
+        user.setEnrolments(enrolments);
+
+        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        List<Achievement> achievements = createBasicAchievements();
+
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+
+        // Add one GRADE_3 and one GRADE_4 achievement to unlocked and test the return
+        AchievementUnlocked au1 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(0))
+            .unlockTime(LocalDateTime.of(2023, 1, 20, 12, 0))
+            .build();
         achievementsUnlocked.add(au1);
 
-        gradeAndDate = user.getGradeAndDate(achievements);
+        AchievementUnlocked au3 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(2))
+            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
+            .build();
+        achievementsUnlocked.add(au3);
+        
+        // All GRADE_4 achievements are unlocked but not all GRADE_3 achievements => No Grade
+        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
         assertFalse(gradeAndDate.isPresent());
-
-        // Add another GRADE_3 achievement to unlocked and test the return
-        AchievementUnlocked au2 = new AchievementUnlocked();
-        au2.setId(2L);
-        au2.setEnrolment(enrolment1);
-        au2.setAchievement(achievement2);
-        au2.setUnlockTime(LocalDateTime.of(2023, 1, 10, 12, 0));
+        
+        // Add the last GRADE_3 achievement to unlocked and test the return
+        AchievementUnlocked au2 = AchievementUnlocked.builder()
+            .id(2L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(1))
+            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
+            .build();
         achievementsUnlocked.add(au2);
 
-        gradeAndDate = user.getGradeAndDate(achievements);
-        assertEquals(Level.GRADE_3, gradeAndDate.get().getFirst());
-        assertEquals(LocalDate.of(2023, 1, 20), gradeAndDate.get().getSecond());
-        
-        // Add a GRADE_4 achievement to unlocked and test the return
-        AchievementUnlocked au3 = new AchievementUnlocked();
-        au3.setId(3L);
-        au3.setEnrolment(enrolment1);
-        au3.setAchievement(achievement3);
-        au3.setUnlockTime(LocalDateTime.of(2023, 1, 15, 12, 0));
-        achievementsUnlocked.add(au3);
-
-        // BUG? Date returned is the date when last GRADE_4 achievement was unlocked
-        // Shouldn't it be the date when the last GRADE_3 or GRADE_4 achievement was unlocked?
+        // Should return the date when the last GRADE_3 or GRADE_4 achievement was unlocked
         gradeAndDate = user.getGradeAndDate(achievements);
         assertEquals(Level.GRADE_4, gradeAndDate.get().getFirst());
-        assertEquals(LocalDate.of(2023, 1, 15), gradeAndDate.get().getSecond());
+        assertEquals(LocalDate.of(2023, 1, 20), gradeAndDate.get().getSecond());
+    }
+    
+    @Test
+    public void testGetGradeAndDateGrade5() {
+        // Test the return from getGradeAndDate-method when the grade is GRADE_5
+        User user = createBasicUser(Role.STUDENT);
+    
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
+        user.setEnrolments(enrolments);
 
-        // Add a GRADE_5 achievement to unlocked and test the return
-        AchievementUnlocked au4 = new AchievementUnlocked();
-        au4.setId(4L);
-        au4.setEnrolment(enrolment1);
-        au4.setAchievement(achievement4);
-        au4.setUnlockTime(LocalDateTime.of(2023, 1, 25, 12, 0));
+        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        List<Achievement> achievements = createBasicAchievements();
+
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+
+        // Add all GRADE_3, GRADE_4 and GRADE_5 achievements to unlocked and test the return
+        AchievementUnlocked au1 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(0))
+            .unlockTime(LocalDateTime.of(2023, 1, 20, 12, 0))
+            .build();
+        achievementsUnlocked.add(au1);
+
+        AchievementUnlocked au2 = AchievementUnlocked.builder()
+            .id(2L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(1))
+            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
+            .build();
+        achievementsUnlocked.add(au2);
+
+        AchievementUnlocked au3 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(2))
+            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
+            .build();
+        achievementsUnlocked.add(au3);
+
+        AchievementUnlocked au4 = AchievementUnlocked.builder()
+            .id(1L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(3))
+            .unlockTime(LocalDateTime.of(2023, 1, 25, 12, 0))
+            .build();
         achievementsUnlocked.add(au4);
-
-        gradeAndDate = user.getGradeAndDate(achievements);
+        
+        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
         assertEquals(Level.GRADE_5, gradeAndDate.get().getFirst());
         assertEquals(LocalDate.of(2023, 1, 25), gradeAndDate.get().getSecond());
-
-        // Test the return when a GRADE_4 achievement is removed from unlocked
-        achievementsUnlocked.remove(au3);
-        
-        gradeAndDate = user.getGradeAndDate(achievements);
-        assertEquals(Level.GRADE_3, gradeAndDate.get().getFirst());
-        assertEquals(LocalDate.of(2023, 1, 20), gradeAndDate.get().getSecond());
     }
 
     @Test
@@ -837,23 +952,12 @@ public class UserTests {
         User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
-
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+        Set<AchievementPushedBack> achievementsPushedBack = enrolments.iterator().next().getAchievementsPushedBack();
 
         List<Achievement> achievements = new ArrayList<Achievement>();
 
@@ -868,7 +972,7 @@ public class UserTests {
         // Add one unlocked assignment to enrolments and test the return
         AchievementUnlocked au1 = new AchievementUnlocked();
         au1.setId(1L);
-        au1.setEnrolment(enrolment1);
+        au1.setEnrolment(enrolment);
         au1.setAchievement(achievement1);
         au1.setUnlockTime(LocalDateTime.now());
 
@@ -885,7 +989,7 @@ public class UserTests {
         
         AchievementPushedBack ap2 = new AchievementPushedBack();
         ap2.setId(2L);
-        ap2.setEnrolment(enrolment1);
+        ap2.setEnrolment(enrolment);
         ap2.setAchievement(achievement2);
         ap2.setPushedBackTime(LocalDateTime.now());
         
@@ -900,23 +1004,12 @@ public class UserTests {
         User user = createBasicUser(Role.STUDENT);
 
         // Add one course to enrolments but no unlocked/pushed backed assignments and test the return
-        Course course1 = new Course();
-        course1.setId(1L);
-        course1.setStartDate(LocalDate.of(2023, 1, 1));
-        
-        Enrolment enrolment1 = new Enrolment();
-        enrolment1.setId(11L);
-        enrolment1.setCourseInstance(course1);
-
-        Set<Enrolment> enrolments = new HashSet<>();
-        enrolments.add(enrolment1);
+        Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        Set<AchievementUnlocked> achievementsUnlocked = new HashSet<>();
-        enrolment1.setAchievementsUnlocked(achievementsUnlocked);
-
-        Set<AchievementPushedBack> achievementsPushedBack = new HashSet<>();
-        enrolment1.setAchievementsPushedBack(achievementsPushedBack);
+        Enrolment enrolment = enrolments.iterator().next();
+        Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
+        Set<AchievementPushedBack> achievementsPushedBack = enrolments.iterator().next().getAchievementsPushedBack();
 
         List<Achievement> achievements = new ArrayList<Achievement>();
 
@@ -931,7 +1024,7 @@ public class UserTests {
         // Add one unlocked assignment to enrolments and test the return
         AchievementUnlocked au1 = new AchievementUnlocked();
         au1.setId(1L);
-        au1.setEnrolment(enrolment1);
+        au1.setEnrolment(enrolment);
         au1.setAchievement(achievement1);
         au1.setUnlockTime(LocalDateTime.now());
 
@@ -948,7 +1041,7 @@ public class UserTests {
         
         AchievementPushedBack ap2 = new AchievementPushedBack();
         ap2.setId(2L);
-        ap2.setEnrolment(enrolment1);
+        ap2.setEnrolment(enrolment);
         ap2.setAchievement(achievement2);
         ap2.setPushedBackTime(LocalDateTime.now());
         

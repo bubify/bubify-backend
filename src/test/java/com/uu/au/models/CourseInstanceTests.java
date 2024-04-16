@@ -144,10 +144,58 @@ public class CourseInstanceTests {
         courseInstance.setStartDate(LocalDate.now());
         assertEquals(LocalDate.now().getYear(), courseInstance.getYear());
     }
+    
+    @Test
+    public void testBurnUpEmpty() {
+        // Create a CourseInstance and test the burnUp method when no achievements are unlocked
+        CourseInstance courseInstance = createBasicCourseInstance();
+        courseInstance.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        courseInstance.setAchievementsUnlocked(setAU);
+
+        // Check the burnUp for GRADE_3, first week is week 0
+        Map<Level, List<Integer>> burnUp = courseInstance.burnUp();
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(0));
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(1));
+    }
 
     @Test
-    public void testBurnUp() {
-        // Create a CourseInstance and test the burnUp method
+    public void testBurnUpOne() {
+        // Create a CourseInstance and test the burnUp method with only one achievement unlocked
+        CourseInstance courseInstance = createBasicCourseInstance();
+        courseInstance.setStartDate(LocalDate.now().minusWeeks(1));
+        
+        // Create one achievement and set unlock time
+        Achievement achiveOneLevel3 = new Achievement();
+        achiveOneLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auOneLevel3 = new AchievementUnlocked();
+        auOneLevel3.setUnlockTime(LocalDateTime.now());
+        auOneLevel3.setAchievement(achiveOneLevel3);
+        
+        // Add the achievement to the courseInstance
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        setAU.add(auOneLevel3);
+        courseInstance.setAchievementsUnlocked(setAU);
+
+        // Check the burnUp per week and per level, first week is week 0
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnUp = courseInstance.burnUp();
+        assertEquals(0, burnUp.get(Level.GRADE_3).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_3).get(1));
+
+        // Note: GRADE_3 achievements are also included in GRADE_4
+        assertEquals(0, burnUp.get(Level.GRADE_4).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_4).get(1));
+        
+        // Note: GRADE_3 and GRADE_4 achievements are also included in GRADE_5
+        assertEquals(0, burnUp.get(Level.GRADE_5).get(0));
+        assertEquals(1, burnUp.get(Level.GRADE_5).get(1));
+    }
+
+    @Test
+    public void testBurnUpMany() {
+        // Create a CourseInstance and test the burnUp method with multiple achievements unlocked
         CourseInstance courseInstance = createBasicCourseInstance();
         courseInstance.setStartDate(LocalDate.now().minusWeeks(2));
         
@@ -228,7 +276,65 @@ public class CourseInstanceTests {
     }
 
     @Test
-    public void testBurnDown(){
+    public void testBurnDownEmpty(){
+        // Create a CourseInstance and test the burnDown method when no achievements are unlocked
+        CourseInstance courseInstance = createBasicCourseInstance();
+        courseInstance.setStartDate(LocalDate.now().minusWeeks(1));
+
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        courseInstance.setAchievementsUnlocked(setAU);
+
+        final var levelToTarget = new HashMap<Level, Integer>();
+        levelToTarget.put(Level.GRADE_3, 0);
+        levelToTarget.put(Level.GRADE_4, 0); // Note: 2 GRADE_3 achievements are also included
+        levelToTarget.put(Level.GRADE_5, 0); // Note: 4 GRADE_3 and 2 GRADE_4 achievements are also included
+
+        // Check the burnDown for GRADE_3, first week is week 0
+        Map<Level, List<Integer>> burnDown = courseInstance.burnDown(levelToTarget);
+        assertEquals(0, burnDown.get(Level.GRADE_3).get(0));
+        assertEquals(0, burnDown.get(Level.GRADE_3).get(1));
+    }
+
+    @Test
+    public void testBurnDownOne(){
+        // Create a CourseInstance and test the burnDown method with only one achievement unlocked
+        CourseInstance courseInstance = createBasicCourseInstance();
+        courseInstance.setStartDate(LocalDate.now().minusWeeks(1));
+
+        // Create one achievement and set unlock time
+        Achievement achiveOneLevel3 = new Achievement();
+        achiveOneLevel3.setLevel(Level.GRADE_3);
+        AchievementUnlocked auOneLevel3 = new AchievementUnlocked();
+        auOneLevel3.setUnlockTime(LocalDateTime.now());
+        auOneLevel3.setAchievement(achiveOneLevel3);
+
+        // Add the achievement to the courseInstance
+        Set<AchievementUnlocked> setAU = new HashSet<>();
+        setAU.add(auOneLevel3);
+        courseInstance.setAchievementsUnlocked(setAU);
+
+        final var levelToTarget = new HashMap<Level, Integer>();
+        levelToTarget.put(Level.GRADE_3, 1);
+        levelToTarget.put(Level.GRADE_4, 1); // Note: 2 GRADE_3 achievements are also included
+        levelToTarget.put(Level.GRADE_5, 1); // Note: 4 GRADE_3 and 2 GRADE_4 achievements are also included
+
+        // Check the burnDown per week and per level, first week is week 0
+        // Note: unlocked achievements from previous weeks are also counted
+        Map<Level, List<Integer>> burnDown = courseInstance.burnDown(levelToTarget);
+        assertEquals((1-0), burnDown.get(Level.GRADE_3).get(0));
+        assertEquals((1-1), burnDown.get(Level.GRADE_3).get(1));
+        
+        // Note: GRADE_3 achievements are also included in GRADE_4
+        assertEquals((1-0), burnDown.get(Level.GRADE_4).get(0));
+        assertEquals((1-1), burnDown.get(Level.GRADE_4).get(1));
+        
+        // Note: GRADE_3 and GRADE_4 achievements are also included in GRADE_5
+        assertEquals((1-0), burnDown.get(Level.GRADE_5).get(0));
+        assertEquals((1-1), burnDown.get(Level.GRADE_5).get(1));
+    }
+
+    @Test
+    public void testBurnDownMany(){
         // Create a CourseInstance and test the burnDown method
         CourseInstance courseInstance = createBasicCourseInstance();
         courseInstance.setStartDate(LocalDate.now().minusWeeks(2));
