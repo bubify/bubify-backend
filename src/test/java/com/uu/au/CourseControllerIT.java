@@ -6,9 +6,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.DirtiesContext;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ExtendWith(SpringExtension.class)
-@Transactional
+// @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CourseControllerIT {
 
     private String token;
@@ -32,8 +33,10 @@ public class CourseControllerIT {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
+
         HttpEntity<String> requestEntity = new HttpEntity<>(data, headers);
         RestTemplate restTemplate = new RestTemplate();
+        
         String url = "http://localhost:8900" + endpoint;
         return restTemplate.exchange(url, method, requestEntity, String.class);
     }
