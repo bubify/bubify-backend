@@ -46,12 +46,12 @@
 [[1;34mINFO[m]  T E S T S
 [[1;34mINFO[m] -------------------------------------------------------
 [[1;34mINFO[m] Running com.uu.au.[1mCourseControllerIT[m
-10:03:49.609 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.CourseControllerIT], using SpringBootContextLoader
-10:03:49.626 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.CourseControllerIT]: no resource found for suffixes {-context.xml, Context.groovy}.
-10:03:49.627 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.CourseControllerIT]: CourseControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-10:03:49.863 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.CourseControllerIT
-10:03:50.065 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-10:03:50.100 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@2b7962a2, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6ad16c5d, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@74ea46e2, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@6f911326, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@f1d0004, org.springframework.test.context.support.DirtiesContextTestExecutionListener@6e4f263e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@48b4a043, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2f5b8250, org.springframework.test.context.event.EventPublishingTestExecutionListener@4821aa9f, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@5f481b73, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@32130e61, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@41294371, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@4996c99, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@1b956cfa, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@315f09ef]
+10:57:54.616 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.CourseControllerIT], using SpringBootContextLoader
+10:57:54.637 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.CourseControllerIT]: no resource found for suffixes {-context.xml, Context.groovy}.
+10:57:54.640 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.CourseControllerIT]: CourseControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+10:57:55.027 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.CourseControllerIT
+10:57:55.220 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+10:57:55.255 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@74ea46e2, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6f911326, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@f1d0004, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@6e4f263e, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@48b4a043, org.springframework.test.context.support.DirtiesContextTestExecutionListener@2f5b8250, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4821aa9f, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@5f481b73, org.springframework.test.context.event.EventPublishingTestExecutionListener@32130e61, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@41294371, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@4996c99, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@1b956cfa, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@315f09ef, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@3a66e67e, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@75d4a80f]
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -61,211 +61,375 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.6.1)
 
-10:03:50.714 [main] INFO  com.uu.au.CourseControllerIT - Starting CourseControllerIT using Java 17.0.10 on 7a82e4bb62f2 with PID 80 (started by bubify in /home/bubify/backend)
-10:03:50.719 [main] INFO  com.uu.au.CourseControllerIT - The following profiles are active: test
-10:03:52.514 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-10:03:52.676 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 144 ms. Found 13 JPA repository interfaces.
-10:03:54.241 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-10:03:54.259 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-10:03:54.259 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-10:03:54.260 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-10:03:54.406 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-10:03:54.408 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3583 ms
-10:03:54.498 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-10:03:54.937 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-10:03:54.961 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-10:03:55.605 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-10:03:55.690 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
-10:03:55.969 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-10:03:56.173 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-10:03:58.167 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-10:03:58.189 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-10:03:58.202 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-10:03:59.460 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-10:03:59.527 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-10:03:59.556 [main] INFO  com.uu.au.AUPortal - ticketValidator
-10:03:59.574 [main] INFO  com.uu.au.AUPortal - service properties
-10:03:59.584 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-10:03:59.639 [main] INFO  com.uu.au.AUPortal - filter!
-10:04:00.995 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@58be6170, org.springframework.security.web.context.SecurityContextPersistenceFilter@71191d12, org.springframework.security.web.header.HeaderWriterFilter@2a4e39f9, org.springframework.web.filter.CorsFilter@7a47fe12, org.springframework.security.web.authentication.logout.LogoutFilter@114cbcc4, org.springframework.security.web.authentication.logout.LogoutFilter@12ef80b3, org.jasig.cas.client.session.SingleSignOutFilter@7dbddd9b, org.springframework.security.web.session.ConcurrentSessionFilter@64aa895e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@e519afd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@d83969c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2668d785, org.springframework.security.web.session.SessionManagementFilter@f73bade, org.springframework.security.web.access.ExceptionTranslationFilter@52d41aa7, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7ca3a5fb]
-10:04:01.801 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-10:04:01.957 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-10:04:01.979 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-10:04:01.982 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-10:04:01.986 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6d3e7bd0]]
-10:04:01.987 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-10:04:02.029 [main] INFO  com.uu.au.CourseControllerIT - Started CourseControllerIT in 11.846 seconds (JVM running for 14.184)
-10:04:02.037 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-10:04:02.037 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-10:04:02.058 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-10:04:02.058 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6d3e7bd0]]
-10:04:02.059 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-10:04:02.123 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-10:04:02.125 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-10:04:02.127 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v2.6.1)
-
-10:04:02.329 [main] INFO  com.uu.au.CourseControllerIT - Starting CourseControllerIT using Java 17.0.10 on 7a82e4bb62f2 with PID 80 (started by bubify in /home/bubify/backend)
-10:04:02.330 [main] INFO  com.uu.au.CourseControllerIT - The following profiles are active: test
-10:04:02.742 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-10:04:02.790 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 47 ms. Found 13 JPA repository interfaces.
-10:04:03.107 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-10:04:03.109 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-10:04:03.109 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-10:04:03.109 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-10:04:03.134 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-10:04:03.134 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 799 ms
-10:04:03.164 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
-10:04:03.167 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
-10:04:03.172 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-10:04:03.303 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-10:04:03.310 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-10:04:03.789 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-10:04:03.790 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-10:04:03.790 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-10:04:04.278 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-10:04:04.304 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-10:04:04.321 [main] INFO  com.uu.au.AUPortal - ticketValidator
-10:04:04.330 [main] INFO  com.uu.au.AUPortal - service properties
-10:04:04.333 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-10:04:04.350 [main] INFO  com.uu.au.AUPortal - filter!
-10:04:05.019 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@597e374, org.springframework.security.web.context.SecurityContextPersistenceFilter@50b2fe37, org.springframework.security.web.header.HeaderWriterFilter@223904ae, org.springframework.web.filter.CorsFilter@3756c3f5, org.springframework.security.web.authentication.logout.LogoutFilter@1c694f4d, org.springframework.security.web.authentication.logout.LogoutFilter@67bd111e, org.jasig.cas.client.session.SingleSignOutFilter@109c0b89, org.springframework.security.web.session.ConcurrentSessionFilter@6502e0e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3ac49cfb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@279e7acb, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@309d2156, org.springframework.security.web.session.SessionManagementFilter@3775564e, org.springframework.security.web.access.ExceptionTranslationFilter@5050dc97, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1a224174]
-10:04:05.328 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-10:04:05.407 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-10:04:05.409 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-10:04:05.412 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-10:04:05.412 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@43bd7ec4]]
-10:04:05.416 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-10:04:05.433 [main] INFO  com.uu.au.CourseControllerIT - Started CourseControllerIT in 3.296 seconds (JVM running for 17.588)
-10:04:05.440 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-10:04:05.440 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-10:04:05.818 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-10:04:05.819 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-10:04:05.822 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
-10:04:06.042 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
-10:04:06.195 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
-10:04:06.532 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-10:04:06.535 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@43bd7ec4]]
-10:04:06.536 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-10:04:06.550 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-10:04:06.552 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
-10:04:06.555 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v2.6.1)
-
-10:04:06.622 [main] INFO  com.uu.au.CourseControllerIT - Starting CourseControllerIT using Java 17.0.10 on 7a82e4bb62f2 with PID 80 (started by bubify in /home/bubify/backend)
-10:04:06.623 [main] INFO  com.uu.au.CourseControllerIT - The following profiles are active: test
-10:04:07.098 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-10:04:07.124 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 25 ms. Found 13 JPA repository interfaces.
-10:04:07.359 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-10:04:07.360 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-10:04:07.360 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-10:04:07.361 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-10:04:07.388 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-10:04:07.388 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 759 ms
-10:04:07.408 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
-10:04:07.410 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
-10:04:07.410 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-10:04:07.543 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-10:04:07.555 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-10:04:07.951 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-10:04:07.951 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-10:04:07.952 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-10:04:08.324 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-10:04:08.351 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-10:04:08.364 [main] INFO  com.uu.au.AUPortal - ticketValidator
-10:04:08.370 [main] INFO  com.uu.au.AUPortal - service properties
-10:04:08.376 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-10:04:08.388 [main] INFO  com.uu.au.AUPortal - filter!
-10:04:09.080 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7932f284, org.springframework.security.web.context.SecurityContextPersistenceFilter@2a546149, org.springframework.security.web.header.HeaderWriterFilter@56b7404a, org.springframework.web.filter.CorsFilter@76f4a0cf, org.springframework.security.web.authentication.logout.LogoutFilter@52ba834b, org.springframework.security.web.authentication.logout.LogoutFilter@680d53b1, org.jasig.cas.client.session.SingleSignOutFilter@56cf67e9, org.springframework.security.web.session.ConcurrentSessionFilter@7bfc634e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@468dd159, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7924c283, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@56e77f62, org.springframework.security.web.session.SessionManagementFilter@6efa2d96, org.springframework.security.web.access.ExceptionTranslationFilter@19d9140c, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@4e07e622]
-10:04:09.397 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-10:04:09.471 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-10:04:09.473 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-10:04:09.476 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-10:04:09.477 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3f7877ee]]
-10:04:09.479 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-10:04:09.488 [main] INFO  com.uu.au.CourseControllerIT - Started CourseControllerIT in 2.929 seconds (JVM running for 21.643)
-10:04:09.509 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-10:04:09.509 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-10:04:09.511 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-10:04:09.518 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-10:04:09.518 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-10:04:09.519 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
-10:04:09.539 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
-10:04:09.673 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-10:04:09.673 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3f7877ee]]
-10:04:09.674 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-10:04:09.689 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-10:04:09.691 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
-10:04:09.694 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v2.6.1)
-
-10:04:09.765 [main] INFO  com.uu.au.CourseControllerIT - Starting CourseControllerIT using Java 17.0.10 on 7a82e4bb62f2 with PID 80 (started by bubify in /home/bubify/backend)
-10:04:09.766 [main] INFO  com.uu.au.CourseControllerIT - The following profiles are active: test
-10:04:10.025 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-10:04:10.048 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 13 JPA repository interfaces.
-10:04:10.273 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-10:04:10.274 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-10:04:10.275 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-10:04:10.275 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-10:04:10.296 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-10:04:10.296 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 527 ms
-10:04:10.317 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
-10:04:10.321 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
-10:04:10.321 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-10:04:10.431 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-10:04:10.442 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-10:04:10.780 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-10:04:10.781 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-10:04:10.781 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-10:04:11.143 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-10:04:11.166 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-10:04:11.176 [main] INFO  com.uu.au.AUPortal - ticketValidator
-10:04:11.180 [main] INFO  com.uu.au.AUPortal - service properties
-10:04:11.183 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-10:04:11.195 [main] INFO  com.uu.au.AUPortal - filter!
-10:04:11.750 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@314a8592, org.springframework.security.web.context.SecurityContextPersistenceFilter@383e8f63, org.springframework.security.web.header.HeaderWriterFilter@7b3fa086, org.springframework.web.filter.CorsFilter@1c654afe, org.springframework.security.web.authentication.logout.LogoutFilter@597ddad0, org.springframework.security.web.authentication.logout.LogoutFilter@9c7efd0, org.jasig.cas.client.session.SingleSignOutFilter@6f88de24, org.springframework.security.web.session.ConcurrentSessionFilter@1a87258c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3e833372, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6646d79c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@54871d2f, org.springframework.security.web.session.SessionManagementFilter@236f7e40, org.springframework.security.web.access.ExceptionTranslationFilter@7ccbda0d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@705b51e2]
-10:04:12.026 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-10:04:12.099 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-10:04:12.101 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-10:04:12.104 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-10:04:12.106 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@31e33f4e]]
-10:04:12.107 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-10:04:12.123 [main] INFO  com.uu.au.CourseControllerIT - Started CourseControllerIT in 2.421 seconds (JVM running for 24.277)
-10:04:12.134 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-10:04:12.136 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-10:04:12.139 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-10:04:12.139 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-10:04:12.141 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-10:04:12.150 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
-10:04:12.171 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m3[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 23.125 s - in com.uu.au.[1mCourseControllerIT[m
-10:04:12.341 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-10:04:12.342 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@31e33f4e]]
-10:04:12.343 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-10:04:12.363 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-10:04:12.364 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown initiated...
-10:04:12.365 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown completed.
+10:57:56.038 [main] INFO  com.uu.au.CourseControllerIT - Starting CourseControllerIT using Java 17.0.10 on 3633b6c2175a with PID 79 (started by bubify in /home/bubify/backend)
+10:57:56.041 [main] INFO  com.uu.au.CourseControllerIT - The following profiles are active: test
+10:57:57.857 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+10:57:58.001 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 127 ms. Found 13 JPA repository interfaces.
+10:57:59.573 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
+10:57:59.593 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
+10:57:59.593 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+10:57:59.594 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
+10:57:59.751 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+10:57:59.751 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3647 ms
+10:57:59.832 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+10:58:00.234 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+10:58:00.254 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+10:58:00.737 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+10:58:00.826 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
+10:58:01.066 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+10:58:01.326 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+10:58:03.113 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
+10:58:03.114 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+10:58:03.132 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+10:58:04.581 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+10:58:04.650 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
+10:58:04.687 [main] INFO  com.uu.au.AUPortal - ticketValidator
+10:58:04.713 [main] INFO  com.uu.au.AUPortal - service properties
+10:58:04.732 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
+10:58:04.823 [main] INFO  com.uu.au.AUPortal - filter!
+10:58:06.567 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6ac9e665, org.springframework.security.web.context.SecurityContextPersistenceFilter@629994ae, org.springframework.security.web.header.HeaderWriterFilter@159e840a, org.springframework.web.filter.CorsFilter@7d8b5b9d, org.springframework.security.web.authentication.logout.LogoutFilter@7c26b384, org.springframework.security.web.authentication.logout.LogoutFilter@5245b5e0, org.jasig.cas.client.session.SingleSignOutFilter@7f851866, org.springframework.security.web.session.ConcurrentSessionFilter@626dfe75, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2a4e39f9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3ed90d79, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@606d6258, org.springframework.security.web.session.SessionManagementFilter@320c71c4, org.springframework.security.web.access.ExceptionTranslationFilter@41d3bff, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3a4f4ec9]
+10:58:07.475 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
+10:58:07.653 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
+10:58:07.685 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
+10:58:07.687 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+10:58:07.689 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@72b9c9ed]]
+10:58:07.691 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+10:58:07.753 [main] INFO  com.uu.au.CourseControllerIT - Started CourseControllerIT in 12.374 seconds (JVM running for 14.757)
+10:58:07.807 [MessageBroker-4] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
+10:58:07.823 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
+10:58:08.674 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+10:58:08.675 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+10:58:08.678 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+10:58:08.876 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
+10:58:09.009 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m3[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.399 s - in com.uu.au.[1mCourseControllerIT[m
+10:58:09.813 [MessageBroker-2] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 90121, SQLState: 90121
+10:58:09.813 [MessageBroker-2] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+10:58:09.815 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+10:58:09.815 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@72b9c9ed]]
+10:58:09.815 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+10:58:09.818 [MessageBroker-2] ERROR o.s.o.jpa.EntityManagerFactoryUtils - Failed to release JPA EntityManager
+org.hibernate.exception.JDBCConnectionException: Unable to release JDBC Connection
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:48)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:37)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:223)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.close(LogicalConnectionManagedImpl.java:261)
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.close(JdbcCoordinatorImpl.java:175)
+	at org.hibernate.internal.AbstractSharedSessionContract.close(AbstractSharedSessionContract.java:360)
+	at org.hibernate.internal.SessionImpl.closeWithoutOpenChecks(SessionImpl.java:431)
+	at org.hibernate.internal.SessionImpl.close(SessionImpl.java:416)
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.closeEntityManager(EntityManagerFactoryUtils.java:427)
+	at org.springframework.orm.jpa.JpaTransactionManager.closeEntityManagerAfterFailedBegin(JpaTransactionManager.java:514)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:466)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.clearWarnings(JdbcConnection.java:703)
+	at com.zaxxer.hikari.pool.ProxyConnection.close(ProxyConnection.java:267)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.closeConnection(DatasourceConnectionProviderImpl.java:127)
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.releaseConnection(NonContextualJdbcConnectionAccess.java:49)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:219)
+	... 34 common frames omitted
+10:58:09.833 [MessageBroker-2] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction; nested exception is org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:467)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:78)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:285)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:246)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:164)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:421)
+	... 26 common frames omitted
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.setAutoCommit(JdbcConnection.java:495)
+	at com.zaxxer.hikari.pool.ProxyConnection.setAutoCommit(ProxyConnection.java:414)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setAutoCommit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:72)
+	... 31 common frames omitted
+10:58:09.835 [MessageBroker-3] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 90121, SQLState: 90121
+10:58:09.835 [MessageBroker-3] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+10:58:09.835 [MessageBroker-3] ERROR o.s.o.jpa.EntityManagerFactoryUtils - Failed to release JPA EntityManager
+org.hibernate.exception.JDBCConnectionException: Unable to release JDBC Connection
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:48)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:37)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:223)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.close(LogicalConnectionManagedImpl.java:261)
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.close(JdbcCoordinatorImpl.java:175)
+	at org.hibernate.internal.AbstractSharedSessionContract.close(AbstractSharedSessionContract.java:360)
+	at org.hibernate.internal.SessionImpl.closeWithoutOpenChecks(SessionImpl.java:431)
+	at org.hibernate.internal.SessionImpl.close(SessionImpl.java:416)
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.closeEntityManager(EntityManagerFactoryUtils.java:427)
+	at org.springframework.orm.jpa.JpaTransactionManager.closeEntityManagerAfterFailedBegin(JpaTransactionManager.java:514)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:466)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.clearWarnings(JdbcConnection.java:703)
+	at com.zaxxer.hikari.pool.ProxyConnection.close(ProxyConnection.java:267)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.closeConnection(DatasourceConnectionProviderImpl.java:127)
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.releaseConnection(NonContextualJdbcConnectionAccess.java:49)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:219)
+	... 34 common frames omitted
+10:58:09.836 [MessageBroker-3] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction; nested exception is org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:467)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:78)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:285)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:246)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:164)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:421)
+	... 26 common frames omitted
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.setAutoCommit(JdbcConnection.java:495)
+	at com.zaxxer.hikari.pool.ProxyConnection.setAutoCommit(ProxyConnection.java:414)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setAutoCommit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:72)
+	... 31 common frames omitted
+10:58:09.849 [MessageBroker-3] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 90121, SQLState: 90121
+10:58:09.850 [MessageBroker-3] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+10:58:09.850 [MessageBroker-3] ERROR o.s.o.jpa.EntityManagerFactoryUtils - Failed to release JPA EntityManager
+org.hibernate.exception.JDBCConnectionException: Unable to release JDBC Connection
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:48)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:37)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:223)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.close(LogicalConnectionManagedImpl.java:261)
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.close(JdbcCoordinatorImpl.java:175)
+	at org.hibernate.internal.AbstractSharedSessionContract.close(AbstractSharedSessionContract.java:360)
+	at org.hibernate.internal.SessionImpl.closeWithoutOpenChecks(SessionImpl.java:431)
+	at org.hibernate.internal.SessionImpl.close(SessionImpl.java:416)
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.closeEntityManager(EntityManagerFactoryUtils.java:427)
+	at org.springframework.orm.jpa.JpaTransactionManager.closeEntityManagerAfterFailedBegin(JpaTransactionManager.java:514)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:466)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.clearWarnings(JdbcConnection.java:703)
+	at com.zaxxer.hikari.pool.ProxyConnection.close(ProxyConnection.java:267)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.closeConnection(DatasourceConnectionProviderImpl.java:127)
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.releaseConnection(NonContextualJdbcConnectionAccess.java:49)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.releaseConnection(LogicalConnectionManagedImpl.java:219)
+	... 34 common frames omitted
+10:58:09.850 [MessageBroker-3] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction; nested exception is org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:467)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:174)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215)
+	at jdk.proxy2/jdk.proxy2.$Proxy162.findAll(Unknown Source)
+	at com.uu.au.controllers.TestController.integrityCheck(TestController.java:51)
+	at jdk.internal.reflect.GeneratedMethodAccessor117.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.hibernate.TransactionException: JDBC begin transaction failed: 
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:78)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:285)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:246)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:83)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:164)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:421)
+	... 26 common frames omitted
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1514)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1490)
+	at org.h2.jdbc.JdbcConnection.setAutoCommit(JdbcConnection.java:495)
+	at com.zaxxer.hikari.pool.ProxyConnection.setAutoCommit(ProxyConnection.java:414)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setAutoCommit(HikariProxyConnection.java)
+	at org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor.begin(AbstractLogicalConnectionImplementor.java:72)
+	... 31 common frames omitted
+10:58:09.893 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+10:58:09.895 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+10:58:09.906 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
 [[1;34mINFO[m] 
 [[1;34mINFO[m] Results:
 [[1;34mINFO[m] 
@@ -276,6 +440,6 @@
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
 [[1;34mINFO[m] [1;32mBUILD SUCCESS[m
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
-[[1;34mINFO[m] Total time:  49.883 s
-[[1;34mINFO[m] Finished at: 2024-04-19T10:04:12+02:00
+[[1;34mINFO[m] Total time:  44.442 s
+[[1;34mINFO[m] Finished at: 2024-04-19T10:58:10+02:00
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
