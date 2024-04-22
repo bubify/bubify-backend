@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CourseControllerIT {
 
     private static String token;
@@ -40,20 +40,18 @@ public class CourseControllerIT {
 
     @BeforeEach
     public void setup() {
-        if (token == null) { 
-            // Define user and course data
-            String courseData = "{\"name\":\"Fun Course\"}";
-            String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"jdoe\",\"role\":\"TEACHER\"}";
+        // Define user and course data
+        String courseData = "{\"name\":\"Fun Course\"}";
+        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"jdoe\",\"role\":\"TEACHER\"}";
 
-            // Create course and user
-            makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
-            makeRequest(HttpMethod.POST, "/internal/user", userData, false);
+        // Create course and user
+        makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
+        makeRequest(HttpMethod.POST, "/internal/user", userData, false);
 
-            // Obtain token for the user
-            ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=jdoe", null, false);
-            token = responseEntity.getBody();
-            assertNotNull(token);
-        }
+        // Obtain token for the user
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=jdoe", null, false);
+        token = responseEntity.getBody();
+        assertNotNull(token);
     }
 
     @Test
@@ -65,10 +63,7 @@ public class CourseControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
-        assertTrue(responseBody.contains("name"));
-
-        // "By default, JUnit runs tests using a deterministic but unpredictable order", this is why we can't assert this:
-        // assertTrue(responseBody.contains("name\":\"Fun Course"));
+        assertTrue(responseBody.contains("name\":\"Fun Course"));
     }
 
     @Test
