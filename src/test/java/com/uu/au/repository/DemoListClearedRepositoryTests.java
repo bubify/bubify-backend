@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +21,7 @@ public class DemoListClearedRepositoryTests {
     private DemoListClearedRepository demoListClearedRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EntityManager entityManager; // Used to persist objects belonging to other repositories
 
     @Test
     public void testFindAll(){
@@ -28,7 +30,7 @@ public class DemoListClearedRepositoryTests {
 
         // demoListCleared must have a user field (@JoinColumn(nullable=false))
         User user = User.builder().build();
-        userRepository.save(user);
+        entityManager.persist(user);
         demoListCleared.setUser(user);
 
         // Test before saving the DemoListCleared

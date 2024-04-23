@@ -11,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Set;
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,7 @@ public class DemonstrationRepositoryTests {
     private DemonstrationRepository demonstrationRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EntityManager entityManager; // Used to persist objects belonging to other repositories
 
     @Test
     public void testFindAll(){
@@ -47,7 +47,7 @@ public class DemonstrationRepositoryTests {
     public void testFindAllByExaminer() {
         // Create a user and a demonstration object
         User examiner = User.builder().build();
-        userRepository.save(examiner);
+        entityManager.persist(examiner);
         Demonstration demonstration = Demonstration.builder().examiner(examiner).build();
 
         // Test before saving the demonstration
@@ -72,7 +72,7 @@ public class DemonstrationRepositoryTests {
     public void testFindAllBySubmitters() {
         // Create a user and a demonstration object
         User submitter = User.builder().build();
-        userRepository.save(submitter);
+        entityManager.persist(submitter);
         Demonstration demonstration = Demonstration.builder().submitters(Set.of(submitter)).build();
 
         // Test before saving the demonstration
@@ -87,7 +87,7 @@ public class DemonstrationRepositoryTests {
 
         // Create and add another demonstration with 2 submitters and test again
         User anotherSubmitter = User.builder().build();
-        userRepository.save(anotherSubmitter);
+        entityManager.persist(anotherSubmitter);
         Demonstration anotherDemonstration = Demonstration.builder().submitters(Set.of(submitter, anotherSubmitter)).build();
         demonstrationRepository.save(anotherDemonstration);
         
@@ -101,7 +101,7 @@ public class DemonstrationRepositoryTests {
     public void testUsersWithActiveDemoRequests() {
         // Create a user and a demonstration object (status SUBMITTED and requestTime within 24 hours)
         User submitter = User.builder().build();
-        userRepository.save(submitter);
+        entityManager.persist(submitter);
         Demonstration demonstration = Demonstration.builder().submitters(Set.of(submitter))
                                         .requestTime(LocalDateTime.now()).status(DemonstrationStatus.SUBMITTED).build();
         
@@ -117,7 +117,7 @@ public class DemonstrationRepositoryTests {
 
         // Create another user and a demonstration object with 2 submitters (status COMPLETED and requestTime within 24 hours)
         User anotherSubmitter = User.builder().build();
-        userRepository.save(anotherSubmitter);
+        entityManager.persist(anotherSubmitter);
         Demonstration anotherDemonstration = Demonstration.builder().submitters(Set.of(submitter, anotherSubmitter))
         .requestTime(LocalDateTime.now()).status(DemonstrationStatus.COMPLETED).build();
         demonstrationRepository.save(anotherDemonstration);

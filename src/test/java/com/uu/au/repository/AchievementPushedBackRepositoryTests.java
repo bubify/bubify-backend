@@ -6,7 +6,7 @@ import com.uu.au.models.User;
 import com.uu.au.models.Course;
 import com.uu.au.models.Enrolment;
 import org.springframework.web.server.ResponseStatusException;
-
+import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,7 @@ public class AchievementPushedBackRepositoryTests {
     private AchievementPushedBackRepository achievementPushedBackRepository;
     
     @Autowired
-    private EnrolmentRepository enrolmentRepository;
-    
-    @Autowired
-    private AchievementRepository achievementRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private CourseRepository courseRepository;
+    private EntityManager entityManager; // Used to persist objects belonging to other repositories
 
     @Test
     public void testFindAll(){
@@ -57,7 +48,7 @@ public class AchievementPushedBackRepositoryTests {
     public void testFindAllByEnrolmentId(){
         // Create an AchievementPushedBack and Enrolement object, persist them and test the findAllByEnrolmentId method
         Enrolment enrolment = Enrolment.builder().build();
-        enrolmentRepository.save(enrolment);
+        entityManager.persist(enrolment);
         AchievementPushedBack achievementPushedBack = AchievementPushedBack.builder().enrolment(enrolment).build();
 
         // Test before saving the AchievementPushedBack
@@ -80,7 +71,7 @@ public class AchievementPushedBackRepositoryTests {
     public void testFindAllByAchievementId(){
         // Create an AchievementPushedBack and Achievement object, persist them and test the findAllByAchievementId method
         Achievement achievement = Achievement.builder().build();
-        achievementRepository.save(achievement);
+        entityManager.persist(achievement);
         AchievementPushedBack achievementPushedBack = AchievementPushedBack.builder().achievement(achievement).build();
 
         // Test before saving the AchievementPushedBack
@@ -103,13 +94,13 @@ public class AchievementPushedBackRepositoryTests {
     public void testFindAllActivePushBacksForId(){
         // Create an AchievementPushedBack and others objects needed, persist them and test the findAllActivePushBacksForId method
         Achievement achievement = Achievement.builder().build();
-        achievementRepository.save(achievement);
+        entityManager.persist(achievement);
         Course course = Course.builder().build();
-        courseRepository.save(course);
+        entityManager.persist(course);
         Enrolment enrolment = Enrolment.builder().courseInstance(course).build();
-        enrolmentRepository.save(enrolment);
+        entityManager.persist(enrolment);
         User user = User.builder().enrolments(Set.of(enrolment)).build();
-        userRepository.save(user);
+        entityManager.persist(user);
         AchievementPushedBack achievementPushedBack = AchievementPushedBack.builder().achievement(achievement).enrolment(enrolment).pushedBackTime(LocalDateTime.now()).build();
 
         // Test before saving the AchievementPushedBack
@@ -123,7 +114,7 @@ public class AchievementPushedBackRepositoryTests {
 
         // Add another AchievementPushedBack and test again
         Achievement achievement2 = Achievement.builder().build();
-        achievementRepository.save(achievement2);
+        entityManager.persist(achievement2);
         AchievementPushedBack achievementPushedBack2 = AchievementPushedBack.builder().achievement(achievement2).enrolment(enrolment).pushedBackTime(LocalDateTime.now()).build();
         achievementPushedBackRepository.save(achievementPushedBack2);
         achievementSet = achievementPushedBackRepository.findAllActivePushBacksForId(user);
@@ -132,9 +123,5 @@ public class AchievementPushedBackRepositoryTests {
         // Assert UserErrors::enrolmentNotFound is thrown when user has no enrolments
         User user2 = User.builder().build();
         assertThrows(ResponseStatusException.class, () -> achievementPushedBackRepository.findAllActivePushBacksForId(user2));
-
-        // BUG? java.lang.NullPointerException: Cannot invoke "com.uu.au.models.User.currentEnrolment()" because "user" is null
-        // Method currently unused in the codebase
-        // assertNull(achievementPushedBackRepository.findAllActivePushBacksForId(null));
     }
 }
