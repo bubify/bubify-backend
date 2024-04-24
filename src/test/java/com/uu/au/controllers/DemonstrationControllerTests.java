@@ -1,66 +1,107 @@
-// package com.uu.au.controllers;
+package com.uu.au.controllers;
 
-// import com.uu.au.enums.DemonstrationStatus;
-// import com.uu.au.models.Demonstration;
-// import com.uu.au.models.User;
-// import com.uu.au.repository.DemonstrationRepository;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.uu.au.models.Json;
+import com.uu.au.models.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uu.au.controllers.DemonstrationController;
+import com.uu.au.models.Achievement;
+import com.uu.au.models.Demonstration;
+import com.uu.au.repository.DemonstrationRepository;
+import com.uu.au.repository.UserRepository;
+import com.uu.au.repository.AchievementRepository;
 
-// import java.time.LocalDateTime;
-// import java.util.Arrays;
-// import java.util.HashSet;
-// import java.util.List;
-// import java.util.Set;
+import lombok.Builder;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties.Build;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
-// class DemonstrationControllerTests {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//     @Mock
-//     private DemonstrationRepository demonstrationRepository;
+import java.util.List;
 
-//     @InjectMocks
-//     private DemonstrationController demonstrationController;
+import static org.junit.jupiter.api.Assertions.*;
 
-//     @BeforeEach
-//     void setUp() {
-//         MockitoAnnotations.initMocks(this);
+@SpringBootTest
+// @WebMvcTest(controllers = DemonstrationController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(SpringExtension.class)
+public class DemonstrationControllerTests {
 
-//         // Mocking the method that is called in the method under test
-//         when(demonstrationController._requestDemonstration(any())).thenReturn(new Demonstration());
-//     }
+    @Autowired
+    private MockMvc mockMvc;
 
-//     @Test
-//     void testDemonstrationRequestsCurrentCourseInstance() {
-//         LocalDateTime now = LocalDateTime.now();
-//         Demonstration demonstration1 = Demonstration.builder().requestTime(now.minusDays(1)).build();
-//         Demonstration demonstration2 = Demonstration.builder().requestTime(now.plusDays(1)).build();
+    @Autowired
+    private ObjectMapper objectMapper;
 
-//         when(demonstrationRepository.findAll()).thenReturn(Arrays.asList(demonstration1, demonstration2));
+    @MockBean
+    private DemonstrationRepository demonstrationRepository;
+    
+    @MockBean
+    private UserRepository userRepository;
+    
+    @MockBean
+    private AchievementRepository achievementRepository;
 
-//         List<Demonstration> result = demonstrationController.demonstrationRequestsCurrentCourseInstance();
+    @Test
+    public void testRequestDemonstration() throws Exception {
+        // Prepare a sample JSON request body
+        Json.DemonstrationRequest demonstrationRequest = Json.DemonstrationRequest.builder()
+                .achievementIds(List.of(1L, 2L))
+                .ids(List.of(1L, 2L)) // User ids
+                .zoomPassword("password")
+                .physicalRoom("Room 1")
+                .build();
 
-//         assertEquals(1, result.size());
-//         assertEquals(demonstration2, result.get(0));
-//     }
+        // Add users and achievements to the database
+        // This can be done using the userRepository and achievementRepository
+        // For example, you can create User and Achievement objects and save them using the respective repositories
+        User user1 = User.builder().id(1L).build();
+        User user2 = User.builder().id(2L).build();
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user1));
+        when(userRepository.findById(2L)).thenReturn(java.util.Optional.of(user2));
+        Achievement achievement1 = Achievement.builder().id(1L).build();
+        Achievement achievement2 = Achievement.builder().id(2L).build();
+        when(achievementRepository.findById(1L)).thenReturn(java.util.Optional.of(achievement1));
+        when(achievementRepository.findById(2L)).thenReturn(java.util.Optional.of(achievement2));
 
-//     @Test
-//     void testRequestDemonstration() {
-//         // Provide necessary mocks
-//         User user = User.builder().id(1L).build();
-//         when(demonstrationController._requestDemonstration(any())).thenReturn(new Demonstration());
+        // Convert demonstrationRequest to JSON string
+        String requestBody = objectMapper.writeValueAsString(demonstrationRequest);
 
-//         // Call method under test
-//         Demonstration result = demonstrationController.requestDemonstration(new Json.DemonstrationRequest());
+        // Mock the behavior of demonstrationRepository.save() method
+        when(demonstrationRepository.save(any(Demonstration.class))).thenReturn(new Demonstration());
+        
+        // Perform POST request to /demonstration/request endpoint
+        MvcResult mvcResult = mockMvc.perform(post("/demonstration/request")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+        // ERROR: Code 400 - CURRENT_USER_NOT_IN_SUBMITTERS, is there any point on mocking the userRepository.findById() method?
+        // Furthermore it depends on users.currentUser() which requires and authentication token
 
-//         // Assertions
-//         verify(demonstrationController, times(1))._requestDemonstration(any());
-//     }
+        // Optionally, assert the response content or perform additional verifications
+        // For example, you can parse the response body JSON and verify certain fields
 
-//     // More tests can be added for other methods in DemonstrationController
-// }
+        // Example: Assert that a Demonstration object was created and persisted
+        Long demonstrationId = Long.parseLong(mvcResult.getResponse().getContentAsString());
+        Demonstration demonstration = demonstrationRepository.findById(demonstrationId).orElse(null);
+        assertNotNull(demonstration); // Example assertion
+    }
+}

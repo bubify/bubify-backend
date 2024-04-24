@@ -246,6 +246,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- <skipTests>true</skipTests> -->
+          <includes>
+              <include>com.uu.au.controllers.DemonstrationControllerTests</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>

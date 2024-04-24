@@ -48,7 +48,8 @@ public class AchievementTests {
                                     .code("Code 1")
                                     .name("Achievement 1")
                                     .urlToDescription("http://example.com/achievement1")
-                                    .achievementType(AchievementType.ACHIEVEMENT).level(Level.GRADE_3)
+                                    .achievementType(AchievementType.ACHIEVEMENT)
+                                    .level(Level.GRADE_3)
                                     .createdDateTime(LocalDateTime.now())
                                     .updatedDateTime(LocalDateTime.now())
                                     .build();

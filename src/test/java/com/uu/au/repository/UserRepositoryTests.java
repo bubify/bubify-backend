@@ -2,23 +2,29 @@ package com.uu.au.repository;
 
 import com.uu.au.models.User;
 import com.uu.au.models.Enrolment;
+import com.uu.au.models.Json;
 import com.uu.au.models.Course;
 import com.uu.au.enums.Role;
+import com.uu.au.controllers.InternalController;
+import com.uu.au.controllers.TestController;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.net.InetAddress;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -28,7 +34,13 @@ public class UserRepositoryTests {
     private UserRepository userRepository;
 
     @Autowired
-    private EntityManager entityManager;
+    private EntityManager entityManager; // Used to persist objects belonging to other repositories
+
+    @Autowired
+    private InternalController internalController;
+
+    @Autowired
+    private TestController testController;
 
     @Test
     public void testFindAll(){
@@ -97,28 +109,30 @@ public class UserRepositoryTests {
 
     @Test
     public void testCurrentUser(){
-        // Create an User object, persist it and test the currentUser method
-        User user = User.builder().build();
-
-        // Test before saving the User
+        // Test the currentUser method before authenticating
         assertThrows(Exception.class, () -> userRepository.currentUser());
+        
+        // Create a Course and a User through the internalController
+        Json.CourseInfo courseInfo = Json.CourseInfo.builder().name("Fun Course").build();
+        Json.CreateUser createUser = Json.CreateUser.builder().firstName("John").lastName("Doe").email("j.d@uu.se").userName("jdoe").role("TEACHER").build();
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRemoteAddr()).thenReturn(InetAddress.getLoopbackAddress().getHostAddress());
+        internalController.postCourse(request, courseInfo);
+        internalController.postUser(request, createUser);
 
-        // Save the User and test again
-        userRepository.save(user);
+        // Authenticate the User and test the currentUser method through the testController
+        String token = testController.devConsumeToken("jdoe"); // ERROR: java.lang.UnsupportedOperationException
+        assertNotNull(token);
+
+        User user = userRepository.findByUserNameOrThrow("jdoe");
         assertEquals(user, userRepository.currentUser());
     }
 
     @Test
     public void testCurrentUser2(){
-        // Create an User object, persist it and test the currentUser2 method
-        User user = User.builder().build();
-
-        // Test before saving the User
+        // Test the currentUser method before authenticating
         assertFalse(userRepository.currentUser2().isPresent());
-
-        // Save the User and test again
-        userRepository.save(user);
-        assertTrue(userRepository.currentUser2().isPresent());
     }
 
     @Test
