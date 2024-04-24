@@ -1,4 +1,4 @@
-package com.uu.au;
+package com.uu.au.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,17 +9,19 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.test.annotation.DirtiesContext;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class CourseControllerIT {
+public class GodControllerIT {
 
     private static String token;
 
@@ -59,11 +61,37 @@ public class CourseControllerIT {
         // Perform GET request for /course with initial course data
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/course", null, true);
 
+        // TODO: Assert throws exception with no course data (How? Course data is needed to get token!)
+
         // Assert status code and response body
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
-        assertTrue(responseBody.contains("name\":\"Fun Course"));
+        assertTrue(responseBody.contains("Fun Course"));
+
+        // Assert headers of the JSON object
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+
+            assertTrue(jsonObject.has("startDate"));
+            assertTrue(jsonObject.has("name"));
+            assertTrue(jsonObject.has("gitHubOrgURL"));
+            assertTrue(jsonObject.has("courseWebURL"));
+            assertTrue(jsonObject.has("helpModule"));
+            assertTrue(jsonObject.has("demoModule"));
+            assertTrue(jsonObject.has("onlyIntroductionTasks"));
+            assertTrue(jsonObject.has("burndownModule"));
+            assertTrue(jsonObject.has("statisticsModule"));
+            assertTrue(jsonObject.has("examMode"));
+            assertTrue(jsonObject.has("profilePictures"));
+            assertTrue(jsonObject.has("clearQueuesUsingCron"));
+            assertTrue(jsonObject.has("roomSetting"));
+            assertTrue(jsonObject.has("createdDateTime"));
+            assertTrue(jsonObject.has("updatedDateTime"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -91,6 +119,8 @@ public class CourseControllerIT {
         // Assert status code and response body of the captured exception
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertTrue(exception.getResponseBodyAsString().contains("COURSE_ALREADY_EXISTS"));
+
+        // TODO: Assert SUCCESS of post with no course data (How? Course data is needed to get token!)
     }
 
     @Test
@@ -116,5 +146,14 @@ public class CourseControllerIT {
         // Assert status code and response body
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("SUCCESS", responseEntity.getBody());
+
+        // Perform GET request for /course to check updated course data
+        responseEntity = makeRequest(HttpMethod.GET, "/course", null, true);
+
+        // Assert status code and response body
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        String responseBody = responseEntity.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.contains("Course 2"));
     }
 }
