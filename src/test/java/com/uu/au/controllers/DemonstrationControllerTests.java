@@ -1,24 +1,14 @@
 package com.uu.au.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uu.au.models.Json;
 import com.uu.au.models.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uu.au.controllers.DemonstrationController;
 import com.uu.au.models.Achievement;
 import com.uu.au.models.Demonstration;
 import com.uu.au.repository.DemonstrationRepository;
 import com.uu.au.repository.UserRepository;
 import com.uu.au.repository.AchievementRepository;
 
-import lombok.Builder;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties.Build;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,12 +24,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.*;
 
+// @WebMvcTest(controllers = DemonstrationController.class) // Fails to load ApplicationContext, Error creating bean with name 'AUPortal'
 @SpringBootTest
-// @WebMvcTest(controllers = DemonstrationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
 public class DemonstrationControllerTests {
@@ -61,17 +54,7 @@ public class DemonstrationControllerTests {
 
     @Test
     public void testRequestDemonstration() throws Exception {
-        // Prepare a sample JSON request body
-        Json.DemonstrationRequest demonstrationRequest = Json.DemonstrationRequest.builder()
-                .achievementIds(List.of(1L, 2L))
-                .ids(List.of(1L, 2L)) // User ids
-                .zoomPassword("password")
-                .physicalRoom("Room 1")
-                .build();
-
-        // Add users and achievements to the database
-        // This can be done using the userRepository and achievementRepository
-        // For example, you can create User and Achievement objects and save them using the respective repositories
+        // Create user and achievement objects and mock findById()
         User user1 = User.builder().id(1L).build();
         User user2 = User.builder().id(2L).build();
         when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user1));
@@ -81,7 +64,13 @@ public class DemonstrationControllerTests {
         when(achievementRepository.findById(1L)).thenReturn(java.util.Optional.of(achievement1));
         when(achievementRepository.findById(2L)).thenReturn(java.util.Optional.of(achievement2));
 
-        // Convert demonstrationRequest to JSON string
+        // Create demonstrationRequest JSON object and convert it to string
+        Json.DemonstrationRequest demonstrationRequest = Json.DemonstrationRequest.builder()
+                .achievementIds(List.of(1L, 2L))
+                .ids(List.of(1L, 2L)) // User ids
+                .zoomPassword("password")
+                .physicalRoom("Room 1")
+                .build();
         String requestBody = objectMapper.writeValueAsString(demonstrationRequest);
 
         // Mock the behavior of demonstrationRepository.save() method
@@ -93,15 +82,12 @@ public class DemonstrationControllerTests {
                 .content(requestBody))
                 .andExpect(status().isOk())
                 .andReturn();
-        // ERROR: Code 400 - CURRENT_USER_NOT_IN_SUBMITTERS, is there any point on mocking the userRepository.findById() method?
-        // Furthermore it depends on users.currentUser() which requires and authentication token
+        // ERROR: Code 400 - CURRENT_USER_NOT_IN_SUBMITTERS, despite mocking the userRepository.findById() method
+        // Furthermore it depends on users.currentUser() which requires an authentication token
 
-        // Optionally, assert the response content or perform additional verifications
-        // For example, you can parse the response body JSON and verify certain fields
-
-        // Example: Assert that a Demonstration object was created and persisted
+        // Assertions
         Long demonstrationId = Long.parseLong(mvcResult.getResponse().getContentAsString());
         Demonstration demonstration = demonstrationRepository.findById(demonstrationId).orElse(null);
-        assertNotNull(demonstration); // Example assertion
+        assertNotNull(demonstration);
     }
 }

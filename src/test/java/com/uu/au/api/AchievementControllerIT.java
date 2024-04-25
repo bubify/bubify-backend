@@ -67,7 +67,7 @@ public class AchievementControllerIT {
         assertEquals("[]", responseBody);
         
         // Define achievement data as a string from a CSV file (Code,Name,Level,Type,Url;Code...)
-        String achievementData = "Code 1;Name 1;GRADE_3;ACHIEVEMENT;http://example.com/name_1";
+        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
 
         // Post achievement data and assert status code
         responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
@@ -79,10 +79,10 @@ public class AchievementControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
-        assertTrue(responseBody.contains("Code 1"));
+        assertTrue(responseBody.contains("Code1"));
         
         // Add another achievement, post and assert status code
-        achievementData = "Code 2;Name 2;GRADE_4;ASSIGNMENT;http://example.com/name_2";
+        achievementData = "Code2;Name2;GRADE_4;ASSIGNMENT;http://example.com/name2";
         responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -92,8 +92,8 @@ public class AchievementControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
-        assertTrue(responseBody.contains("Code 1"));
-        assertTrue(responseBody.contains("Code 2"));
+        assertTrue(responseBody.contains("Code1"));
+        assertTrue(responseBody.contains("Code2"));
         
         // Assert length of the JSON array and headers of the first JSON object
         try {
