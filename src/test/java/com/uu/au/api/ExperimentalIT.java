@@ -73,6 +73,7 @@ public class ExperimentalIT {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         return userId;
     }
@@ -87,6 +88,7 @@ public class ExperimentalIT {
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         return achievementId;
     }
@@ -127,6 +129,7 @@ public class ExperimentalIT {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
 
         // TODO: Add a profile picture to the user (will not be verified otherwise)

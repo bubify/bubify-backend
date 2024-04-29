@@ -116,6 +116,7 @@ public class AchievementControllerIT {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
 }

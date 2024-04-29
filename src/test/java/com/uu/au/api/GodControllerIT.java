@@ -51,6 +51,7 @@ public class GodControllerIT {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         return userId;
     }
@@ -65,6 +66,7 @@ public class GodControllerIT {
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         return achievementId;
     }
@@ -92,7 +94,6 @@ public class GodControllerIT {
             makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        // assertEquals("No such achievement 'Code1'", exception.getResponseBodyAsString());
 
         // Define and POST achievement data, assert status code
         String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
@@ -210,6 +211,7 @@ public class GodControllerIT {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
 
@@ -273,25 +275,134 @@ public class GodControllerIT {
         assertNotNull(responseBody);
         assertTrue(responseBody.contains("Course 2"));
     }
- 
+
+    @Test
+    public void testExploreAchievementNoAchievement() {
+        // Perform GET request for /explore/achievement/{achievementId} with non-existent achievement ID
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/100", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Get JSON object from response body and assert no users in the lists
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            String unlocked = jsonObject.getJSONArray("unlocked").toString();
+            assertEquals("[]", unlocked);
+            
+            String struggling = jsonObject.getJSONArray("struggling").toString();
+            assertEquals("[]", struggling);
+            
+            // Achievement ID 100 does not exist, thus no users should be in the list or exception thrown
+            String remaining = jsonObject.getJSONArray("remaining").toString();
+            assertEquals("[]", remaining);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+    }
+    
     @Test
     public void testExploreAchievement() {
-        // Perform GET request for /explore/achievement/{achievementId} with non-existent achievement ID
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/1", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        // assertEquals("", responseEntity.getBody());
-        // {"unlocked":[],"remaining":[{"id":2,"firstName":"John","lastName":"Doe","userName":"jdoe","email":"j.d@uu.se","role":"TEACHER","gitHubHandle":null,"gitHubFlowSuccessful":false,"zoomRoom":null,"verifiedProfilePic":false,"canClaimHelpRequests":false,"updatedDateTime":"2024-04-25T16:42:32.928234","lastLogin":"2024-04-25T16:42:32.92071","deadline":null,"needsZoomLink":true,"needsProfilePic":true,"needsGitHubHandle":true,"gitHubRepoURL":"nullj.d"}],"struggling":[]}
-
         // Define and POST achievement data, assert status code
         String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        // Perform GET request for /explore/achievement/{achievementId} with updated achievement data
+        
+        // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB but no unlocked/pushed back users
         int achievementId = getIdFromAchievementCode("Code1");
         responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        // assertEquals("", responseEntity.getBody());
-        // {"unlocked":[],"remaining":[{"id":2,"firstName":"John","lastName":"Doe","userName":"jdoe","email":"j.d@uu.se","role":"TEACHER","gitHubHandle":null,"gitHubFlowSuccessful":false,"zoomRoom":null,"verifiedProfilePic":false,"canClaimHelpRequests":false,"updatedDateTime":"2024-04-25T16:46:49.253468","lastLogin":"2024-04-25T16:46:49.243442","deadline":null,"needsZoomLink":true,"needsProfilePic":true,"needsGitHubHandle":true,"gitHubRepoURL":"nullj.d"}],"struggling":[]}
+        
+        // Get JSON object from response body and assert user is in the remaining list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            String unlocked = jsonObject.getJSONArray("unlocked").toString();
+            assertEquals("[]", unlocked);
+            
+            String struggling = jsonObject.getJSONArray("struggling").toString();
+            assertEquals("[]", struggling);
+            
+            JSONObject jsonFirst = jsonObject.getJSONArray("remaining").getJSONObject(0);
+            assertEquals("jdoe", jsonFirst.getString("userName"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+        
+        // TODO: Add test when achievement is unlocked and also when user been pushed back from demonstration
+        
+        // TODO: Add test when current user is not authorized
+    }
+    
+    @Test
+    public void testExploreProgress () {
+        // Perform GET request for /explore/progress with no students
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("{\"achievements\":[],\"userProgress\":[]}", responseEntity.getBody());
+        
+        // Define and POST student data, assert status code
+        String studentData = "Jane;Doe;jane.doe@uu.se;janedoe;STUDENT";
+        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Perform GET request for /explore/progress with 1 student in DB
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            String achievements = jsonObject.getJSONArray("achievements").toString();
+            assertEquals("[]", achievements);
+            
+            JSONObject userProgress = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janedoe", userProgress.getJSONObject("user").getString("userName"));
+            assertEquals("[]", userProgress.getString("progress"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+        
+        // TODO: Add test when achievement is unlocked
+        
+        // TODO: Add test when current user is not authorized
+    }
+
+    @Test
+    public void testExploreStudent() {
+        // Perform GET request for /explore/student/{userId} with non-existent user ID
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/explore/student/100", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+
+        // Define and POST student data, assert status code
+        String studentData = "Jane;Doe;jane.doe@uu.se;janedoe;STUDENT";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Perform GET request for /explore/student/{userId} with 1 student in DB
+        int userId = getIdFromUserName("janedoe");
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert user data is in the returned object
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals("janedoe", jsonObject.getJSONObject("user").getString("userName"));
+            assertEquals("Fun Course", jsonObject.getJSONObject("courseInstance").getString("name"));
+            assertEquals(0, jsonObject.getJSONArray("unlocked").length());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // TODO: Add test when current user is not authorized
     }
 }
