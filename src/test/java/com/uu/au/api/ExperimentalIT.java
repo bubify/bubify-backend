@@ -5,16 +5,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import org.springframework.core.io.ResourceLoader;
-import java.io.File;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,19 +37,43 @@ public class ExperimentalIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private ResourceLoader resourceLoader = null;
-
     private ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, String data, Boolean useToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
-
+        
         HttpEntity<String> requestEntity = new HttpEntity<>(data, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        
+        String url = "http://localhost:8900" + endpoint;
+        return restTemplate.exchange(url, method, requestEntity, String.class);
+    }
+    
+    private ResponseEntity<String> postJpgFile(String endpoint, String filepath, String filename) {
+        Path path = Paths.get(filepath);
+        String contentType = "image/jpeg";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            fail("Failed to read file: " + e.getMessage());
+        }
+        MultipartFile file = new MockMultipartFile(filename, filename, contentType, content);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+        // body.add("file_name", filename); // Probably not needed or applicable
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.set("token", token);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:8900" + endpoint;
-        return restTemplate.exchange(url, method, requestEntity, String.class);
+        return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
     }
 
     @BeforeEach
@@ -94,6 +124,14 @@ public class ExperimentalIT {
     }
 
     @Test
+    public void experimentalPostProfilePic() {
+        String filepath = "src/test/resources/profile_pic_1.jpg";
+        String filename = "profile_pic_1.jpg";
+        ResponseEntity<String> responseEntity = postJpgFile("/user/upload-profile-pic", filepath, filename);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
     public void experimentalAchievementAllRemaining() {
         // Define and POST achievement data, assert status code
         String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
@@ -132,9 +170,11 @@ public class ExperimentalIT {
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
 
-        // TODO: Add a profile picture to the user (will not be verified otherwise)
-        // File dataFile = resourceLoader.getResource("").getFile();
-        // responseEntity = makeRequest(HttpMethod.POST, "/user/profile-pic/" + userId + "/profile", null, true);
+        // Upload profile pictures
+        String filepath = "src/test/resources/profile_pic_1.jpg";
+        String filename = "profile_pic_1.jpg";
+        responseEntity = postJpgFile("/user/upload-profile-pic", filepath, filename);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // Verify profile pictures
         responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
