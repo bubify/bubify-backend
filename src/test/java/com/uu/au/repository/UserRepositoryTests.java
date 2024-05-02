@@ -2,29 +2,29 @@ package com.uu.au.repository;
 
 import com.uu.au.models.User;
 import com.uu.au.models.Enrolment;
-import com.uu.au.models.Json;
 import com.uu.au.models.Course;
 import com.uu.au.enums.Role;
 import com.uu.au.controllers.InternalController;
-import com.uu.au.controllers.TestController;
+import com.uu.au.controllers.DevelopmentController;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 
-import java.net.InetAddress;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 import java.util.Set;
 
+import org.mockito.Mockito;
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -40,7 +40,7 @@ public class UserRepositoryTests {
     private InternalController internalController;
 
     @Autowired
-    private TestController testController;
+    private DevelopmentController developmentController;
 
     @Test
     public void testFindAll(){
@@ -109,29 +109,58 @@ public class UserRepositoryTests {
 
     @Test
     public void testCurrentUser(){
-        // Test the currentUser method before authenticating
-        assertThrows(Exception.class, () -> userRepository.currentUser());
+        // Test the currentUser method after authenticating with a User object
+        User user = User.builder().userName("jdoe").build();
+        userRepository.save(user);
+        Long userId = user.getId();
         
-        // Create a Course and a User through the internalController
-        Json.CourseInfo courseInfo = Json.CourseInfo.builder().name("Fun Course").build();
-        Json.CreateUser createUser = Json.CreateUser.builder().firstName("John").lastName("Doe").email("j.d@uu.se").userName("jdoe").role("TEACHER").build();
+        // Mock the SecurityContext and Authentication objects    
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn(userId.toString());
         
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getRemoteAddr()).thenReturn(InetAddress.getLoopbackAddress().getHostAddress());
-        internalController.postCourse(request, courseInfo);
-        internalController.postUser(request, createUser);
-
-        // Authenticate the User and test the currentUser method through the testController
-        String token = testController.devConsumeToken("jdoe"); // ERROR: java.lang.UnsupportedOperationException
-        assertNotNull(token);
-
-        User user = userRepository.findByUserNameOrThrow("jdoe");
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        // Create a another User object and assert the currentUser method
+        User user2 = User.builder().userName("jane").build();
+        userRepository.save(user2);
+        
         assertEquals(user, userRepository.currentUser());
+        assertNotEquals(user2, userRepository.currentUser());
+        assertEquals("jdoe", userRepository.currentUser().getUserName());
+        
+        // Assert it throws an exception if the user id is malformed
+        Mockito.when(authentication.getName()).thenReturn("abc");
+        assertThrows(ResponseStatusException.class, () -> userRepository.currentUser());
     }
-
+    
     @Test
     public void testCurrentUser2(){
-        // Test the currentUser method before authenticating
+        // Test the currentUser2 method after authenticating with a User object
+        User user = User.builder().userName("jdoe").build();
+        userRepository.save(user);
+        Long userId = user.getId();
+
+        // Mock the SecurityContext and Authentication objects    
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn(userId.toString());
+        
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        // Create a another User object and assert the currentUser2 method
+        User user2 = User.builder().userName("jane").build();
+        userRepository.save(user2);
+        
+        assertTrue(userRepository.currentUser2().isPresent());
+        assertEquals(user, userRepository.currentUser2().get());
+        assertNotEquals(user2, userRepository.currentUser2().get());
+        assertEquals("jdoe", userRepository.currentUser2().get().getUserName());
+
+        // Assert it returns optional empty if the user is not found (currentUser returns NULL)
+        Mockito.when(authentication.getName()).thenReturn("100");
         assertFalse(userRepository.currentUser2().isPresent());
     }
 

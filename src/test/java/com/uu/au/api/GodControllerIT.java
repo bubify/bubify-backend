@@ -423,8 +423,6 @@ public class GodControllerIT {
     
     @Test
     public void testExploreAchievement() {
-        // TODO: Test with no achievement in the system
-
         // Define and POST achievement data, assert status code
         String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
