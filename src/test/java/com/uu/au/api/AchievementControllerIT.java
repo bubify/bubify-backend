@@ -28,6 +28,7 @@ public class AchievementControllerIT {
     private TestRestTemplate restTemplate;
 
     private ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, String data, Boolean useToken) {
+        // Generic method to make GET/PUT/POST/DELETE request to endpoint with data (may be null) and token (if needed)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
@@ -39,18 +40,32 @@ public class AchievementControllerIT {
         return restTemplate.exchange(url, method, requestEntity, String.class);
     }
 
+    private void updateToken(String user) {
+        // Authenticate as user and update the token
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=" + user, null, false);
+        token = responseEntity.getBody();
+        assertNotNull(token);
+    }
+
+    private void postNewUser(String first, String last, String email, String username, String role) {
+        // Define and POST student data, assert status code
+        String studentData = first + ";" + last + ";" + email + ";" + username + ";" + role;
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+    
     @BeforeEach
     public void setup() {
         // Define user and course data
         String courseData = "{\"name\":\"Fun Course\"}";
-        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"jdoe\",\"role\":\"TEACHER\"}";
+        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"johnteacher\",\"role\":\"TEACHER\"}";
 
         // Create course and user
         makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
         makeRequest(HttpMethod.POST, "/internal/user", userData, false);
 
         // Obtain token for the user
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=jdoe", null, false);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=johnteacher", null, false);
         token = responseEntity.getBody();
         assertNotNull(token);
     }
@@ -118,5 +133,11 @@ public class AchievementControllerIT {
             e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
+        
+        // Perform GET request for /achievements, assert status code when authenticated as a student
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        responseEntity = makeRequest(HttpMethod.GET, "/achievements", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

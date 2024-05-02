@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -29,6 +33,7 @@ public class GodControllerIT {
     private TestRestTemplate restTemplate;
 
     private ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, String data, Boolean useToken) {
+        // Generic method to make GET/PUT/POST/DELETE request to endpoint with data (may be null) and token (if needed)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
@@ -38,6 +43,20 @@ public class GodControllerIT {
 
         String url = "http://localhost:8900" + endpoint;
         return restTemplate.exchange(url, method, requestEntity, String.class);
+    }
+
+    private void updateToken(String user) {
+        // Authenticate as user and update the token
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=" + user, null, false);
+        token = responseEntity.getBody();
+        assertNotNull(token);
+    }
+
+    private void postNewUser(String first, String last, String email, String username, String role) {
+        // Define and POST student data, assert status code
+        String studentData = first + ";" + last + ";" + email + ";" + username + ";" + role;
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     private int getIdFromUserName(String userName) {
@@ -71,18 +90,36 @@ public class GodControllerIT {
         return achievementId;
     }
 
+    private ResponseEntity<String> postProfilePic () {
+        // Mock a jpg file and upload to endpoint /user/upload-profile-pic as current user
+        MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", "image/jpeg", new byte[0]);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.set("token", token);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "http://localhost:8900/user/upload-profile-pic";
+        return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+    }
+
     @BeforeEach
     public void setup() {
         // Define user and course data
         String courseData = "{\"name\":\"Fun Course\"}";
-        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"jdoe\",\"role\":\"TEACHER\"}";
+        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"johnteacher\",\"role\":\"TEACHER\"}";
 
         // Create course and user
         makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
         makeRequest(HttpMethod.POST, "/internal/user", userData, false);
 
         // Obtain token for the user
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=jdoe", null, false);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/su?username=johnteacher", null, false);
         token = responseEntity.getBody();
         assertNotNull(token);
     }
@@ -105,29 +142,87 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[]", responseEntity.getBody());
 
-        // Define and POST student data, assert status code
-        String studentData = "Jane;Doe;jane.doe@uu.se;janedoe;STUDENT";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
         
         // Perform GET request for /achievement/all-remaining/{code} with 1 achievement and 1 student
         responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[\"Jane Doe <jane.doe@uu.se>\"]", responseEntity.getBody());
 
-        // Add another student, post and assert status code
-        studentData = "John;Smith;john.smith@uu.se;johnsmith;STUDENT";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewUser("James", "Smith", "james.smith@uu.se", "jamesstudent", "STUDENT");
 
         // Perform GET request for /achievement/all-remaining/{code} with 1 achievement and 2 students
         responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("[\"Jane Doe <jane.doe@uu.se>\",\"John Smith <john.smith@uu.se>\"]", responseEntity.getBody());
+        assertEquals("[\"Jane Doe <jane.doe@uu.se>\",\"James Smith <james.smith@uu.se>\"]", responseEntity.getBody());
 
-        // TODO: Add test when user has demonstrated the achievement, thus removed from the list
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
 
-        // TODO: Add test when current user is not authorized
+    @Test
+    public void testAchievementAllRemainingDemonstrated() {
+        // Define and POST achievement data, assert status code
+        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Create student, get IDs for achievement and student
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
+        int userId = getIdFromUserName("janestudent");
+        int achievementId = getIdFromAchievementCode("Code1");
+
+        updateToken("janestudent"); // Authenticate as student
+        
+            // Upload profile picture and assert status code
+            responseEntity = postProfilePic();
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            
+            // Define and POST a demonstration request, assert status code
+            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
+            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            
+        updateToken("johnteacher"); // Authenticate as teacher again
+
+        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp, assert status code
+        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        String responseBody = responseEntity.getBody();
+        
+        // Get first demonstration ID from JSON array
+        int demonstrationId = 0;
+        try {
+            JSONArray jsonArray = new JSONArray(responseBody);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            demonstrationId = jsonObject.getInt("id");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Verify profile picture and assert status code
+        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Define and POST achievement result data, assert status code
+        String achievementResultData = "{\"demoId\":" + demonstrationId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"Pass\"}]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", achievementResultData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Perform GET request for /achievement/all-remaining/{code} with 1 achievement and 1 student in system but NOT in remaining
+        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+
+        // Assert status code and response body
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("[]", responseEntity.getBody());
     }
 
     @Test
@@ -154,7 +249,14 @@ public class GodControllerIT {
             fail("Response body is not an integer");
         }
         
-        // TODO: Add test when current user is not authorized
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 
     @Test
@@ -169,7 +271,7 @@ public class GodControllerIT {
 
     @Test
     public void testClearAllRequests() {
-        // Perform GET request for /admin/clearAllRequests with no requests
+        // Perform GET request for /clearLists with no requests
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/clearLists", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNull(responseEntity.getBody()); // Endpoint has no return value
@@ -240,6 +342,15 @@ public class GodControllerIT {
         assertTrue(exception.getResponseBodyAsString().contains("COURSE_ALREADY_EXISTS"));
 
         // TODO: Assert SUCCESS of post with no course data (How? Course data is needed to get token!)
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.POST, "/course", requestBody, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 
     @Test
@@ -274,6 +385,15 @@ public class GodControllerIT {
         String responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
         assertTrue(responseBody.contains("Course 2"));
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.PUT, "/course", requestBody, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 
     @Test
@@ -303,6 +423,8 @@ public class GodControllerIT {
     
     @Test
     public void testExploreAchievement() {
+        // TODO: Test with no achievement in the system
+
         // Define and POST achievement data, assert status code
         String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
@@ -324,7 +446,7 @@ public class GodControllerIT {
             assertEquals("[]", struggling);
             
             JSONObject jsonFirst = jsonObject.getJSONArray("remaining").getJSONObject(0);
-            assertEquals("jdoe", jsonFirst.getString("userName"));
+            assertEquals("johnteacher", jsonFirst.getString("userName"));
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -333,7 +455,14 @@ public class GodControllerIT {
         
         // TODO: Add test when achievement is unlocked and also when user been pushed back from demonstration
         
-        // TODO: Add test when current user is not authorized
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
     
     @Test
@@ -343,10 +472,7 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("{\"achievements\":[],\"userProgress\":[]}", responseEntity.getBody());
         
-        // Define and POST student data, assert status code
-        String studentData = "Jane;Doe;jane.doe@uu.se;janedoe;STUDENT";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
         
         // Perform GET request for /explore/progress with 1 student in DB
         responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
@@ -360,7 +486,7 @@ public class GodControllerIT {
             assertEquals("[]", achievements);
             
             JSONObject userProgress = jsonObject.getJSONArray("userProgress").getJSONObject(0);
-            assertEquals("janedoe", userProgress.getJSONObject("user").getString("userName"));
+            assertEquals("janestudent", userProgress.getJSONObject("user").getString("userName"));
             assertEquals("[]", userProgress.getString("progress"));
         }
         catch (JSONException e) {
@@ -369,8 +495,15 @@ public class GodControllerIT {
         }
         
         // TODO: Add test when achievement is unlocked
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
         
-        // TODO: Add test when current user is not authorized
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 
     @Test
@@ -381,20 +514,17 @@ public class GodControllerIT {
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
 
-        // Define and POST student data, assert status code
-        String studentData = "Jane;Doe;jane.doe@uu.se;janedoe;STUDENT";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
 
         // Perform GET request for /explore/student/{userId} with 1 student in DB
-        int userId = getIdFromUserName("janedoe");
-        responseEntity = makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
+        int userId = getIdFromUserName("janestudent");
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // Get JSON object from response body and assert user data is in the returned object
         try {
             JSONObject jsonObject = new JSONObject(responseEntity.getBody());
-            assertEquals("janedoe", jsonObject.getJSONObject("user").getString("userName"));
+            assertEquals("janestudent", jsonObject.getJSONObject("user").getString("userName"));
             assertEquals("Fun Course", jsonObject.getJSONObject("courseInstance").getString("name"));
             assertEquals(0, jsonObject.getJSONArray("unlocked").length());
         }
@@ -402,7 +532,14 @@ public class GodControllerIT {
             e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
-
-        // TODO: Add test when current user is not authorized
+        
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 }
