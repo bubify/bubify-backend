@@ -9,13 +9,14 @@ export TERM=xterm
 
 rm -rf target
 
-# Start tests and stores a copy of results to a file
+# Start tests and store a copy of results to file
 mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true | tee /home/bubify/backend/test_results.txt
 
-# mvn surefire:test -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true > surefire_output.txt 2>&1
-
-# mvn failsafe:integration-test -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true > failsafe_output.txt 2>&1
-
-# Create and copy JaCoCo report to the local directory
+# Create JaCoCo report
 mvn jacoco:report
-cp -r target/site/jacoco /home/bubify/backend/jacoco
+
+# Copy and overwrite test reports in home directory
+mkdir -p /home/bubify/backend/test-reports
+cp -rf target/failsafe-reports /home/bubify/backend/test-reports
+cp -rf target/surefire-reports /home/bubify/backend/test-reports
+cp -rf target/site/jacoco /home/bubify/backend/test-reports

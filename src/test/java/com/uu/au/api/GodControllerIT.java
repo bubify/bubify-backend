@@ -17,6 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,9 +95,21 @@ public class GodControllerIT {
         return achievementId;
     }
 
-    private ResponseEntity<String> postProfilePic () {
+    private ResponseEntity<String> postProfilePic() {
+        // Mock file by reading a jpg file from resources (probably not needed, can mock file directly?)
+        Path path = Paths.get("src/test/resources/profile_pic.jpg");
+        String contentType = "image/jpeg";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            fail("Failed to read file: " + e.getMessage());
+        }
+        MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", contentType, content);
+
         // Mock a jpg file and upload to endpoint /user/upload-profile-pic as current user
-        MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", "image/jpeg", new byte[0]);
+        // MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", "image/jpeg", new byte[0]);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", file.getResource());
