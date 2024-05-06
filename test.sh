@@ -16,11 +16,11 @@ export AU_GITHUB_CLIENT_ID="CHANGE_ME"
 export AU_GITHUB_CLIENT_SECRET="CHANGE_ME"
 
 export AU_KEY_ALIAS="tomcat"
-export AU_KEY_STORE="../keystore/keystore.p12"
+export AU_KEY_STORE="$(pwd)/keystore/keystore.p12"
 export AU_KEY_STORE_PASSWORD="password"
 export AU_KEY_STORE_TYPE="PKCS12"
-export AU_PROFILE_PICTURE_DIR="../profile_pictures/"
-export AU_BACKUP_DIR="../au_backups/"
+export AU_PROFILE_PICTURE_DIR="$(pwd)/profile_pictures/"
+export AU_BACKUP_DIR="$(pwd)/au_backups/"
 export TERM=xterm
 
 # Create directories
