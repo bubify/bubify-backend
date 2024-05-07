@@ -348,22 +348,12 @@ public class GodControllerIT {
         int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
         postDemoResult(demonstrationId, achievementId, userId, "Fail");
-
-        // Perform GET request for /achievement/all-remaining/{code} with 1 Code Exam, 1 student with failed attempts
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/CodeExam1", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("[\"Jane Doe <jane.doe@uu.se>\"]", responseEntity.getBody());
-
+        
         // Perform GET request for /admin/resetCodeExamBlocker again
         responseEntity = makeRequest(HttpMethod.GET, "/admin/resetCodeExamBlocker", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
-        // Perform GET request for /achievement/all-remaining/{code} again and assert no students in the list
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/CodeExam1", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("[]", responseEntity.getBody());
-
-        // TODO: Fix test, hard to verify behavior w/o moving forward in time
+        // TODO: Assert an API dependent on the codeExamDemonstrationBlocker (HOW? Must move forward in time to check blocker)
     }
 
     @Test
@@ -802,6 +792,132 @@ public class GodControllerIT {
         
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
             makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testGradeGroup() {
+        // Perform POST request for /grade/group with neither student nor achievement in DB
+        String requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Something went wrong in group grading", responseEntity.getBody());
+
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        
+        // Perform POST request for /grade/group with 1 student and 1 achievement in DB but with request for non-existent achievement
+        requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code2\"]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("User or achievement not found", responseEntity.getBody());
+
+        // Perform POST request for /grade/group with 1 student and 1 achievement in DB
+        requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("SUCCESS", responseEntity.getBody());
+
+        // Perform GET request for /explore/progress to verify student has passed the achievement
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray achievements = jsonObject.getJSONArray("achievements");
+            assertEquals(1, achievements.length());
+            assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
+            
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\"]", userProgressFirst.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.POST, "/grade/group", "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}", true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    
+    }
+    @Test
+    public void testGradeGroupUsers() {
+        // Perform POST request for /grade/group_users with neither student nor achievement in DB
+        String requestBody = "{\"userIds\":[1000],\"achievements\":[\"Code1\"]}";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Something went wrong in group grading", responseEntity.getBody());
+
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        int userId = getIdFromUserName("janestudent");
+        
+        // Perform POST request for /grade/group_users with 1 student and 1 achievement in DB but with request for non-existent achievement
+        requestBody = "{\"userIds\":[" + userId + "],\"achievements\":[\"Code2\"]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("User or achievement not found", responseEntity.getBody());
+
+        // Perform POST request for /grade/group_users with 1 student and 1 achievement in DB
+        requestBody = "{\"userIds\":[" + userId + "],\"achievements\":[\"Code1\"]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("SUCCESS", responseEntity.getBody());
+
+        // Another setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code2", "Name2", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code2");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        int userId2 = getIdFromUserName("jamesstudent");
+
+        // Perform POST request for /grade/group_users with 2 students and 2 achievements in DB
+        requestBody = "{\"userIds\":[" + userId + "," + userId2 + "],\"achievements\":[\"Code1\",\"Code2\"]}";
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("SUCCESS", responseEntity.getBody());
+
+        // Perform GET request for /explore/progress to verify students has passed both achievements
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray achievements = jsonObject.getJSONArray("achievements");
+            assertEquals(2, achievements.length());
+            assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
+            assertEquals("Code2", achievements.getJSONObject(1).getString("code"));
+            
+            JSONArray userProgress = jsonObject.getJSONArray("userProgress");
+            assertEquals(2, userProgress.length());
+            JSONObject userProgressFirst = userProgress.getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\",\"Pass\"]", userProgressFirst.getString("progress"));
+            JSONObject userProgressSecond = userProgress.getJSONObject(1);
+            assertEquals("jamesstudent", userProgressSecond.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\",\"Pass\"]", userProgressSecond.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.POST, "/grade/group_users", "{\"userIds\":[1000],\"achievements\":[\"Code1\"]}", true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }

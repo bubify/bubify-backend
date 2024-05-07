@@ -46,12 +46,12 @@
 [[1;34mINFO[m]  T E S T S
 [[1;34mINFO[m] -------------------------------------------------------
 [[1;34mINFO[m] Running com.uu.au.api.[1mGodControllerIT[m
-19:31:33.309 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.api.GodControllerIT], using SpringBootContextLoader
-19:31:33.321 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.api.GodControllerIT]: no resource found for suffixes {-context.xml, Context.groovy}.
-19:31:33.323 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.api.GodControllerIT]: GodControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-19:31:33.607 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.api.GodControllerIT
-19:31:33.798 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-19:31:33.851 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1f9f381d, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@34780cd9, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@623ebac7, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@7c8c70d6, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@1ab5f08a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@6edf29c1, org.springframework.test.context.transaction.TransactionalTestExecutionListener@79a04e5f, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@66b59b7d, org.springframework.test.context.event.EventPublishingTestExecutionListener@53311681, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@4437ac07, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@3f1ed068, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@753aca85, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@2e645fbd, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@574a89e2, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@1e1e9ef3]
+22:00:46.155 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.uu.au.api.GodControllerIT], using SpringBootContextLoader
+22:00:46.174 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.uu.au.api.GodControllerIT]: no resource found for suffixes {-context.xml, Context.groovy}.
+22:00:46.176 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.uu.au.api.GodControllerIT]: GodControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:00:46.454 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.uu.au.AUPortal for test class com.uu.au.api.GodControllerIT
+22:00:46.675 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+22:00:46.711 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@58434b19, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@7d3fb0ef, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@7dbe2ebf, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@4adc663e, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@885e7ff, org.springframework.test.context.support.DirtiesContextTestExecutionListener@8bd86c8, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4fa9ab6, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2d3ef181, org.springframework.test.context.event.EventPublishingTestExecutionListener@a2341c6, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@6e4c0d8c, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@3e3315d9, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@64db4967, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@74e6094b, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@7a485a36, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@5cf3157b]
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -61,48 +61,48 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.6.1)
 
-19:31:34.578 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on 35ccf3ba8d44 with PID 84 (started by bubify in /home/bubify/backend)
-19:31:34.579 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
-19:31:36.370 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-19:31:36.679 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 270 ms. Found 13 JPA repository interfaces.
-19:31:38.278 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-19:31:38.299 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-19:31:38.300 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-19:31:38.301 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-19:31:38.502 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-19:31:38.502 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3855 ms
-19:31:38.591 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-19:31:39.232 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-19:31:39.254 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-19:31:40.095 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-19:31:40.181 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
-19:31:40.412 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-19:31:40.596 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-19:31:42.523 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-19:31:42.526 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-19:31:42.544 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-19:31:43.790 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-19:31:43.863 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-19:31:43.890 [main] INFO  com.uu.au.AUPortal - ticketValidator
-19:31:43.903 [main] INFO  com.uu.au.AUPortal - service properties
-19:31:43.911 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-19:31:43.946 [main] INFO  com.uu.au.AUPortal - filter!
-19:31:45.376 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2b64a8cc, org.springframework.security.web.context.SecurityContextPersistenceFilter@64e0d362, org.springframework.security.web.header.HeaderWriterFilter@30094d11, org.springframework.web.filter.CorsFilter@265e3e27, org.springframework.security.web.authentication.logout.LogoutFilter@5d11a7f8, org.springframework.security.web.authentication.logout.LogoutFilter@16982b77, org.jasig.cas.client.session.SingleSignOutFilter@2cd8310d, org.springframework.security.web.session.ConcurrentSessionFilter@48846828, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2b704646, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1e6bb40b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3bcb7aa9, org.springframework.security.web.session.SessionManagementFilter@4ea17950, org.springframework.security.web.access.ExceptionTranslationFilter@42b764b3, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@55c316d9]
-19:31:46.282 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-19:31:46.435 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-19:31:46.461 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-19:31:46.463 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-19:31:46.464 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d6c3486]]
-19:31:46.465 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-19:31:46.498 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 12.512 seconds (JVM running for 14.868)
-19:31:46.527 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-19:31:46.528 [MessageBroker-4] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-19:31:46.535 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-19:31:46.536 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d6c3486]]
-19:31:46.540 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-19:31:46.592 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-19:31:46.599 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-19:31:46.606 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+22:00:47.389 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on fd445d3a3a8a with PID 80 (started by bubify in /home/bubify/backend)
+22:00:47.396 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
+22:00:50.212 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+22:00:50.476 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 239 ms. Found 13 JPA repository interfaces.
+22:00:53.197 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
+22:00:53.275 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
+22:00:53.276 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+22:00:53.277 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
+22:00:53.771 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:00:53.772 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6313 ms
+22:00:54.030 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+22:00:54.857 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+22:00:54.898 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+22:00:55.785 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+22:00:55.938 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.1.Final
+22:00:56.252 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+22:00:56.509 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+22:00:58.860 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
+22:00:58.861 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+22:00:58.877 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+22:01:00.325 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+22:01:00.442 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
+22:01:00.493 [main] INFO  com.uu.au.AUPortal - ticketValidator
+22:01:00.523 [main] INFO  com.uu.au.AUPortal - service properties
+22:01:00.542 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
+22:01:00.599 [main] INFO  com.uu.au.AUPortal - filter!
+22:01:02.804 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@601e9c19, org.springframework.security.web.context.SecurityContextPersistenceFilter@45cb821d, org.springframework.security.web.header.HeaderWriterFilter@7fea956b, org.springframework.web.filter.CorsFilter@4762c011, org.springframework.security.web.authentication.logout.LogoutFilter@2c2f2f33, org.springframework.security.web.authentication.logout.LogoutFilter@4ecac4d4, org.jasig.cas.client.session.SingleSignOutFilter@41d04a80, org.springframework.security.web.session.ConcurrentSessionFilter@3bcff419, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6dd6c3f3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@794e1391, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@62ef35b3, org.springframework.security.web.session.SessionManagementFilter@19fdd8e, org.springframework.security.web.access.ExceptionTranslationFilter@12b4f3a6, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@4b1d75ea]
+22:01:04.225 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
+22:01:04.395 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
+22:01:04.422 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
+22:01:04.424 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+22:01:04.425 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@50da9994]]
+22:01:04.426 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+22:01:04.452 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 17.642 seconds (JVM running for 20.439)
+22:01:04.473 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
+22:01:04.474 [MessageBroker-4] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
+22:01:04.484 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+22:01:04.485 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@50da9994]]
+22:01:04.486 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+22:01:04.533 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+22:01:04.545 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+22:01:04.556 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -112,51 +112,51 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.6.1)
 
-19:31:46.704 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on 35ccf3ba8d44 with PID 84 (started by bubify in /home/bubify/backend)
-19:31:46.705 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
-19:31:47.041 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-19:31:47.076 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 33 ms. Found 13 JPA repository interfaces.
-19:31:47.364 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-19:31:47.366 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-19:31:47.367 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-19:31:47.369 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-19:31:47.396 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-19:31:47.397 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 688 ms
-19:31:47.422 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
-19:31:47.425 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
-19:31:47.426 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-19:31:47.575 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-19:31:47.582 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-19:31:48.146 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-19:31:48.146 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-19:31:48.147 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-19:31:48.565 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-19:31:48.591 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-19:31:48.601 [main] INFO  com.uu.au.AUPortal - ticketValidator
-19:31:48.607 [main] INFO  com.uu.au.AUPortal - service properties
-19:31:48.610 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-19:31:48.621 [main] INFO  com.uu.au.AUPortal - filter!
-19:31:49.395 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2378ad42, org.springframework.security.web.context.SecurityContextPersistenceFilter@e84ea69, org.springframework.security.web.header.HeaderWriterFilter@21f982c0, org.springframework.web.filter.CorsFilter@124c2028, org.springframework.security.web.authentication.logout.LogoutFilter@62b2e31b, org.springframework.security.web.authentication.logout.LogoutFilter@1de315e8, org.jasig.cas.client.session.SingleSignOutFilter@5bcab84f, org.springframework.security.web.session.ConcurrentSessionFilter@77c8db1f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@630696fb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5bc553b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@22a5c1ec, org.springframework.security.web.session.SessionManagementFilter@6e011ba3, org.springframework.security.web.access.ExceptionTranslationFilter@54a5a205, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6f33da82]
-19:31:49.690 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-19:31:49.776 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-19:31:49.778 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-19:31:49.780 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-19:31:49.781 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@39562ff7]]
-19:31:49.782 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-19:31:49.815 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 3.204 seconds (JVM running for 18.185)
-19:31:49.819 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-19:31:49.819 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-19:31:50.380 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-19:31:50.380 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-19:31:50.383 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-19:31:50.543 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
-19:31:50.683 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
-19:31:51.394 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-19:31:51.396 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@39562ff7]]
-19:31:51.399 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-19:31:51.414 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-19:31:51.415 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
-19:31:51.417 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
+22:01:04.677 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on fd445d3a3a8a with PID 80 (started by bubify in /home/bubify/backend)
+22:01:04.677 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
+22:01:05.143 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+22:01:05.213 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 69 ms. Found 13 JPA repository interfaces.
+22:01:05.796 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
+22:01:05.797 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
+22:01:05.797 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+22:01:05.797 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
+22:01:05.820 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:01:05.822 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1142 ms
+22:01:05.845 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+22:01:05.848 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+22:01:05.849 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+22:01:06.077 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+22:01:06.084 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+22:01:06.605 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
+22:01:06.606 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+22:01:06.607 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+22:01:07.115 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+22:01:07.157 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
+22:01:07.169 [main] INFO  com.uu.au.AUPortal - ticketValidator
+22:01:07.176 [main] INFO  com.uu.au.AUPortal - service properties
+22:01:07.179 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
+22:01:07.202 [main] INFO  com.uu.au.AUPortal - filter!
+22:01:08.208 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5e284484, org.springframework.security.web.context.SecurityContextPersistenceFilter@7239cb6e, org.springframework.security.web.header.HeaderWriterFilter@2a2ff592, org.springframework.web.filter.CorsFilter@34365e75, org.springframework.security.web.authentication.logout.LogoutFilter@616fdaba, org.springframework.security.web.authentication.logout.LogoutFilter@75788eda, org.jasig.cas.client.session.SingleSignOutFilter@76592c22, org.springframework.security.web.session.ConcurrentSessionFilter@70eede42, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@27ef23de, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4fbc8540, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2a1c5329, org.springframework.security.web.session.SessionManagementFilter@4a7449fa, org.springframework.security.web.access.ExceptionTranslationFilter@136236ff, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@463850ab]
+22:01:08.636 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
+22:01:08.714 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
+22:01:08.716 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
+22:01:08.717 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+22:01:08.718 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f631d7d]]
+22:01:08.719 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+22:01:08.736 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 4.167 seconds (JVM running for 24.724)
+22:01:08.759 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
+22:01:08.759 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
+22:01:09.240 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:01:09.241 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+22:01:09.244 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+22:01:09.471 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
+22:01:09.596 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
+22:01:11.612 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+22:01:11.613 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4f631d7d]]
+22:01:11.614 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+22:01:11.645 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+22:01:11.646 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
+22:01:11.649 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -166,52 +166,52 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.6.1)
 
-19:31:51.477 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on 35ccf3ba8d44 with PID 84 (started by bubify in /home/bubify/backend)
-19:31:51.478 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
-19:31:51.899 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-19:31:51.988 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 88 ms. Found 13 JPA repository interfaces.
-19:31:52.302 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
-19:31:52.303 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
-19:31:52.303 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-19:31:52.304 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
-19:31:52.330 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-19:31:52.330 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 849 ms
-19:31:52.350 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
-19:31:52.355 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
-19:31:52.356 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-19:31:52.541 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-19:31:52.561 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-19:31:52.944 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
-19:31:52.944 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-19:31:52.945 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-19:31:53.314 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-19:31:53.337 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
-19:31:53.349 [main] INFO  com.uu.au.AUPortal - ticketValidator
-19:31:53.356 [main] INFO  com.uu.au.AUPortal - service properties
-19:31:53.363 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
-19:31:53.378 [main] INFO  com.uu.au.AUPortal - filter!
-19:31:54.059 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6650679f, org.springframework.security.web.context.SecurityContextPersistenceFilter@51b360bf, org.springframework.security.web.header.HeaderWriterFilter@55a8e7ab, org.springframework.web.filter.CorsFilter@25d91060, org.springframework.security.web.authentication.logout.LogoutFilter@3e3de00b, org.springframework.security.web.authentication.logout.LogoutFilter@65c26015, org.jasig.cas.client.session.SingleSignOutFilter@2845fab, org.springframework.security.web.session.ConcurrentSessionFilter@3aedbf69, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4334509d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@787fa544, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@130f5244, org.springframework.security.web.session.SessionManagementFilter@539d0da2, org.springframework.security.web.access.ExceptionTranslationFilter@395a5de6, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5bb64b2b]
-19:31:54.391 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
-19:31:54.491 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
-19:31:54.494 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
-19:31:54.496 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-19:31:54.496 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@ac6336c]]
-19:31:54.497 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-19:31:54.514 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 3.094 seconds (JVM running for 22.884)
-19:31:54.519 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
-19:31:54.519 [MessageBroker-2] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
-19:31:54.540 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-19:31:54.543 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-19:31:54.546 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
-19:31:54.567 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
-19:31:54.598 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
-[[1;34mINFO[m] [1;32mTests run: [0;1;32m2[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.704 s - in com.uu.au.api.[1mGodControllerIT[m
-19:31:55.682 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-19:31:55.686 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@ac6336c]]
-19:31:55.687 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-19:31:55.920 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-19:31:55.928 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
-19:31:55.932 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
+22:01:11.715 [main] INFO  com.uu.au.api.GodControllerIT - Starting GodControllerIT using Java 17.0.11 on fd445d3a3a8a with PID 80 (started by bubify in /home/bubify/backend)
+22:01:11.718 [main] INFO  com.uu.au.api.GodControllerIT - The following profiles are active: test
+22:01:12.023 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+22:01:12.067 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 41 ms. Found 13 JPA repository interfaces.
+22:01:12.386 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8900 (http)
+22:01:12.388 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8900"]
+22:01:12.389 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+22:01:12.389 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.55]
+22:01:12.412 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:01:12.412 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 690 ms
+22:01:12.443 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+22:01:12.452 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+22:01:12.452 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+22:01:12.579 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+22:01:12.585 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+22:01:12.976 [main] INFO  o.h.t.s.internal.SchemaCreatorImpl - HHH000476: Executing import script 'file:/home/bubify/backend/target/classes/import.sql'
+22:01:12.977 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+22:01:12.978 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+22:01:13.663 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+22:01:13.702 [main] INFO  com.uu.au.AUPortal - securityContextLogoutHandler
+22:01:13.726 [main] INFO  com.uu.au.AUPortal - ticketValidator
+22:01:13.737 [main] INFO  com.uu.au.AUPortal - service properties
+22:01:13.745 [main] INFO  com.uu.au.AUPortal - casAuthenticationProvider!
+22:01:13.762 [main] INFO  com.uu.au.AUPortal - filter!
+22:01:14.464 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3d209363, org.springframework.security.web.context.SecurityContextPersistenceFilter@1882190a, org.springframework.security.web.header.HeaderWriterFilter@730a2bef, org.springframework.web.filter.CorsFilter@32296d67, org.springframework.security.web.authentication.logout.LogoutFilter@4acd9b22, org.springframework.security.web.authentication.logout.LogoutFilter@39aa73fb, org.jasig.cas.client.session.SingleSignOutFilter@5cc6e13, org.springframework.security.web.session.ConcurrentSessionFilter@3e2a35e2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3af50ca6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5e02cd92, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3970777, org.springframework.security.web.session.SessionManagementFilter@11febdaf, org.springframework.security.web.access.ExceptionTranslationFilter@35227598, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@411d9acf]
+22:01:14.809 [main] WARN  o.s.b.a.f.FreeMarkerAutoConfiguration - Cannot find template location(s): [classpath:/templates/] (please add some templates, check your FreeMarker configuration, or set spring.freemarker.checkTemplateLocation=false)
+22:01:14.886 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8900"]
+22:01:14.887 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8900 (http) with context path ''
+22:01:14.888 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+22:01:14.888 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6abd8a99]]
+22:01:14.890 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+22:01:14.906 [main] INFO  com.uu.au.api.GodControllerIT - Started GodControllerIT in 3.253 seconds (JVM running for 30.894)
+22:01:14.925 [MessageBroker-3] INFO  com.uu.au.controllers.UserController - gitHubCreateRepoBacklog size: 0
+22:01:14.925 [MessageBroker-1] INFO  com.uu.au.controllers.UserController - gitHubInviteBacklog size: 0
+22:01:14.926 [http-nio-8900-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:01:14.926 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+22:01:14.928 [http-nio-8900-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+22:01:14.936 [http-nio-8900-exec-1] INFO  c.u.a.c.DevelopmentController - Creating course from developer endpoint
+22:01:14.959 [http-nio-8900-exec-2] INFO  c.u.a.c.DevelopmentController - Creating user from developer endpoint
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m2[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 30.011 s - in com.uu.au.api.[1mGodControllerIT[m
+22:01:15.731 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+22:01:15.731 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6abd8a99]]
+22:01:15.732 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+22:01:15.875 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+22:01:15.877 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
+22:01:15.878 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
 [[1;34mINFO[m] 
 [[1;34mINFO[m] Results:
 [[1;34mINFO[m] 
@@ -222,6 +222,6 @@
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
 [[1;34mINFO[m] [1;32mBUILD SUCCESS[m
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
-[[1;34mINFO[m] Total time:  53.380 s
-[[1;34mINFO[m] Finished at: 2024-05-07T19:31:56+02:00
+[[1;34mINFO[m] Total time:  01:01 min
+[[1;34mINFO[m] Finished at: 2024-05-07T22:01:16+02:00
 [[1;34mINFO[m] [1m------------------------------------------------------------------------[m
