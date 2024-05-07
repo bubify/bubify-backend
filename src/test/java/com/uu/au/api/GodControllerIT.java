@@ -58,44 +58,29 @@ public class GodControllerIT {
     }
 
     private void postNewUser(String first, String last, String email, String username, String role) {
-        // Define and POST student data, assert status code
+        // Helper method to define and POST student data, assert status code, 
         String studentData = first + ";" + last + ";" + email + ";" + username + ";" + role;
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private int getIdFromUserName(String userName) {
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/admin/user?username=" + userName, null, true);
-        String responseBody = responseEntity.getBody();
-        assertNotNull(responseBody);
-        int userId = 0;
-        try {
-            JSONObject jsonObject = new JSONObject(responseBody);
-            userId = jsonObject.getInt("id");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-        return userId;
+    private void postNewAchievement(String code, String name, String grade, String type, String url) {
+        // Helper method to define and POST achievement data, assert status code
+        String achievementData = code + ";" + name + ";" + grade + ";" + type + ";" + url;
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private int getIdFromAchievementCode(String code) {
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/code-to-id/" + code, null, true);
-        String responseBody = responseEntity.getBody();
-        assertNotNull(responseBody);
-        int achievementId = 0;
-        try {
-            achievementId = Integer.parseInt(responseBody);
-        }
-        catch (NumberFormatException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-        return achievementId;
+    private void postDemoResult(int demoId, int achievementId, int userId, String result) {
+        // Helper method to define and POST demonstration result data, assert status code
+        String demoResultData = "{\"demoId\":" + demoId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"" + result + "\"}]}";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", demoResultData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private ResponseEntity<String> postProfilePic() {
+    private void postProfilePic() {
+        // Helper method to POST a profile picture for the current authenticated user
+
         // Mock file by reading a jpg file from resources (probably not needed, can mock file directly?)
         Path path = Paths.get("src/test/resources/profile_pic.jpg");
         String contentType = "image/jpeg";
@@ -103,12 +88,11 @@ public class GodControllerIT {
         try {
             content = Files.readAllBytes(path);
         } catch (final IOException e) {
-            e.printStackTrace();
             fail("Failed to read file: " + e.getMessage());
         }
         MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", contentType, content);
 
-        // Mock a jpg file and upload to endpoint /user/upload-profile-pic as current user
+        // Alternative way to mock file directly:
         // MultipartFile file = new MockMultipartFile("profile_pic.jpg", "profile_pic.jpg", "image/jpeg", new byte[0]);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -122,7 +106,126 @@ public class GodControllerIT {
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:8900/user/upload-profile-pic";
-        return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    private int getIdFromUserName(String userName) {
+        // Helper method to get user ID from username by GET request to /admin/user?username={username}
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/admin/user?username=" + userName, null, true);
+        String responseBody = responseEntity.getBody();
+        assertNotNull(responseBody);
+
+        int userId = 0;
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody);
+            userId = jsonObject.getInt("id");
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+        return userId;
+    }
+
+    private int getIdFromAchievementCode(String code) {
+        // Helper method to get achievement ID from code by GET request to /achievement/code-to-id/{code}
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/code-to-id/" + code, null, true);
+        String responseBody = responseEntity.getBody();
+        assertNotNull(responseBody);
+
+        int achievementId = 0;
+        try {
+            achievementId = Integer.parseInt(responseBody);
+        }
+        catch (NumberFormatException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+        return achievementId;
+    }
+
+    private int[] getIdsOfActiveDemonstrations() {
+        // Helper method to get IDs of active demonstrations by GET request to /demonstrations/activeAndSubmittedOrPickedUp
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            int[] demonstrationIds = new int[jsonArray.length()];
+            
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                demonstrationIds[i] = jsonObject.getInt("id");
+            }
+            return demonstrationIds;
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        return new int[0];
+    }
+
+    private int getDemoIdFromAchievementAndUser(int achievementId, int userId) {
+        // Helper method to get demonstration ID from achievement and user ID by GET request to /demonstrations/activeAndSubmittedOrPickedUp
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            
+            for (int i = 0; i < jsonArray.length(); i++) {
+                // Loop through active demonstrations, achievements and submitters
+                JSONObject demonstration = jsonArray.getJSONObject(i);                
+                JSONArray achievements = demonstration.getJSONArray("achievements");
+                
+                for (int j = 0; j < achievements.length(); j++) {
+
+                    if (achievements.getJSONObject(i).getInt("id") == achievementId) {
+                        JSONArray submitters = demonstration.getJSONArray("submitters");
+                        
+                        for (int k = 0; k < submitters.length(); k++) {
+                            if (submitters.getJSONObject(i).getInt("id") == userId) {
+                                return demonstration.getInt("id");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        return 0; // No demonstration found
+    }
+
+    private void setupStudentWithValidPicAndActiveDemoAndHelpRequest(String code, String firstName, String lastName, String userName) {
+        // Helper method to setup a student with a valid profile picture, active demonstration and help request
+
+        // Create student, get IDs for achievement and student
+        postNewUser(firstName, lastName, firstName.toLowerCase() + "." + lastName.toLowerCase() + "@uu.se", userName, "STUDENT");
+        int userId = getIdFromUserName(userName);
+        int achievementId = getIdFromAchievementCode(code);
+
+        updateToken(userName); // Authenticate as student
+    
+            postProfilePic();
+            
+            // Define and POST a demonstration request, assert status code
+            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"password\",\"physicalRoom\":\"Room1\"}";
+            ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            // Define and POST a help request, assert status code
+            String helpRequestData = "{\"ids\":[" + userId +"],\"message\":\"Help me!\",\"zoomPassword\":\"password\",\"physicalRoom\":\"Room1\"}";
+            responseEntity = makeRequest(HttpMethod.POST, "/askForHelp", helpRequestData, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            
+        updateToken("johnteacher"); // Authenticate as teacher again
+                
+        // Verify profile picture and assert status code
+        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @BeforeEach
@@ -149,13 +252,10 @@ public class GodControllerIT {
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
 
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
 
         // Perform GET request for /achievement/all-remaining/{code} with 1 achievement but no students
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[]", responseEntity.getBody());
 
@@ -185,57 +285,17 @@ public class GodControllerIT {
 
     @Test
     public void testAchievementAllRemainingDemonstrated() {
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Create student, get IDs for achievement and student
-        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
-        int userId = getIdFromUserName("janestudent");
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
         int achievementId = getIdFromAchievementCode("Code1");
-
-        updateToken("janestudent"); // Authenticate as student
+        int userId = getIdFromUserName("janestudent");
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
-            // Upload profile picture and assert status code
-            responseEntity = postProfilePic();
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-            // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-        updateToken("johnteacher"); // Authenticate as teacher again
-
-        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp, assert status code
-        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        String responseBody = responseEntity.getBody();
-        
-        // Get first demonstration ID from JSON array
-        int demonstrationId = 0;
-        try {
-            JSONArray jsonArray = new JSONArray(responseBody);
-            JSONObject jsonObject = jsonArray.getJSONObject(0);
-            demonstrationId = jsonObject.getInt("id");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-
-        // Verify profile picture and assert status code
-        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Define and POST achievement result data, assert status code
-        String achievementResultData = "{\"demoId\":" + demonstrationId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"Pass\"}]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", achievementResultData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postDemoResult(demonstrationId, achievementId, userId, "Pass");
 
         // Perform GET request for /achievement/all-remaining/{code} with 1 achievement and 1 student in system but NOT in remaining
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
 
         // Assert status code and response body
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -249,10 +309,7 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Achivement Code1 not found", responseEntity.getBody());
 
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         
         // Perform GET request for /achievement/code-to-id/{code} with updated achievement data
         responseEntity = makeRequest(HttpMethod.GET, "/achievement/code-to-id/Code1", null, true);
@@ -283,62 +340,17 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody().startsWith("Ignoring all failed code exam demonstration attempts earlier than"));
 
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;ExamName1;GRADE_3;CODE_EXAM;http://example.com/name1";
-        responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Create student, get IDs for achievement and student
-        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("CodeExam1", "Name1", "GRADE_3", "CODE_EXAM", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("CodeExam1", "Jane", "Doe", "janestudent");
+        int achievementId = getIdFromAchievementCode("CodeExam1");
         int userId = getIdFromUserName("janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-
-        // // Perform GET request for /achievement/all-remaining/{code} with 1 Code Exam, 1 student but no failed attempts
-        // responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
-        // assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        // assertEquals("[]", responseEntity.getBody());
-
-        updateToken("janestudent"); // Authenticate as student
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
-            // Upload profile picture and assert status code
-            responseEntity = postProfilePic();
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-            // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-        updateToken("johnteacher"); // Authenticate as teacher again
-
-        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp, assert status code
-        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        String responseBody = responseEntity.getBody();
-        
-        // Get first demonstration ID from JSON array
-        int demonstrationId = 0;
-        try {
-            JSONArray jsonArray = new JSONArray(responseBody);
-            JSONObject jsonObject = jsonArray.getJSONObject(0);
-            demonstrationId = jsonObject.getInt("id");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-
-        // Verify profile picture and assert status code
-        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Define and POST achievement result data, assert status code
-        String achievementResultData = "{\"demoId\":" + demonstrationId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"Fail\"}]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", achievementResultData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postDemoResult(demonstrationId, achievementId, userId, "Fail");
 
         // Perform GET request for /achievement/all-remaining/{code} with 1 Code Exam, 1 student with failed attempts
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/CodeExam1", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[\"Jane Doe <jane.doe@uu.se>\"]", responseEntity.getBody());
 
@@ -347,7 +359,7 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // Perform GET request for /achievement/all-remaining/{code} again and assert no students in the list
-        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
+        responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/CodeExam1", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[]", responseEntity.getBody());
 
@@ -382,18 +394,8 @@ public class GodControllerIT {
     
     @Test
     public void testClearAllRequestsWithActiveRequests() {
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Create student, get IDs for achievement and student
-        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
-        int userId = getIdFromUserName("janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-
         // Verify queues are empty
-        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[]", responseEntity.getBody());
         
@@ -401,19 +403,9 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("[]", responseEntity.getBody());
 
-        updateToken("janestudent"); // Authenticate as student
-            
-            // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-            // Define and POST a help request, assert status code
-            String helpRequestData = "{\"ids\":[" + userId +"],\"message\":\"string\",\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/askForHelp", helpRequestData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-        updateToken("johnteacher"); // Authenticate as teacher again
+        // Setup achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
 
         // Verify queues are NOT empty
         responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
@@ -471,7 +463,6 @@ public class GodControllerIT {
             assertTrue(jsonObject.has("updatedDateTime"));
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
@@ -575,21 +566,17 @@ public class GodControllerIT {
             assertEquals("[]", remaining);
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
     
     @Test
     public void testExploreAchievement() {
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB but no unlocked/pushed back users
         int achievementId = getIdFromAchievementCode("Code1");
-        responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         
         // Get JSON object from response body and assert user is in the remaining list
@@ -606,7 +593,6 @@ public class GodControllerIT {
             assertEquals("johnteacher", remainingFirst.getString("userName"));
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         
@@ -622,57 +608,17 @@ public class GodControllerIT {
 
     @Test
     public void testExploreAchievementDemonstrated() {
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        // Create student, get IDs for achievement and student
-        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
-        int userId = getIdFromUserName("janestudent");
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
         int achievementId = getIdFromAchievementCode("Code1");
+        int userId = getIdFromUserName("janestudent");
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
-        updateToken("janestudent"); // Authenticate as student
-        
-            // Upload profile picture and assert status code
-            responseEntity = postProfilePic();
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-            // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-        updateToken("johnteacher"); // Authenticate as teacher again
-
-        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp, assert status code
-        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        String responseBody = responseEntity.getBody();
-        
-        // Get first demonstration ID from JSON array
-        int demonstrationId = 0;
-        try {
-            JSONArray jsonArray = new JSONArray(responseBody);
-            JSONObject jsonObject = jsonArray.getJSONObject(0);
-            demonstrationId = jsonObject.getInt("id");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-
-        // Verify profile picture and assert status code
-        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Define and POST achievement result (Pass) data, assert status code
-        String achievementResultData = "{\"demoId\":" + demonstrationId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"Pass\"}]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", achievementResultData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postDemoResult(demonstrationId, achievementId, userId, "Pass");
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB unlocked by the student
-        responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         
         // Get JSON object from response body and assert user is in the remaining list
@@ -689,64 +635,23 @@ public class GodControllerIT {
             assertFalse(remaining.contains("janestudent"));
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
 
     @Test
     public void testExploreAchievementPushedBack() {
-        // Define and POST achievement data, assert status code
-        String achievementData = "Code1;Name1;GRADE_3;ACHIEVEMENT;http://example.com/name1";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-achievement", achievementData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        // Create student, get IDs for achievement and student
-        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
-        int userId = getIdFromUserName("janestudent");
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
         int achievementId = getIdFromAchievementCode("Code1");
+        int userId = getIdFromUserName("janestudent");
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
-        updateToken("janestudent"); // Authenticate as student
-        
-            // Upload profile picture and assert status code
-            responseEntity = postProfilePic();
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-            // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"string\",\"physicalRoom\":\"string\"}";
-            responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
-            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-            
-        updateToken("johnteacher"); // Authenticate as teacher again
-
-        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp, assert status code
-        responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        String responseBody = responseEntity.getBody();
-        
-        // Get first demonstration ID from JSON array
-        int demonstrationId = 0;
-        try {
-            JSONArray jsonArray = new JSONArray(responseBody);
-            JSONObject jsonObject = jsonArray.getJSONObject(0);
-            demonstrationId = jsonObject.getInt("id");
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            fail("Failed to parse JSON object/array: " + e.getMessage());
-        }
-
-        // Verify profile picture and assert status code
-        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Define and POST achievement result (Pushback) data, assert status code
-        String achievementResultData = "{\"demoId\":" + demonstrationId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"Pushback\"}]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", achievementResultData, true);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        postDemoResult(demonstrationId, achievementId, userId, "Pushback");
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB pushed back for the student
-        responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         
         // Get JSON object from response body and assert user is in the remaining list
@@ -763,13 +668,12 @@ public class GodControllerIT {
             assertTrue(remaining.contains("janestudent")); // A pushed-back achievement is still in the remaining list
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
     }
 
     @Test
-    public void testExploreProgress () {
+    public void testExploreProgress() {
         // Perform GET request for /explore/progress with no students
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -788,16 +692,15 @@ public class GodControllerIT {
             String achievements = jsonObject.getJSONArray("achievements").toString();
             assertEquals("[]", achievements);
             
-            JSONObject userProgress = jsonObject.getJSONArray("userProgress").getJSONObject(0);
-            assertEquals("janestudent", userProgress.getJSONObject("user").getString("userName"));
-            assertEquals("[]", userProgress.getString("progress"));
+            JSONArray userProgress = jsonObject.getJSONArray("userProgress");
+            assertEquals(1, userProgress.length());
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[]", userProgressFirst.getString("progress"));
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
-        
-        // TODO: Add test when achievement is unlocked
 
         // Assert throws exception when current user is a student, hence not authorized
         postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
@@ -807,6 +710,64 @@ public class GodControllerIT {
             makeRequest(HttpMethod.GET, "/explore/progress", null, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testExploreProgressUnlocked() {
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        int achievementId = getIdFromAchievementCode("Code1");
+        int userId = getIdFromUserName("janestudent");
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+
+        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+
+        // Perform GET request for /explore/progress with 1 student and 1 unlocked achievement in DB
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray achievements = jsonObject.getJSONArray("achievements");
+            assertEquals(1, achievements.length());
+            assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
+            
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\"]", userProgressFirst.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        postNewAchievement("Code2", "Name2", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code2");
+        postNewUser("James", "Smith", "james.smith@uu.se", "jamesstudent", "STUDENT");
+
+        // Perform GET request for /explore/progress with 2 students and 2 achievement in DB, 1 unlocked by 1 student
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray achievements = jsonObject.getJSONArray("achievements");
+            assertEquals(2, achievements.length());
+            assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
+            assertEquals("Code2", achievements.getJSONObject(1).getString("code"));
+            
+            JSONArray userProgress = jsonObject.getJSONArray("userProgress");
+            assertEquals(2, userProgress.length());
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\",\"Fail\"]", userProgressFirst.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
     }
 
     @Test
@@ -832,7 +793,6 @@ public class GodControllerIT {
             assertEquals(0, jsonObject.getJSONArray("unlocked").length());
         }
         catch (JSONException e) {
-            e.printStackTrace();
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
         
