@@ -34,7 +34,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 17
+    - name: Setup Java 17 Temurin
       uses: actions/setup-java@v3
       with:
         java-version: '17'
@@ -43,7 +43,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Build
+    - name: Build Project
       run: mvn --batch-mode -DskipTests package
 
     - name: Create Directories Needed for Tests
