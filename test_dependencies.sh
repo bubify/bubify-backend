@@ -29,7 +29,7 @@ mkdir -p profile_pictures
 mkdir -p keystore
 mkdir -p logs
 
-cd backend
+# cd backend
 rm -rf target
 
 # Start tests and store a copy of results to file

@@ -36,7 +36,7 @@ jobs:
       run: ./test_dependencies.sh
 
     - name: Test
-      run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
+      run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true verify
 
     - name: Report Unit Tests
       uses: dorny/test-reporter@v1
