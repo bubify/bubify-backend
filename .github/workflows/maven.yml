@@ -28,7 +28,7 @@ jobs:
     - name: Make test.sh executable
       run: chmod +x test.sh
     - name: Run test suite
-      run: test.sh
+      run: ./test.sh
       
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
