@@ -25,11 +25,11 @@ jobs:
       AU_GITHUB_CLIENT_ID: "CHANGE_ME"
       AU_GITHUB_CLIENT_SECRET: "CHANGE_ME"
       AU_KEY_ALIAS: "tomcat"
-      AU_KEY_STORE: "$(pwd)/keystore/keystore.p12"
+      AU_KEY_STORE: "${{ github.workspace }}/keystore/keystore.p12"
       AU_KEY_STORE_PASSWORD: "password"
       AU_KEY_STORE_TYPE: "PKCS12"
-      AU_PROFILE_PICTURE_DIR: "$(pwd)/profile_pictures/"
-      AU_BACKUP_DIR: "$(pwd)/au_backups/"
+      AU_PROFILE_PICTURE_DIR: "${{ github.workspace }}/profile_pictures/"
+      AU_BACKUP_DIR: "${{ github.workspace }}/au_backups/"
       TERM: "xterm"
 
     steps:
@@ -56,9 +56,25 @@ jobs:
     # - name: Load Test Dependencies
     #   run: ./test_dependencies.sh
 
+    - name: Create Temporary Directories
+      run: |
+        mkdir -p ./au_backups
+        mkdir -p ./profile_pictures
+        mkdir -p ./keystore
+        mkdir -p ./logs
+      working-directory: ${{ github.workspace }}
+
     - name: Test
       # run: mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
       run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true verify
+
+    - name: Remove Temporary Directories
+      run: |
+        rm -rf ./au_backups
+        rm -rf ./profile_pictures
+        rm -rf ./keystore
+        rm -rf ./logs
+      working-directory: ${{ github.workspace }}
 
     - name: Report Unit Tests
       uses: dorny/test-reporter@v1
