@@ -1,0 +1,57 @@
+name: Java CI with Maven version 2
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Use Node.js 20
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    
+    - name: Build
+      run: mvn --batch-mode -DskipTests package
+
+    - name: Make test_dependencies.sh executable
+      run: chmod +x test_dependencies.sh
+
+    - name: Load Test Dependencies
+      run: ./test_dependencies.sh
+
+    - name: Test
+      run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
+
+    - name: Report Unit Tests
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Maven Unit Tests
+        path: target/surefire-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true
+
+    - name: Report Integration Tests
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Maven Integration Tests
+        path: target/failsafe-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true

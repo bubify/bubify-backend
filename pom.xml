@@ -245,7 +245,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skipTests>true</skipTests>
+          <!-- <skipTests>true</skipTests> -->
           <!-- <includes>
               <include>com.uu.au.controllers.DemonstrationControllerTests</include>
           </includes> -->
@@ -260,11 +260,11 @@
                       <goal>integration-test</goal>
                       <goal>verify</goal>
                   </goals>
-                  <configuration>
+                  <!-- <configuration>
                     <includes>
                         <include>com.uu.au.api.GodControllerIT</include>
                     </includes>
-                  </configuration>
+                  </configuration> -->
               </execution>
           </executions>
       </plugin>
