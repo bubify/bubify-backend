@@ -29,3 +29,21 @@ jobs:
       run: chmod +x test.sh
     - name: Run test suite
       run: ./test.sh
+
+    - name: Report Unit Tests
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Maven Unit Tests
+        path: target/surefire-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true
+
+    - name: Report Integration Tests
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Maven Integration Tests
+        path: target/failsafe-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true

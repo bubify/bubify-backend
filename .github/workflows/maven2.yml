@@ -29,13 +29,15 @@ jobs:
     - name: Build
       run: mvn --batch-mode -DskipTests package
 
-    - name: Make test_dependencies.sh executable
-      run: chmod +x test_dependencies.sh
+    # - name: Make test_dependencies.sh executable
+    #   run: chmod +x test_dependencies.sh
 
-    - name: Load Test Dependencies
-      run: ./test_dependencies.sh
+    # - name: Load Test Dependencies
+    #   run: ./test_dependencies.sh
 
     - name: Test
+      run: chmod +x test_dependencies.sh
+      run: ./test_dependencies.sh
       run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true verify
 
     - name: Report Unit Tests
