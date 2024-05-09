@@ -50,12 +50,6 @@ jobs:
     - name: Build
       run: mvn --batch-mode -DskipTests package
 
-    # - name: Make test_dependencies.sh executable
-    #   run: chmod +x test_dependencies.sh
-
-    # - name: Load Test Dependencies
-    #   run: ./test_dependencies.sh
-
     - name: Create Temporary Directories
       run: |
         mkdir -p ./au_backups
@@ -65,7 +59,6 @@ jobs:
       working-directory: ${{ github.workspace }}
 
     - name: Test
-      # run: mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
       run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true verify
 
     - name: Remove Temporary Directories
@@ -91,5 +84,6 @@ jobs:
       with:
         name: Maven Integration Tests
         path: target/failsafe-reports/*.xml
+        exclude: "target/failsafe-reports/failsafe-summary.xml"
         reporter: java-junit
         fail-on-error: true
