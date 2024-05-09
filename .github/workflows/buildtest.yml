@@ -1,4 +1,4 @@
-name: Java CI with Maven version 2
+name: Build and Test with Maven
 
 on:
   push:
@@ -42,15 +42,11 @@ jobs:
         cache: maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Use Node.js 20
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
     
     - name: Build
       run: mvn --batch-mode -DskipTests package
 
-    - name: Create Temporary Directories
+    - name: Create Directories Needed for Tests
       run: |
         mkdir -p ./au_backups
         mkdir -p ./profile_pictures
@@ -58,10 +54,10 @@ jobs:
         mkdir -p ./logs
       working-directory: ${{ github.workspace }}
 
-    - name: Test
+    - name: Run Unit and Integration Tests
       run: mvn --batch-mode -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true verify
 
-    - name: Remove Temporary Directories
+    - name: Remove Directories after Testing
       run: |
         rm -rf ./au_backups
         rm -rf ./profile_pictures
@@ -69,21 +65,23 @@ jobs:
         rm -rf ./logs
       working-directory: ${{ github.workspace }}
 
-    - name: Report Unit Tests
+    - name: Remove failsafe-summary.xml
+      run: rm -f target/failsafe-reports/failsafe-summary.xml
+
+    - name: Create Unit Tests Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        name: Maven Unit Tests
+        name: Unit Tests Report
         path: target/surefire-reports/*.xml
         reporter: java-junit
         fail-on-error: true
 
-    - name: Report Integration Tests
+    - name: Create Integration Tests Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        name: Maven Integration Tests
+        name: Integration Tests Report
         path: target/failsafe-reports/*.xml
-        exclude: "target/failsafe-reports/failsafe-summary.xml"
         reporter: java-junit
         fail-on-error: true
