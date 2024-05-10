@@ -71,10 +71,23 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
+    private void postClaimDemo(int demoId) {
+        // Helper method to define and POST demonstration claim data, assert status code
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/claim", Integer.toString(demoId), true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
     private void postDemoResult(int demoId, int achievementId, int userId, String result) {
         // Helper method to define and POST demonstration result data, assert status code
         String demoResultData = "{\"demoId\":" + demoId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"" + result + "\"}]}";
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", demoResultData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    private void postOfferHelp(int helpRequestId) {
+        // Helper method to define and POST help offer data, assert status code
+        String helpOfferData = "{\"helpRequestId\":" + helpRequestId + "}";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/offerHelp", helpOfferData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -180,11 +193,11 @@ public class GodControllerIT {
                 
                 for (int j = 0; j < achievements.length(); j++) {
 
-                    if (achievements.getJSONObject(i).getInt("id") == achievementId) {
+                    if (achievements.getJSONObject(j).getInt("id") == achievementId) {
                         JSONArray submitters = demonstration.getJSONArray("submitters");
                         
                         for (int k = 0; k < submitters.length(); k++) {
-                            if (submitters.getJSONObject(i).getInt("id") == userId) {
+                            if (submitters.getJSONObject(k).getInt("id") == userId) {
                                 return demonstration.getInt("id");
                             }
                         }
@@ -197,6 +210,32 @@ public class GodControllerIT {
         }
 
         return 0; // No demonstration found
+    }
+
+    private int getHelpRequestIdFromUser(int userId) {
+        // Helper method to get help request ID from user ID by GET request to /helpRequests/active
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/helpRequests/active", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject helpRequest = jsonArray.getJSONObject(i);
+                JSONArray submitters = helpRequest.getJSONArray("submitters");
+                        
+                    for (int k = 0; k < submitters.length(); k++) {
+                        if (submitters.getJSONObject(k).getInt("id") == userId) {
+                            return helpRequest.getInt("id");
+                        }
+                    }
+            }
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        return 0; // No help request found
     }
 
     private void setupStudentWithValidPicAndActiveDemoAndHelpRequest(String code, String firstName, String lastName, String userName) {
@@ -920,5 +959,169 @@ public class GodControllerIT {
             makeRequest(HttpMethod.POST, "/grade/group_users", "{\"userIds\":[1000],\"achievements\":[\"Code1\"]}", true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testRecentDemo() {
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        int achievementId = getIdFromAchievementCode("Code1");
+        int userId = getIdFromUserName("janestudent");
+        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+
+        // Perform GET request for /recent/demo with 1 active demonstration but not claimed by current user (johnteacher)
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/demo", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("[]", responseEntity.getBody());
+
+        // Report demonstration as completed
+        postClaimDemo(demonstrationId);
+
+        // Perform GET request for /recent/demo with 1 active demonstration claimed by current user (johnteacher)
+        responseEntity = makeRequest(HttpMethod.GET, "/recent/demo", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(1, jsonArray.length());
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            assertEquals(demonstrationId, jsonObject.getInt("id"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Add 5 more students with active and claimed demonstrations
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        int userId2 = getIdFromUserName("jamesstudent");
+        int demonstrationId2 = getDemoIdFromAchievementAndUser(achievementId, userId2);
+        postClaimDemo(demonstrationId2);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Kieran", "Smith", "kieranstudent");
+        int userId3 = getIdFromUserName("kieranstudent");
+        int demonstrationId3 = getDemoIdFromAchievementAndUser(achievementId, userId3);
+        postClaimDemo(demonstrationId3);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Liam", "Smith", "liamstudent");
+        int userId4 = getIdFromUserName("liamstudent");
+        int demonstrationId4 = getDemoIdFromAchievementAndUser(achievementId, userId4);
+        postClaimDemo(demonstrationId4);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Mason", "Smith", "masonstudent");
+        int userId5 = getIdFromUserName("masonstudent");
+        int demonstrationId5 = getDemoIdFromAchievementAndUser(achievementId, userId5);
+        postClaimDemo(demonstrationId5);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Noah", "Smith", "noahstudent");
+        int userId6 = getIdFromUserName("noahstudent");
+        int demonstrationId6 = getDemoIdFromAchievementAndUser(achievementId, userId6);
+        postClaimDemo(demonstrationId6);
+
+        // Perform GET request for /recent/demo with 6 active demonstrations claimed by current user (johnteacher)
+        responseEntity = makeRequest(HttpMethod.GET, "/recent/demo", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert only 5 most recent demonstrations are returned and most recent is first
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(5, jsonArray.length());
+            assertEquals(demonstrationId6, jsonArray.getJSONObject(0).getInt("id"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/recent/demo", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testRecentHelp() {
+        // Setup and get IDs for achievement, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        int userId = getIdFromUserName("janestudent");
+        int helpRequestId = getHelpRequestIdFromUser(userId);
+
+        // Perform GET request for /recent/help with 1 active help request but not claimed by current user (johnteacher)
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/help", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("[]", responseEntity.getBody());
+
+        // Report help request as completed
+        postOfferHelp(helpRequestId);
+
+        // Perform GET request for /recent/help with 1 active help request claimed by current user (johnteacher)
+        responseEntity = makeRequest(HttpMethod.GET, "/recent/help", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert user is in the list
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(1, jsonArray.length());
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            assertEquals(helpRequestId, jsonObject.getInt("id"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Add 5 more students with active and claimed help requests
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        int userId2 = getIdFromUserName("jamesstudent");
+        int helpRequestId2 = getHelpRequestIdFromUser(userId2);
+        postOfferHelp(helpRequestId2);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Kieran", "Smith", "kieranstudent");
+        int userId3 = getIdFromUserName("kieranstudent");
+        int helpRequestId3 = getHelpRequestIdFromUser(userId3);
+        postOfferHelp(helpRequestId3);
+        
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Liam", "Smith", "liamstudent");
+        int userId4 = getIdFromUserName("liamstudent");
+        int helpRequestId4 = getHelpRequestIdFromUser(userId4);
+        postOfferHelp(helpRequestId4);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Mason", "Smith", "masonstudent");
+        int userId5 = getIdFromUserName("masonstudent");
+        int helpRequestId5 = getHelpRequestIdFromUser(userId5);
+        postOfferHelp(helpRequestId5);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Noah", "Smith", "noahstudent");
+        int userId6 = getIdFromUserName("noahstudent");
+        int helpRequestId6 = getHelpRequestIdFromUser(userId6);
+        postOfferHelp(helpRequestId6);
+
+        // Perform GET request for /recent/help with 6 active help requests claimed by current user (johnteacher)
+        responseEntity = makeRequest(HttpMethod.GET, "/recent/help", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert only 5 most recent help requests are returned and most recent is first
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(5, jsonArray.length());
+            assertEquals(helpRequestId6, jsonArray.getJSONObject(0).getInt("id"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/recent/help", null, true);
+        });
+        assertEquals(HttpStatus.UNAUTHORIZED, notAuthException.getStatusCode());
     }
 }
