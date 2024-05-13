@@ -1,4 +1,6 @@
 package com.uu.au.api;
+import com.uu.au.models.Json;
+import com.uu.au.enums.Result;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +40,13 @@ public class GodControllerIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, String data, Boolean useToken) {
+    private <T> ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, T data, Boolean useToken) {
         // Generic method to make GET/PUT/POST/DELETE request to endpoint with data (may be null) and token (if needed)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(data, headers);
+        HttpEntity<T> requestEntity = new HttpEntity<>(data, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:8900" + endpoint;
@@ -71,30 +74,46 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private void postClaimDemo(int demoId) {
+    private void postClaimDemo(Long demonstrationId) {
         // Helper method to define and POST demonstration claim data, assert status code
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/claim", Integer.toString(demoId), true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/claim", Long.toString(demonstrationId), true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private void postDemoResult(int demoId, int achievementId, int userId, String result) {
+    private void postDemoResult(Long demonstrationId, Long achievementId, Long userId, Result result) {
         // Helper method to define and POST demonstration result data, assert status code
-        String demoResultData = "{\"demoId\":" + demoId + ",\"results\":[{\"achievementId\":" + achievementId + ",\"id\":" + userId + ",\"result\":\"" + result + "\"}]}";
+        Json.AchievementId_UserId_Result resultData = Json.AchievementId_UserId_Result.builder()
+                .achievementId(achievementId)
+                .id(userId)
+                .result(result)
+                .build();
+    
+        Json.DemoResult demoResultData = Json.DemoResult.builder()
+                .demoId(demonstrationId)
+                .results(List.of(resultData))
+                .build();
+        
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/done", demoResultData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
-    
-    private void postOfferHelp(int helpRequestId) {
+
+    private void postOfferHelp(Long helpRequestId) {
         // Helper method to define and POST help offer data, assert status code
-        String helpOfferData = "{\"helpRequestId\":" + helpRequestId + "}";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/offerHelp", helpOfferData, true);
+        Json.HelpRequestId helpRequestData = Json.HelpRequestId.builder()
+                .helpRequestId(helpRequestId)
+                .build();
+    
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/offerHelp", helpRequestData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
     
-    private void postHelpDone(int helpRequestId) {
+    private void postHelpDone(Long helpRequestId) {
         // Helper method to define and POST help done data, assert status code
-        String helpResultData = "{\"helpRequestId\":" + helpRequestId + "}";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/markAsDone", helpResultData, true);
+        Json.HelpRequestId helpRequestData = Json.HelpRequestId.builder()
+                .helpRequestId(helpRequestId)
+                .build();
+        
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/markAsDone", helpRequestData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -130,16 +149,16 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    private int getIdFromUserName(String userName) {
+    private Long getIdFromUserName(String userName) {
         // Helper method to get user ID from username by GET request to /admin/user?username={username}
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/admin/user?username=" + userName, null, true);
         String responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
 
-        int userId = 0;
+        Long userId = 0L;
         try {
             JSONObject jsonObject = new JSONObject(responseBody);
-            userId = jsonObject.getInt("id");
+            userId = jsonObject.getLong("id");
         }
         catch (JSONException e) {
             fail("Failed to parse JSON object/array: " + e.getMessage());
@@ -147,15 +166,15 @@ public class GodControllerIT {
         return userId;
     }
 
-    private int getIdFromAchievementCode(String code) {
+    private Long getIdFromAchievementCode(String code) {
         // Helper method to get achievement ID from code by GET request to /achievement/code-to-id/{code}
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/code-to-id/" + code, null, true);
         String responseBody = responseEntity.getBody();
         assertNotNull(responseBody);
 
-        int achievementId = 0;
+        Long achievementId = 0L;
         try {
-            achievementId = Integer.parseInt(responseBody);
+            achievementId = Long.parseLong(responseBody);
         }
         catch (NumberFormatException e) {
             fail("Failed to parse JSON object/array: " + e.getMessage());
@@ -163,18 +182,18 @@ public class GodControllerIT {
         return achievementId;
     }
 
-    private int[] getIdsOfActiveDemonstrations() {
+    private Long[] getIdsOfActiveDemonstrations() {
         // Helper method to get IDs of active demonstrations by GET request to /demonstrations/activeAndSubmittedOrPickedUp
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         
         try {
             JSONArray jsonArray = new JSONArray(responseEntity.getBody());
-            int[] demonstrationIds = new int[jsonArray.length()];
+            Long[] demonstrationIds = new Long[jsonArray.length()];
             
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                demonstrationIds[i] = jsonObject.getInt("id");
+                demonstrationIds[i] = jsonObject.getLong("id");
             }
             return demonstrationIds;
         }
@@ -182,10 +201,10 @@ public class GodControllerIT {
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
 
-        return new int[0];
+        return new Long[0]; // No active demonstrations found
     }
 
-    private int getDemoIdFromAchievementAndUser(int achievementId, int userId) {
+    private Long getDemoIdFromAchievementAndUser(Long achievementId, Long userId) {
         // Helper method to get demonstration ID from achievement and user ID by GET request to /demonstrations/activeAndSubmittedOrPickedUp
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -194,7 +213,6 @@ public class GodControllerIT {
             JSONArray jsonArray = new JSONArray(responseEntity.getBody());
             
             for (int i = 0; i < jsonArray.length(); i++) {
-                // Loop through active demonstrations, achievements and submitters
                 JSONObject demonstration = jsonArray.getJSONObject(i);                
                 JSONArray achievements = demonstration.getJSONArray("achievements");
                 
@@ -205,7 +223,7 @@ public class GodControllerIT {
                         
                         for (int k = 0; k < submitters.length(); k++) {
                             if (submitters.getJSONObject(k).getInt("id") == userId) {
-                                return demonstration.getInt("id");
+                                return demonstration.getLong("id");
                             }
                         }
                     }
@@ -216,10 +234,10 @@ public class GodControllerIT {
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
 
-        return 0; // No demonstration found
+        return 0L; // No demonstration found
     }
 
-    private int getHelpRequestIdFromUser(int userId) {
+    private Long getHelpRequestIdFromUser(Long userId) {
         // Helper method to get help request ID from user ID by GET request to /helpRequests/active
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/helpRequests/active", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -233,7 +251,7 @@ public class GodControllerIT {
                         
                     for (int k = 0; k < submitters.length(); k++) {
                         if (submitters.getJSONObject(k).getInt("id") == userId) {
-                            return helpRequest.getInt("id");
+                            return helpRequest.getLong("id");
                         }
                     }
             }
@@ -242,7 +260,7 @@ public class GodControllerIT {
             fail("Failed to parse JSON object/array: " + e.getMessage());
         }
 
-        return 0; // No help request found
+        return 0L; // No help request found
     }
 
     private void setupStudentWithValidPicAndActiveDemoAndHelpRequest(String code, String firstName, String lastName, String userName) {
@@ -250,20 +268,31 @@ public class GodControllerIT {
 
         // Create student, get IDs for achievement and student
         postNewUser(firstName, lastName, firstName.toLowerCase() + "." + lastName.toLowerCase() + "@uu.se", userName, "STUDENT");
-        int userId = getIdFromUserName(userName);
-        int achievementId = getIdFromAchievementCode(code);
+        Long userId = getIdFromUserName(userName);
+        Long achievementId = getIdFromAchievementCode(code);
 
         updateToken(userName); // Authenticate as student
     
             postProfilePic();
             
             // Define and POST a demonstration request, assert status code
-            String demonstrationData = "{\"achievementIds\":[" + achievementId + "],\"ids\":[" + userId +"],\"zoomPassword\":\"password\",\"physicalRoom\":\"Room1\"}";
+            Json.DemonstrationRequest demonstrationData = Json.DemonstrationRequest.builder()
+                    .achievementIds(List.of(achievementId))
+                    .ids(List.of(userId))
+                    .zoomPassword("password")
+                    .physicalRoom("Room1")
+                    .build();
             ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/demonstration/request", demonstrationData, true);
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
             // Define and POST a help request, assert status code
-            String helpRequestData = "{\"ids\":[" + userId +"],\"message\":\"Help me!\",\"zoomPassword\":\"password\",\"physicalRoom\":\"Room1\"}";
+            Json.HelpRequest helpRequestData = Json.HelpRequest.builder()
+                    .ids(List.of(userId))
+                    .message("Help me!")
+                    .zoomPassword("password")
+                    .physicalRoom("Room1")
+                    .build();
+
             responseEntity = makeRequest(HttpMethod.POST, "/askForHelp", helpRequestData, true);
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             
@@ -277,8 +306,17 @@ public class GodControllerIT {
     @BeforeEach
     public void setup() {
         // Define user and course data
-        String courseData = "{\"name\":\"Fun Course\"}";
-        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"johnteacher\",\"role\":\"TEACHER\"}";
+        Json.CourseInfo courseData = Json.CourseInfo.builder()
+                .name("Fun Course")
+                .build();
+
+        Json.CreateUser userData = Json.CreateUser.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("j.d@uu.se")
+                .userName("johnteacher")
+                .role("TEACHER")
+                .build();
 
         // Create course and user
         makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
@@ -334,11 +372,11 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
-        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
 
         // Perform GET request for /achievement/all-remaining/{code} with 1 achievement and 1 student in system but NOT in remaining
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/achievement/all-remaining/Code1", null, true);
@@ -389,11 +427,11 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("CodeExam1", "Name1", "GRADE_3", "CODE_EXAM", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("CodeExam1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("CodeExam1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("CodeExam1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
-        postDemoResult(demonstrationId, achievementId, userId, "Fail");
+        postDemoResult(demonstrationId, achievementId, userId, Result.FAIL);
         
         // Perform GET request for /admin/resetCodeExamBlocker again
         responseEntity = makeRequest(HttpMethod.GET, "/admin/resetCodeExamBlocker", null, true);
@@ -505,24 +543,25 @@ public class GodControllerIT {
 
     @Test
     public void testPostCourse() {
-        // Perform POST request for /course with new course data
-        String requestBody = "{\"name\":\"Course 1\"," +
-                                "\"courseWebURL\":\"http://example1.com\"," +
-                                "\"codeSpaceBaseURL\":null," +
-                                "\"githubBaseURL\":\"http://github.com/example1\"," +
-                                "\"startDate\":\"2024-04-05\"," +
-                                "\"helpModule\":true," +
-                                "\"demoModule\":true," +
-                                "\"statisticsModule\":true," +
-                                "\"burndownModule\":true," +
-                                "\"examMode\":true," +
-                                "\"onlyIntroductionTasks\":true," +
-                                "\"roomSetting\":null," +
-                                "\"clearQueuesUsingCron\":true," +
-                                "\"profilePictures\":true}";
+        // Define course data
+        Json.CourseInfo courseData = Json.CourseInfo.builder()
+                .name("Course 1")
+                .courseWebURL("http://example1.com")
+                .githubBaseURL("http://github.com/example1")
+                .startDate("2024-04-05")
+                .helpModule(true)
+                .demoModule(true)
+                .statisticsModule(true)
+                .burndownModule(true)
+                .examMode(true)
+                .onlyIntroductionTasks(true)
+                .clearQueuesUsingCron(true)
+                .profilePictures(true)
+                .build();
 
+        // Asserts COURSE_ALREADY_EXISTS error when attempting to create duplicate course
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            makeRequest(HttpMethod.POST, "/course", requestBody, true);
+            makeRequest(HttpMethod.POST, "/course", courseData, true);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertTrue(exception.getResponseBodyAsString().contains("COURSE_ALREADY_EXISTS"));
@@ -534,30 +573,30 @@ public class GodControllerIT {
         updateToken("somestudent"); // Authenticate as student
         
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
-            makeRequest(HttpMethod.POST, "/course", requestBody, true);
+            makeRequest(HttpMethod.POST, "/course", courseData, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 
     @Test
     public void testPutCourse() {
-        // Perform PUT request for /course with updated course data
-        String requestBody = "{\"name\":\"Course 2\"," +
-                                "\"courseWebURL\":\"http://example2.com\"," +
-                                "\"codeSpaceBaseURL\":null," +
-                                "\"githubBaseURL\":\"http://github.com/example2\"," +
-                                "\"startDate\":\"2024-04-06\"," +
-                                "\"helpModule\":false," +
-                                "\"demoModule\":false," +
-                                "\"statisticsModule\":false," +
-                                "\"burndownModule\":false," +
-                                "\"examMode\":false," +
-                                "\"onlyIntroductionTasks\":false," +
-                                "\"roomSetting\":null," +
-                                "\"clearQueuesUsingCron\":false," +
-                                "\"profilePictures\":false}";
+        // Define updated course data
+        Json.CourseInfo updatedCourseData = Json.CourseInfo.builder()
+                .name("Course 2")
+                .courseWebURL("http://example2.com")
+                .githubBaseURL("http://github.com/example2")
+                .startDate("2024-04-06")
+                .helpModule(false)
+                .demoModule(false)
+                .statisticsModule(false)
+                .burndownModule(false)
+                .examMode(false)
+                .onlyIntroductionTasks(false)
+                .clearQueuesUsingCron(false)
+                .profilePictures(false)
+                .build();
 
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.PUT, "/course", requestBody, true);
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.PUT, "/course", updatedCourseData, true);
 
         // Assert status code and response body
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -577,7 +616,7 @@ public class GodControllerIT {
         updateToken("somestudent"); // Authenticate as student
         
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
-            makeRequest(HttpMethod.PUT, "/course", requestBody, true);
+            makeRequest(HttpMethod.PUT, "/course", updatedCourseData, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
@@ -611,7 +650,7 @@ public class GodControllerIT {
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB but no unlocked/pushed back users
-        int achievementId = getIdFromAchievementCode("Code1");
+        Long achievementId = getIdFromAchievementCode("Code1");
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         
@@ -647,11 +686,11 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
-        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB unlocked by the student
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
@@ -680,11 +719,11 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
-        postDemoResult(demonstrationId, achievementId, userId, "Pushback");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PUSHBACK);
         
         // Perform GET request for /explore/achievement/{achievementId} with 1 achievement in DB pushed back for the student
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/achievement/" + achievementId, null, true);
@@ -753,11 +792,11 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
-        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
 
         // Perform GET request for /explore/progress with 1 student and 1 unlocked achievement in DB
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
@@ -817,7 +856,7 @@ public class GodControllerIT {
         postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
 
         // Perform GET request for /explore/student/{userId} with 1 student in DB
-        int userId = getIdFromUserName("janestudent");
+        Long userId = getIdFromUserName("janestudent");
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -845,39 +884,48 @@ public class GodControllerIT {
     @Test
     public void testGradeGroup() {
         // Perform POST request for /grade/group with neither student nor achievement in DB
-        String requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}";
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        Json.GroupGradingCurl gradingData = Json.GroupGradingCurl.builder()
+                .username("janestudent")
+                .achievements(List.of("Code1"))
+                .build();
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group", gradingData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Something went wrong in group grading", responseEntity.getBody());
 
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        
+
         // Perform POST request for /grade/group with 1 student and 1 achievement in DB but with request for non-existent achievement
-        requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code2\"]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        gradingData = Json.GroupGradingCurl.builder()
+                .username("janestudent")
+                .achievements(List.of("Code2"))
+                .build();
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", gradingData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("User or achievement not found", responseEntity.getBody());
 
         // Perform POST request for /grade/group with 1 student and 1 achievement in DB
-        requestBody = "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}";
-        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", requestBody, true);
+        gradingData = Json.GroupGradingCurl.builder()
+                .username("janestudent")
+                .achievements(List.of("Code1"))
+                .build();
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", gradingData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("SUCCESS", responseEntity.getBody());
 
         // Perform GET request for /explore/progress to verify student has passed the achievement
         responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
+
         // Get JSON object from response body and assert user is in the list
         try {
             JSONObject jsonObject = new JSONObject(responseEntity.getBody());
-            
+
             JSONArray achievements = jsonObject.getJSONArray("achievements");
             assertEquals(1, achievements.length());
             assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
-            
+
             JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
             assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
             assertEquals("[\"Pass\"]", userProgressFirst.getString("progress"));
@@ -889,17 +937,24 @@ public class GodControllerIT {
         // Assert throws exception when current user is a student, hence not authorized
         postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
         updateToken("somestudent"); // Authenticate as student
-        
+
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
-            makeRequest(HttpMethod.POST, "/grade/group", "{\"username\":\"janestudent\",\"achievements\":[\"Code1\"]}", true);
+            Json.GroupGradingCurl gradingDataForbidden = Json.GroupGradingCurl.builder()
+                    .username("janestudent")
+                    .achievements(List.of("Code1"))
+                    .build();
+            makeRequest(HttpMethod.POST, "/grade/group", gradingDataForbidden, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
-    
     }
+    
     @Test
     public void testGradeGroupUsers() {
         // Perform POST request for /grade/group_users with neither student nor achievement in DB
-        String requestBody = "{\"userIds\":[1000],\"achievements\":[\"Code1\"]}";
+        Json.GroupGradingUsers requestBody = Json.GroupGradingUsers.builder()
+                .userIds(List.of(1000L))
+                .achievements(List.of("Code1"))
+                .build();
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Something went wrong in group grading", responseEntity.getBody());
@@ -907,16 +962,22 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int userId = getIdFromUserName("janestudent");
-        
+        Long userId = getIdFromUserName("janestudent");
+
         // Perform POST request for /grade/group_users with 1 student and 1 achievement in DB but with request for non-existent achievement
-        requestBody = "{\"userIds\":[" + userId + "],\"achievements\":[\"Code2\"]}";
+        requestBody = Json.GroupGradingUsers.builder()
+                .userIds(List.of(userId))
+                .achievements(List.of("Code2"))
+                .build();
         responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("User or achievement not found", responseEntity.getBody());
 
         // Perform POST request for /grade/group_users with 1 student and 1 achievement in DB
-        requestBody = "{\"userIds\":[" + userId + "],\"achievements\":[\"Code1\"]}";
+        requestBody = Json.GroupGradingUsers.builder()
+                .userIds(List.of(userId))
+                .achievements(List.of("Code1"))
+                .build();
         responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("SUCCESS", responseEntity.getBody());
@@ -924,10 +985,13 @@ public class GodControllerIT {
         // Another setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code2", "Name2", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code2");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
-        int userId2 = getIdFromUserName("jamesstudent");
+        Long userId2 = getIdFromUserName("jamesstudent");
 
         // Perform POST request for /grade/group_users with 2 students and 2 achievements in DB
-        requestBody = "{\"userIds\":[" + userId + "," + userId2 + "],\"achievements\":[\"Code1\",\"Code2\"]}";
+        requestBody = Json.GroupGradingUsers.builder()
+                .userIds(List.of(userId, userId2))
+                .achievements(List.of("Code1", "Code2"))
+                .build();
         responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("SUCCESS", responseEntity.getBody());
@@ -935,11 +999,11 @@ public class GodControllerIT {
         // Perform GET request for /explore/progress to verify students has passed both achievements
         responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
+
         // Get JSON object from response body and assert user is in the list
         try {
             JSONObject jsonObject = new JSONObject(responseEntity.getBody());
-            
+
             JSONArray achievements = jsonObject.getJSONArray("achievements");
             assertEquals(2, achievements.length());
             assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
@@ -961,9 +1025,13 @@ public class GodControllerIT {
         // Assert throws exception when current user is a student, hence not authorized
         postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
         updateToken("somestudent"); // Authenticate as student
-        
+
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
-            makeRequest(HttpMethod.POST, "/grade/group_users", "{\"userIds\":[1000],\"achievements\":[\"Code1\"]}", true);
+            Json.GroupGradingUsers gradingDataForbidden = Json.GroupGradingUsers.builder()
+                    .userIds(List.of(1000L))
+                    .achievements(List.of("Code1"))
+                    .build();
+            makeRequest(HttpMethod.POST, "/grade/group_users", gradingDataForbidden, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
@@ -973,9 +1041,9 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
 
         // Perform GET request for /recent/demo with 1 active demonstration but not claimed by current user (johnteacher)
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/demo", null, true);
@@ -1003,28 +1071,28 @@ public class GodControllerIT {
 
         // Add 5 more students with active and claimed demonstrations
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
-        int userId2 = getIdFromUserName("jamesstudent");
-        int demonstrationId2 = getDemoIdFromAchievementAndUser(achievementId, userId2);
+        Long userId2 = getIdFromUserName("jamesstudent");
+        Long demonstrationId2 = getDemoIdFromAchievementAndUser(achievementId, userId2);
         postClaimDemo(demonstrationId2);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Kieran", "Smith", "kieranstudent");
-        int userId3 = getIdFromUserName("kieranstudent");
-        int demonstrationId3 = getDemoIdFromAchievementAndUser(achievementId, userId3);
+        Long userId3 = getIdFromUserName("kieranstudent");
+        Long demonstrationId3 = getDemoIdFromAchievementAndUser(achievementId, userId3);
         postClaimDemo(demonstrationId3);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Liam", "Smith", "liamstudent");
-        int userId4 = getIdFromUserName("liamstudent");
-        int demonstrationId4 = getDemoIdFromAchievementAndUser(achievementId, userId4);
+        Long userId4 = getIdFromUserName("liamstudent");
+        Long demonstrationId4 = getDemoIdFromAchievementAndUser(achievementId, userId4);
         postClaimDemo(demonstrationId4);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Mason", "Smith", "masonstudent");
-        int userId5 = getIdFromUserName("masonstudent");
-        int demonstrationId5 = getDemoIdFromAchievementAndUser(achievementId, userId5);
+        Long userId5 = getIdFromUserName("masonstudent");
+        Long demonstrationId5 = getDemoIdFromAchievementAndUser(achievementId, userId5);
         postClaimDemo(demonstrationId5);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Noah", "Smith", "noahstudent");
-        int userId6 = getIdFromUserName("noahstudent");
-        int demonstrationId6 = getDemoIdFromAchievementAndUser(achievementId, userId6);
+        Long userId6 = getIdFromUserName("noahstudent");
+        Long demonstrationId6 = getDemoIdFromAchievementAndUser(achievementId, userId6);
         postClaimDemo(demonstrationId6);
 
         // Perform GET request for /recent/demo with 6 active demonstrations claimed by current user (johnteacher)
@@ -1056,8 +1124,8 @@ public class GodControllerIT {
         // Setup and get IDs for achievement, student and help request
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int userId = getIdFromUserName("janestudent");
-        int helpRequestId = getHelpRequestIdFromUser(userId);
+        Long userId = getIdFromUserName("janestudent");
+        Long helpRequestId = getHelpRequestIdFromUser(userId);
 
         // Perform GET request for /recent/help with 1 active help request but not claimed by current user (johnteacher)
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/help", null, true);
@@ -1084,28 +1152,28 @@ public class GodControllerIT {
 
         // Add 5 more students with active and claimed help requests
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
-        int userId2 = getIdFromUserName("jamesstudent");
-        int helpRequestId2 = getHelpRequestIdFromUser(userId2);
+        Long userId2 = getIdFromUserName("jamesstudent");
+        Long helpRequestId2 = getHelpRequestIdFromUser(userId2);
         postOfferHelp(helpRequestId2);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Kieran", "Smith", "kieranstudent");
-        int userId3 = getIdFromUserName("kieranstudent");
-        int helpRequestId3 = getHelpRequestIdFromUser(userId3);
+        Long userId3 = getIdFromUserName("kieranstudent");
+        Long helpRequestId3 = getHelpRequestIdFromUser(userId3);
         postOfferHelp(helpRequestId3);
         
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Liam", "Smith", "liamstudent");
-        int userId4 = getIdFromUserName("liamstudent");
-        int helpRequestId4 = getHelpRequestIdFromUser(userId4);
+        Long userId4 = getIdFromUserName("liamstudent");
+        Long helpRequestId4 = getHelpRequestIdFromUser(userId4);
         postOfferHelp(helpRequestId4);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Mason", "Smith", "masonstudent");
-        int userId5 = getIdFromUserName("masonstudent");
-        int helpRequestId5 = getHelpRequestIdFromUser(userId5);
+        Long userId5 = getIdFromUserName("masonstudent");
+        Long helpRequestId5 = getHelpRequestIdFromUser(userId5);
         postOfferHelp(helpRequestId5);
 
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Noah", "Smith", "noahstudent");
-        int userId6 = getIdFromUserName("noahstudent");
-        int helpRequestId6 = getHelpRequestIdFromUser(userId6);
+        Long userId6 = getIdFromUserName("noahstudent");
+        Long helpRequestId6 = getHelpRequestIdFromUser(userId6);
         postOfferHelp(helpRequestId6);
 
         // Perform GET request for /recent/help with 6 active help requests claimed by current user (johnteacher)
@@ -1138,9 +1206,9 @@ public class GodControllerIT {
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         
         // Perform GET request for /recent/student/demo as a teacher with no active demonstrations
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/student/demo", null, true);
@@ -1166,11 +1234,11 @@ public class GodControllerIT {
         
         updateToken("johnteacher"); // Authenticate as teacher
 
-        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
         
         // Create a new achievement and demonstration
         postNewAchievement("Code2", "Name2", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code2");
-        int achievementId2 = getIdFromAchievementCode("Code2");
+        Long achievementId2 = getIdFromAchievementCode("Code2");
 
         updateToken("janestudent"); // Authenticate as student
             
@@ -1199,8 +1267,8 @@ public class GodControllerIT {
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
         
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int userId = getIdFromUserName("janestudent");
-        int helpRequestId = getHelpRequestIdFromUser(userId);
+        Long userId = getIdFromUserName("janestudent");
+        Long helpRequestId = getHelpRequestIdFromUser(userId);
         
         // Perform GET request for /recent/student/help as a teacher with no active help requests
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/recent/student/help", null, true);
@@ -1263,11 +1331,11 @@ public class GodControllerIT {
         postNewAchievement("Code3", "Name3", "GRADE_5", "ACHIEVEMENT", "http://example.com/Code3");
         
         setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
-        int achievementId = getIdFromAchievementCode("Code1");
-        int userId = getIdFromUserName("janestudent");
-        int demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
         postClaimDemo(demonstrationId);
-        postDemoResult(demonstrationId, achievementId, userId, "Pass");
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
         
         // Perform GET request for /report/finished with 1 student and 3 achievements in DB (GRADE_3, GRADE_4, GRADE_5)
         responseEntity = makeRequest(HttpMethod.GET, "/report/finished/", null, true);

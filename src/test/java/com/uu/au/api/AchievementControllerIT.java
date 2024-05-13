@@ -1,4 +1,5 @@
 package com.uu.au.api;
+import com.uu.au.models.Json;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,13 +28,13 @@ public class AchievementControllerIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, String data, Boolean useToken) {
+    private <T> ResponseEntity<String> makeRequest(HttpMethod method, String endpoint, T data, Boolean useToken) {
         // Generic method to make GET/PUT/POST/DELETE request to endpoint with data (may be null) and token (if needed)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (useToken) { headers.set("token", token); }
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(data, headers);
+        HttpEntity<T> requestEntity = new HttpEntity<>(data, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "http://localhost:8900" + endpoint;
@@ -57,8 +58,17 @@ public class AchievementControllerIT {
     @BeforeEach
     public void setup() {
         // Define user and course data
-        String courseData = "{\"name\":\"Fun Course\"}";
-        String userData = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"j.d@uu.se\",\"userName\":\"johnteacher\",\"role\":\"TEACHER\"}";
+        Json.CourseInfo courseData = Json.CourseInfo.builder()
+                .name("Fun Course")
+                .build();
+
+        Json.CreateUser userData = Json.CreateUser.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("j.d@uu.se")
+                .userName("johnteacher")
+                .role("TEACHER")
+                .build();
 
         // Create course and user
         makeRequest(HttpMethod.POST, "/internal/course", courseData, false);
