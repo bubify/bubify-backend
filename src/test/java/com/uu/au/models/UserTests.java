@@ -53,22 +53,17 @@ public class UserTests {
         achievement1.setLevel(Level.GRADE_3);
 
         Achievement achievement2 = new Achievement();
-        achievement2.setId(2L);
-        achievement2.setLevel(Level.GRADE_3);
+        achievement2.setId(3L);
+        achievement2.setLevel(Level.GRADE_4);
 
         Achievement achievement3 = new Achievement();
-        achievement3.setId(3L);
-        achievement3.setLevel(Level.GRADE_4);
-
-        Achievement achievement4 = new Achievement();
-        achievement4.setId(4L);
-        achievement4.setLevel(Level.GRADE_5);
+        achievement3.setId(4L);
+        achievement3.setLevel(Level.GRADE_5);
         
         List<Achievement> achievements = new ArrayList<Achievement>();
         achievements.add(achievement1);
         achievements.add(achievement2);
         achievements.add(achievement3);
-        achievements.add(achievement4);
 
         return achievements;
     }
@@ -730,7 +725,7 @@ public class UserTests {
         Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        // A list of achievements (1 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
         List<Achievement> achievements = createBasicAchievements();
 
         // Test the return when no achievements are unlocked
@@ -746,7 +741,7 @@ public class UserTests {
         Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        // A list of achievements (1 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
         List<Achievement> achievements = createBasicAchievements();
 
         Enrolment enrolment = enrolments.iterator().next();
@@ -762,18 +757,6 @@ public class UserTests {
         achievementsUnlocked.add(au1);
         
         Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
-        assertFalse(gradeAndDate.isPresent());
-        
-        // Add another GRADE_3 achievement to unlocked and test the return
-        AchievementUnlocked au2 = AchievementUnlocked.builder()
-            .id(2L)
-            .enrolment(enrolment)
-            .achievement(achievements.get(1))
-            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
-            .build();
-        achievementsUnlocked.add(au2);
-        
-        gradeAndDate = user.getGradeAndDate(achievements);
         assertEquals(Level.GRADE_3, gradeAndDate.get().getFirst());
         assertEquals(LocalDate.of(2023, 1, 20), gradeAndDate.get().getSecond());
     }
@@ -786,13 +769,26 @@ public class UserTests {
         Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        // A list of achievements (1 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
         List<Achievement> achievements = createBasicAchievements();
 
         Enrolment enrolment = enrolments.iterator().next();
         Set<AchievementUnlocked> achievementsUnlocked = enrolments.iterator().next().getAchievementsUnlocked();
 
-        // Add one GRADE_3 and one GRADE_4 achievement to unlocked and test the return
+        // Add one GRADE_4 achievement to unlocked and test the return
+        AchievementUnlocked au2 = AchievementUnlocked.builder()
+            .id(2L)
+            .enrolment(enrolment)
+            .achievement(achievements.get(1))
+            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
+            .build();
+        achievementsUnlocked.add(au2);
+        
+        // All GRADE_4 achievements are unlocked but not all GRADE_3 achievements => No Grade
+        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
+        assertFalse(gradeAndDate.isPresent());
+        
+        // Add one GRADE_3 achievement to unlocked and test the return
         AchievementUnlocked au1 = AchievementUnlocked.builder()
             .id(1L)
             .enrolment(enrolment)
@@ -800,27 +796,6 @@ public class UserTests {
             .unlockTime(LocalDateTime.of(2023, 1, 20, 12, 0))
             .build();
         achievementsUnlocked.add(au1);
-
-        AchievementUnlocked au3 = AchievementUnlocked.builder()
-            .id(1L)
-            .enrolment(enrolment)
-            .achievement(achievements.get(2))
-            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
-            .build();
-        achievementsUnlocked.add(au3);
-        
-        // All GRADE_4 achievements are unlocked but not all GRADE_3 achievements => No Grade
-        Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
-        assertFalse(gradeAndDate.isPresent());
-        
-        // Add the last GRADE_3 achievement to unlocked and test the return
-        AchievementUnlocked au2 = AchievementUnlocked.builder()
-            .id(2L)
-            .enrolment(enrolment)
-            .achievement(achievements.get(1))
-            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
-            .build();
-        achievementsUnlocked.add(au2);
 
         // Should return the date when the last GRADE_3 or GRADE_4 achievement was unlocked
         gradeAndDate = user.getGradeAndDate(achievements);
@@ -836,7 +811,7 @@ public class UserTests {
         Set<Enrolment> enrolments = createBasicEnrolmentsSet();
         user.setEnrolments(enrolments);
 
-        // A list of achievements (2 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
+        // A list of achievements (1 x GRADE_3, 1 x GRADE_4, 1 x GRADE_5)
         List<Achievement> achievements = createBasicAchievements();
 
         Enrolment enrolment = enrolments.iterator().next();
@@ -855,7 +830,7 @@ public class UserTests {
             .id(2L)
             .enrolment(enrolment)
             .achievement(achievements.get(1))
-            .unlockTime(LocalDateTime.of(2023, 1, 10, 12, 0))
+            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
             .build();
         achievementsUnlocked.add(au2);
 
@@ -863,17 +838,9 @@ public class UserTests {
             .id(1L)
             .enrolment(enrolment)
             .achievement(achievements.get(2))
-            .unlockTime(LocalDateTime.of(2023, 1, 15, 12, 0))
-            .build();
-        achievementsUnlocked.add(au3);
-
-        AchievementUnlocked au4 = AchievementUnlocked.builder()
-            .id(1L)
-            .enrolment(enrolment)
-            .achievement(achievements.get(3))
             .unlockTime(LocalDateTime.of(2023, 1, 25, 12, 0))
             .build();
-        achievementsUnlocked.add(au4);
+        achievementsUnlocked.add(au3);
         
         Optional<Pair<Level, LocalDate>> gradeAndDate = user.getGradeAndDate(achievements);
         assertEquals(Level.GRADE_5, gradeAndDate.get().getFirst());
