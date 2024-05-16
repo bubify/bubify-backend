@@ -10,7 +10,7 @@ export TERM=xterm
 rm -rf target
 
 # Start tests and store a copy of results to file
-mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true | tee /home/bubify/backend/test_results.txt
+mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
 
 # Create JaCoCo report
 mvn jacoco:report

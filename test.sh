@@ -33,7 +33,7 @@ cd backend
 rm -rf target
 
 # Start tests and store a copy of results to file
-mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true | tee test_results.txt
+mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
 
 # Create JaCoCo report (stored in target/site/jacoco/)
 mvn jacoco:report
