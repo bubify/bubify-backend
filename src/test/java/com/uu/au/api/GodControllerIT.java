@@ -1553,4 +1553,146 @@ public class GodControllerIT {
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
+
+    @Test
+    public void testStats() {
+        // Setup and get IDs for achievements, student and demonstration
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        postNewAchievement("Code2", "Name2", "GRADE_4", "ACHIEVEMENT", "http://example.com/Code2");
+        postNewAchievement("Code3", "Name3", "GRADE_5", "ACHIEVEMENT", "http://example.com/Code3");
+        
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long userId = getIdFromUserName("janestudent");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+
+        updateToken("janestudent");
+            // Perform GET request for /stats with no passed achievements
+            ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/stats", null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            try {
+                JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+                assertEquals(1, jsonObject.getInt("currentCourseWeek"));
+                assertEquals(20, jsonObject.getInt("weeksNeeded"));
+                assertEquals(20.0, jsonObject.getDouble("remainingWeeks"), 0.01); // Delta for floating point error
+                assertEquals(1, jsonObject.getInt("remaining"));
+                assertEquals(0.0, jsonObject.getDouble("averageVelocity"), 0.01); // Delta for floating point error
+                assertEquals(0, jsonObject.getInt("currentVelocity"));
+                assertEquals(0.05, jsonObject.getDouble("targetVelocity"), 0.01); // Delta for floating point error
+                assertEquals(3, jsonObject.getInt("currentTarget"));
+
+                JSONObject burnDown = jsonObject.getJSONObject("burnDown");
+                JSONArray grade3Array = burnDown.getJSONArray("GRADE_3");
+                assertEquals(1, grade3Array.getInt(0));
+                JSONArray grade4Array = burnDown.getJSONArray("GRADE_4");
+                assertEquals(2, grade4Array.getInt(0));
+                JSONArray grade5Array = burnDown.getJSONArray("GRADE_5");
+                assertEquals(3, grade5Array.getInt(0));
+
+                JSONObject achievementsPerLevel = jsonObject.getJSONObject("achievementsPerLevel");
+                assertEquals(1, achievementsPerLevel.getInt("GRADE_3"));
+                assertEquals(2, achievementsPerLevel.getInt("GRADE_4"));
+                assertEquals(3, achievementsPerLevel.getInt("GRADE_5"));
+            }
+            catch (JSONException e) {
+                fail("Failed to parse JSON object/array: " + e.getMessage());
+            }
+        
+        updateToken("johnteacher");
+        // Make student pass the GRADE_3 achievement
+        postClaimDemo(demonstrationId);
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
+
+        updateToken("janestudent");
+            // Perform GET request for /stats with 1 passed GRADE_3 achievement
+            responseEntity = makeRequest(HttpMethod.GET, "/stats", null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            try {
+                JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+                assertEquals(0, jsonObject.getInt("remaining"));
+
+                JSONObject burnDown = jsonObject.getJSONObject("burnDown");
+                JSONArray grade3Array = burnDown.getJSONArray("GRADE_3");
+                assertEquals(0, grade3Array.getInt(0));
+                JSONArray grade4Array = burnDown.getJSONArray("GRADE_4");
+                assertEquals(1, grade4Array.getInt(0));
+                JSONArray grade5Array = burnDown.getJSONArray("GRADE_5");
+                assertEquals(2, grade5Array.getInt(0));
+            }
+            catch (JSONException e) {
+                fail("Failed to parse JSON object/array: " + e.getMessage());
+            }
+
+        updateToken("johnteacher");
+
+        // Make student pass the GRADE_4 achievement
+        Json.GroupGradingCurl gradingData = Json.GroupGradingCurl.builder()
+                .username("janestudent")
+                .achievements(List.of("Code2"))
+                .build();
+        responseEntity = makeRequest(HttpMethod.POST, "/grade/group", gradingData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        updateToken("janestudent");
+            // Perform GET request for /stats with 2 passed achievements (GRADE_3 and GRADE_4)
+            responseEntity = makeRequest(HttpMethod.GET, "/stats", null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            try {
+                JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+                assertEquals(0, jsonObject.getInt("remaining"));
+
+                JSONObject burnDown = jsonObject.getJSONObject("burnDown");
+                JSONArray grade3Array = burnDown.getJSONArray("GRADE_3");
+                assertEquals(0, grade3Array.getInt(0));
+                JSONArray grade4Array = burnDown.getJSONArray("GRADE_4");
+                assertEquals(0, grade4Array.getInt(0));
+                JSONArray grade5Array = burnDown.getJSONArray("GRADE_5");
+                assertEquals(1, grade5Array.getInt(0));
+            }
+            catch (JSONException e) {
+                fail("Failed to parse JSON object/array: " + e.getMessage());
+            }
+   }
+
+    @Test
+    public void testStatsUser() {
+        // Limited testing of this method since it's the same as /stats but with user as parameter
+
+        // Setup achievements and 1 student
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        postNewAchievement("Code2", "Name2", "GRADE_4", "ACHIEVEMENT", "http://example.com/Code2");
+        postNewAchievement("Code3", "Name3", "GRADE_5", "ACHIEVEMENT", "http://example.com/Code3");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long userId = getIdFromUserName("janestudent");
+
+        // Perform GET request for /stats/{userid} with non-existing user
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/stats/1000", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+
+        // Perform GET request for /stats/{userid} for existing user
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/stats/" + userId, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals(1, jsonObject.getInt("remaining"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/stats/" + userId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
 }
