@@ -13,6 +13,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.test.annotation.DirtiesContext;
 
 import org.json.JSONArray;
@@ -25,6 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,9 +66,9 @@ public class GodControllerIT {
     }
 
     private void postNewUser(String first, String last, String email, String username, String role) {
-        // Helper method to define and POST student data, assert status code, 
-        String studentData = first + ";" + last + ";" + email + ";" + username + ";" + role;
-        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", studentData, true);
+        // Helper method to define and POST user data, assert status code
+        String userData = first + ";" + last + ";" + email + ";" + username + ";" + role;
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/admin/add-user", userData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -172,6 +176,44 @@ public class GodControllerIT {
 
         String url = "http://localhost:8900/user/upload-profile-pic";
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    private void postImportPartial(String jsonArrayString) {
+        // Helper method to perform POST request for /import/partial with JSON array
+        byte [] bytes = jsonArrayString.getBytes();
+
+        MultipartFile file = new MockMultipartFile("partial", "partial", "application/json", bytes);        
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.set("token", token);
+        
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        
+        String url = "http://localhost:8900/import/partial";
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    private void putUserData(Long userId, String first, String last, String email, String username, String role, String gitHubHandle, String zoomRoom, String deadline, String gitHubRepoURL) {
+        // Helper method to define and PUT user data, assert status code
+        String userData = "{" +
+            "\"id\":" + userId + "," +
+            "\"firstName\":\"" + first + "\"," +
+            "\"lastName\":\"" + last + "\"," +
+            "\"userName\":\"" + username + "\"," +
+            "\"email\":\"" + email + "\"," +
+            "\"role\":\"" + role + "\"," +
+            "\"gitHubHandle\":\"" + gitHubHandle + "\"," +
+            "\"zoomRoom\":\"" + zoomRoom + "\"," +
+            "\"deadline\":\"" + deadline + "\"," +
+            "\"gitHubRepoURL\":\"" + gitHubRepoURL + "\"" +
+            "}";
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.PUT, "/user", userData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -1048,6 +1090,184 @@ public class GodControllerIT {
     }
 
     @Test
+    public void testImportPartial() {
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        postNewAchievement("Code2", "Name2", "GRADE_4", "ACHIEVEMENT", "http://example.com/Code2");
+        
+        // Perform POST request for /import/partial with empty JSON array
+        postImportPartial("[]");
+        
+        // Perform POST request for /import/partial with JSON array containing 1 new student
+        String jsonArrayOne = "[{\"firstName\":\"Jane\",\"lastName\":\"Doe\",\"username\":\"janestudent\",\"email\":\"jane.doe@uu.se\",\"passedAchievements\":[\"Code1\",\"Code2\"],\"lastLogin\":\"" + LocalDateTime.now() + "\"}]";
+        postImportPartial(jsonArrayOne);
+
+        // Perform GET request for /explore/progress to check if student is in the list and has passed achievements
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray achievements = jsonObject.getJSONArray("achievements");
+            assertEquals(2, achievements.length());
+            assertEquals("Code1", achievements.getJSONObject(0).getString("code"));
+            assertEquals("Code2", achievements.getJSONObject(1).getString("code"));
+            
+            JSONArray userProgress = jsonObject.getJSONArray("userProgress");
+            assertEquals(1, userProgress.length());
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\",\"Pass\"]", userProgressFirst.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Perform POST request for /import/partial with JSON array containing 1 existing and 2 new students (one with lastLogin set to null)
+        String jsonArrayThree = "[{\"firstName\":\"Jane\",\"lastName\":\"Doe\",\"username\":\"janestudent\",\"email\":\"jane.doe@uu.se\",\"passedAchievements\":[\"Code1\",\"Code2\"],\"lastLogin\":\"" + LocalDateTime.now() + "\"}," +
+                                "{\"firstName\":\"James\",\"lastName\":\"Smith\",\"username\":\"jamesstudent\",\"email\":\"james.smith@uu.se\",\"passedAchievements\":[\"Code1\"],\"lastLogin\":null}," +
+                                "{\"firstName\":\"Kieran\",\"lastName\":\"Smith\",\"username\":\"kieranstudent\",\"email\":\"kieran.smith@uu.se\",\"passedAchievements\":[\"Code2\"],\"lastLogin\":\"" + LocalDateTime.now() + "\"}]";
+        postImportPartial(jsonArrayThree);
+
+        // Perform GET request for /explore/progress to check 1 existing and 1 new students are in the list the new have passed achievements
+        responseEntity = makeRequest(HttpMethod.GET, "/explore/progress", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            
+            JSONArray userProgress = jsonObject.getJSONArray("userProgress");
+            assertEquals(2, userProgress.length());
+
+            JSONObject userProgressFirst = jsonObject.getJSONArray("userProgress").getJSONObject(0);
+            assertEquals("janestudent", userProgressFirst.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Pass\",\"Pass\"]", userProgressFirst.getString("progress"));
+
+            JSONObject userProgressSecond = jsonObject.getJSONArray("userProgress").getJSONObject(1);
+            assertEquals("kieranstudent", userProgressSecond.getJSONObject("user").getString("userName"));
+            assertEquals("[\"Fail\",\"Pass\"]", userProgressSecond.getString("progress"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            postImportPartial("[]");
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testQos() {
+        // Perform GET request for /qos with no students
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/qos", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Check JSON object from response body
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals(0, jsonObject.getInt("helpRequestsPending"));
+            assertEquals(0, jsonObject.getInt("helpRequestsPickupTime"));
+            assertEquals(0, jsonObject.getInt("helpRequestsRoundtripTime"));
+            assertEquals(0, jsonObject.getInt("demonstrationsPending"));
+            assertEquals(0, jsonObject.getInt("demonstrationsPickupTime"));
+            assertEquals(0, jsonObject.getInt("demonstrationsRoundtripTime"));
+            assertEquals(0, jsonObject.getInt("procentEverLoggedIn"));
+            assertEquals(0, jsonObject.getInt("procentLoggedInLastTwoWeeks"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Setup and 2 students with active demonstrations and help requests
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long userId = getIdFromUserName("janestudent");
+        Long achievementId = getIdFromAchievementCode("Code1");
+        Long demonstrationId = getDemoIdFromAchievementAndUser(achievementId, userId);
+        Long helpRequestId = getHelpRequestIdFromUser(userId);
+
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        Long userId2 = getIdFromUserName("jamesstudent");
+        Long achievementId2 = getIdFromAchievementCode("Code1");
+        Long demonstrationId2 = getDemoIdFromAchievementAndUser(achievementId2, userId2);
+        Long helpRequestId2 = getHelpRequestIdFromUser(userId2);
+
+        // Create 2 more students, but without demos and help requests and never logged in
+        postNewUser("Kieran","Smith","kieran.smiths@uu.se","kieranstudent","STUDENT");
+        postNewUser("Liam","Smith","liam.smiths@uu.se","liamstudent","STUDENT");
+
+        // Perform GET request for /qos with 2 active demonstrations and help requests and 2 students never logged in
+        responseEntity = makeRequest(HttpMethod.GET, "/qos", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Check JSON object from response body
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals(2, jsonObject.getInt("helpRequestsPending"));
+            assertEquals(2, jsonObject.getInt("demonstrationsPending"));
+            assertEquals(50, jsonObject.getInt("procentEverLoggedIn"));
+            assertEquals(50, jsonObject.getInt("procentLoggedInLastTwoWeeks"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Claim and pass demonstration and help request for first student
+        postClaimDemo(demonstrationId);
+        postDemoResult(demonstrationId, achievementId, userId, Result.PASS);
+        postOfferHelp(helpRequestId);
+        postHelpDone(helpRequestId);
+
+        // Perform GET request for /qos with 1 active demonstrations and help requests
+        responseEntity = makeRequest(HttpMethod.GET, "/qos", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Check JSON object from response body
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals(1, jsonObject.getInt("helpRequestsPending"));
+            assertEquals(1, jsonObject.getInt("demonstrationsPending"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Claim and pass demonstration and help request for second student
+        postClaimDemo(demonstrationId2);
+        postDemoResult(demonstrationId2, achievementId2, userId2, Result.PASS);
+        postOfferHelp(helpRequestId2);
+        postHelpDone(helpRequestId2);
+
+        // Perform GET request for /qos with 0 active demonstrations and help requests
+        responseEntity = makeRequest(HttpMethod.GET, "/qos", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Check JSON object from response body
+        try {
+            JSONObject jsonObject = new JSONObject(responseEntity.getBody());
+            assertEquals(0, jsonObject.getInt("helpRequestsPending"));
+            assertEquals(0, jsonObject.getInt("demonstrationsPending"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/qos", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
     public void testRecentDemo() {
         // Setup and get IDs for achievement, student and demonstration
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
@@ -1542,7 +1762,7 @@ public class GodControllerIT {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody().startsWith("%PDF"));
         
-        // TODO: Assert content of PDF file to contain Jane Doe and GRADE_3
+        // TODO: Assert content of PDF file to contain Jane Doe and INLUPP1
 
         // Assert throws exception when current user is a student, hence not authorized
         postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
@@ -1659,7 +1879,7 @@ public class GodControllerIT {
 
     @Test
     public void testStatsUser() {
-        // Limited testing of this method since it's the same as /stats but with user as parameter
+        // Limited testing of this method since it's the same method as /stats but with user as parameter
 
         // Setup achievements and 1 student
         postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
@@ -1692,6 +1912,253 @@ public class GodControllerIT {
 
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
             makeRequest(HttpMethod.GET, "/stats/" + userId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testIsProfilePicVerified() {
+        // Setup 2 students, one with a profile pic and one without
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long userIdJane = getIdFromUserName("janestudent");
+
+        postNewUser("James", "Smith", "james.smith@uu.se", "jamesstudent", "STUDENT");
+        Long userIdJames = getIdFromUserName("jamesstudent");
+
+        // Sleep for 3 seconds to allow processThumbnails() to run
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            fail("Failed to sleep: " + e.getMessage());
+        }
+
+        // Perform GET request for /user/profile-pic/verified with non-existing user
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/user/profile-pic/1000", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+
+        // Perform GET request for /user/profile-pic/{id} for existing user with no profile pic
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJames, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
+        
+        // Perform GET request for /user/profile-pic/{id} for existing user with profile pic
+        responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJane, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+
+        updateToken("jamesstudent"); // Authenticate as student
+        
+            // Perform GET request for /user/profile-pic/{id} for own student user
+            responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJames, null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            
+            // Perform GET request for /user/profile-pic/{id} for teacher when current user is a student
+            Long userIdTeacher = getIdFromUserName("johnteacher");
+            responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdTeacher, null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            
+            // Assert throws exception when requesting profile pic for another student (with profile pic) and current user is a student
+            HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+                makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJane, null, true);
+            });
+            assertEquals(HttpStatus.UNAUTHORIZED, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testSetAndGetProfilePicVerified() {
+        // Perform PUT request for /user/profile-pic/{id}/verified for non-existing user
+        HttpClientErrorException putException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.PUT, "/user/profile-pic/1000/verified", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, putException.getStatusCode());
+
+        // Perform GET request for /user/profile-pic/{id}/verified for non-existing user
+        HttpClientErrorException getException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.GET, "/user/profile-pic/1000/verified", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, getException.getStatusCode());
+
+        // Setup and get ID for student with no profile pic
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
+        Long userId = getIdFromUserName("janestudent");
+
+        // Perform PUT request for /user/profile-pic/{id}/verified for existing user with no profile pic
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Perform GET request for /user/profile-pic/{id}/verified for existing user with no profile pic
+        responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertFalse(Boolean.parseBoolean(responseEntity.getBody()));
+
+        updateToken("janestudent"); // Authenticate as student
+    
+            postProfilePic();
+            
+        updateToken("johnteacher"); // Authenticate as teacher again
+
+        // Perform PUT request for /user/profile-pic/{id}/verified for existing user with profile pic
+        responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Perform GET request for /user/profile-pic/{id}/verified for existing user with profile pic
+        responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(Boolean.parseBoolean(responseEntity.getBody()));
+
+        // Assert throws exception for PUT request when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testRevokeProfilePic() {
+        // // Perform DELETE request for /user/revoke-profile-pic/{id} for non-existing user
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.DELETE, "/user/revoke-profile-pic/1000", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode()); 
+
+        // Setup and get ID for student with no profile pic
+        postNewUser("James", "Smith", "james.smith@uu.se", "jamesstudent", "STUDENT");
+        Long userIdJames = getIdFromUserName("jamesstudent");
+
+        // Perform DELETE request for /user/revoke-profile-pic/{id} for existing user with no profile pic
+        responseEntity = makeRequest(HttpMethod.DELETE, "/user/revoke-profile-pic/" + userIdJames, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Setup and get ID for student with profile pic        
+        postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long userIdJane = getIdFromUserName("janestudent");
+
+        // Perform GET request for /user/profile-pic/{id}/verified to check profile pic is verified
+        responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJane + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(Boolean.parseBoolean(responseEntity.getBody())); // Profile pic is verified
+
+        // Perform DELETE request for /user/revoke-profile-pic/{id} for existing user with profile pic
+        responseEntity = makeRequest(HttpMethod.DELETE, "/user/revoke-profile-pic/" + userIdJane, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Perform GET request for /user/profile-pic/{id}/verified to check profile pic is revoked
+        responseEntity = makeRequest(HttpMethod.GET, "/user/profile-pic/" + userIdJane + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertFalse(Boolean.parseBoolean(responseEntity.getBody())); 
+
+        // Assert throws exception for DELETE request when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.DELETE, "/user/revoke-profile-pic/" + userIdJane, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testUploadProfilePic() {
+        // Setup and get ID for student
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
+        Long userId = getIdFromUserName("janestudent");
+
+        updateToken("janestudent"); // Authenticate as student
+
+            // Perform POST request for /user/upload-profile-pic with invalid file name
+            MultipartFile file = new MockMultipartFile("invalid_name", "invalid_name", "image/jpeg", new byte[0]);
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", file.getResource());
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.set("token", token);
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:8900/user/upload-profile-pic";
+
+            HttpServerErrorException exception = assertThrows(InternalServerError.class, () -> {
+                restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            });
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());           
+
+            // Perform POST request for /user/upload-profile-pic with valid file
+            postProfilePic();            
+        
+        updateToken("johnteacher"); // Authenticate as teacher again
+        
+        // Verify profile picture and assert status code
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.PUT, "/user/profile-pic/" + userId + "/verified", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Sleep for 3 seconds to allow processThumbnails() to run
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            fail("Failed to sleep: " + e.getMessage());
+        }       
+        
+        updateToken("janestudent"); // Authenticate as student again
+            // Perform POST request for /user/approveThumbnail
+            responseEntity = makeRequest(HttpMethod.POST, "/user/approveThumbnail", null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            // Try to upload a new profile pic, should fail
+            HttpClientErrorException exception2 = assertThrows(HttpClientErrorException.class, () -> {
+                postProfilePic();
+            });
+            assertEquals(HttpStatus.BAD_REQUEST, exception2.getStatusCode());
+    }
+
+    @Test
+    public void testWebhookGithubAccept() {
+        Json.WebhookGithubAccept githubDataNull = Json.WebhookGithubAccept.builder()
+                .action("test_action")
+                .membership(null)
+                .build();
+
+        // Perform POST request for /webhook/github/accept with no membership-data
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/webhook/github/accept", githubDataNull, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Setup and get ID for student
+        postNewUser("Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT");
+        Long userId = getIdFromUserName("janestudent");
+
+        Json.GithubMembership membershipData = Json.GithubMembership.builder()
+                .state("test_state")
+                .role("test_role")
+                .user(Json.GithubUser.builder().login("janestudentgithub").build())
+                .build();
+        Json.WebhookGithubAccept githubData = Json.WebhookGithubAccept.builder()
+                .action("test_action")
+                .membership(membershipData)
+                .build();
+        
+        // Perform POST request for /webhook/github/accept with valid data but no githubhandle set
+        responseEntity = makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Update user with githubhandle
+        putUserData(userId, "Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT", "janestudentgithub", "Room1", LocalDate.now().plusWeeks(2).toString(), "http://github.com/janestudentgithub");
+        // FIXME: putUserData (through put request to the UserController) can't update githubhandle if it's null in the first place
+        
+        // Perform POST request for /webhook/github/accept with valid data and githubhandle
+        responseEntity = makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        // Assert throws exception when current user is a student, hence not authorized
+        postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
