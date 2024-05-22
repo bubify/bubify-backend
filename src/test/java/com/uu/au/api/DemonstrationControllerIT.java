@@ -2,7 +2,6 @@ package com.uu.au.api;
 import com.uu.au.models.Json;
 import com.uu.au.enums.Result;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,11 +24,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class DemonstrationControllerIT {
     
-    @Autowired
     private TestHelper testHelper;
 
     @BeforeEach
     public void setup() {
+        this.testHelper = new TestHelper(); // Sets up a TestHelper object to access helper methods
+
         // Define user and course data
         Json.CourseInfo courseData = Json.CourseInfo.builder()
                 .name("Fun Course")

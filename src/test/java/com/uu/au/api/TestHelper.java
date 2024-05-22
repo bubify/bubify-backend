@@ -10,8 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.stereotype.Component;
-import org.apache.commons.lang3.ObjectUtils.Null;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +23,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Component
 public class TestHelper {
     private static String token;
 
