@@ -159,6 +159,17 @@ public class TestHelper {
         ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/markAsDone", helpRequestData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+    
+    public void postGradeGroupUsers(List<Long> userIds, List<String> achievementCodes) {
+        // Helper method to define and POST group grading data, assert status code
+        Json.GroupGradingUsers requestBody = Json.GroupGradingUsers.builder()
+                .userIds(userIds)
+                .achievements(achievementCodes)
+                .build();
+        ResponseEntity<String> responseEntity = makeRequest(HttpMethod.POST, "/grade/group_users", requestBody, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("SUCCESS", responseEntity.getBody());
+    }
 
     public void postProfilePic(String fileName) {
         // Helper method to POST a profile picture for the current authenticated user

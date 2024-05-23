@@ -498,4 +498,260 @@ public class DemonstrationControllerIT {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertTrue(exception.getMessage().contains("CANNOT_UNLOCK_ACHIEVEMENT_CURRENTLY_ON_PUSH_BACK"));
     }
+
+    @Test
+    public void testActiveAndSubmittedOrPickedUp() {
+        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp with no active demonstrations
+        ResponseEntity<String> responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("[]", responseEntity.getBody());
+
+        // Setup achievement and user data
+        testHelper.postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        Long achievementId = testHelper.getIdFromAchievementCode("Code1");
+        Long userIdJane = testHelper.getIdFromUserName("janestudent");
+        Long demonstrationIdJane = testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJane);
+        testHelper.postDemoClaim(demonstrationIdJane);
+
+        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp to verify that the demonstration is active
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert the demonstration is active
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(1, jsonArray.length());
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            assertEquals("janestudent", jsonObject.getJSONArray("submitters").getJSONObject(0).getString("userName"));
+            assertEquals("Code1", jsonObject.getJSONArray("achievements").getJSONObject(0).getString("code"));
+            assertEquals("CLAIMED", jsonObject.getString("status"));
+            assertEquals("johnteacher", jsonObject.getJSONObject("examiner").getString("userName"));
+            assertTrue(jsonObject.isNull("zoomRoom"));
+            assertEquals("Room1", jsonObject.getString("physicalRoom"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Add 2 more students with active demonstrations of 2 different achievements
+        testHelper.setupStudentWithValidPic("James", "Smith", "jamesstudent");
+        testHelper.setupStudentWithValidPic("Adam", "Brown", "adamstudent");
+        testHelper.postNewAchievement("Code2", "Name2", "GRADE_4", "ACHIEVEMENT", "http://example.com/Code2");
+        Long achievementId2 = testHelper.getIdFromAchievementCode("Code2");
+        Long userIdJames = testHelper.getIdFromUserName("jamesstudent");
+        Long userIdAdam = testHelper.getIdFromUserName("adamstudent");
+        testHelper.updateToken("jamesstudent");
+            testHelper.postDemoRequestMultiple(List.of(achievementId, achievementId2), List.of(userIdJames, userIdAdam));
+        
+        testHelper.updateToken("johnteacher");
+
+        // Perform GET request for /demonstrations/activeAndSubmittedOrPickedUp to verify that the demonstrations are active
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstrations/activeAndSubmittedOrPickedUp", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // Get JSON object from response body and assert 2 demonstrations are active
+
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(2, jsonArray.length());
+
+            JSONObject jsonObject2 = jsonArray.getJSONObject(1);
+            assertEquals("jamesstudent", jsonObject2.getJSONArray("submitters").getJSONObject(0).getString("userName"));
+            assertEquals("adamstudent", jsonObject2.getJSONArray("submitters").getJSONObject(1).getString("userName"));
+            assertEquals("Code1", jsonObject2.getJSONArray("achievements").getJSONObject(0).getString("code"));
+            assertEquals("Code2", jsonObject2.getJSONArray("achievements").getJSONObject(1).getString("code"));
+            assertEquals("SUBMITTED", jsonObject2.getString("status"));
+            assertTrue(jsonObject2.isNull("examiner"));
+            assertTrue(jsonObject2.isNull("zoomRoom"));
+            assertEquals("Room1", jsonObject2.getString("physicalRoom"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMatchMaking(){
+        // Perform GET request for /demonstration/matchMaking with students or achievements in DB
+        ResponseEntity<String> responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/matchMaking", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("[]", responseEntity.getBody());
+
+        // Setup 2 students and 1 achievements in DB
+        testHelper.setupStudentWithValidPic("Jane", "Doe", "janestudent");
+        testHelper.setupStudentWithValidPic("James", "Smith", "jamesstudent");
+        testHelper.postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        Long userIdJane = testHelper.getIdFromUserName("janestudent");
+        Long userIdJames = testHelper.getIdFromUserName("jamesstudent");
+
+        // Perform GET request for /demonstration/matchMaking to verify that the 2 students are matched with the achievement
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/matchMaking", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(2, jsonArray.length());
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            Long firstUserId = jsonObject.getJSONObject("first").getLong("id");
+            JSONObject jsonObject2 = jsonArray.getJSONObject(1);
+            Long secondUserId = jsonObject2.getJSONObject("first").getLong("id");
+            assertTrue((firstUserId == userIdJane && secondUserId == userIdJames) || (firstUserId == userIdJames && secondUserId == userIdJane));
+
+            JSONArray jsonArrayAchievements = jsonObject.getJSONArray("second");
+            assertEquals(1, jsonArrayAchievements.length());
+            assertEquals("Code1", jsonArrayAchievements.getJSONObject(0).getString("code"));
+            JSONArray jsonArrayAchievements2 = jsonObject.getJSONArray("second");
+            assertEquals(1, jsonArrayAchievements2.length());
+            assertEquals("Code1", jsonArrayAchievements2.getJSONObject(0).getString("code"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Perform POST request for /grade/group_users to grade Jane on Code1 achievement
+        testHelper.postGradeGroupUsers(List.of(userIdJane), List.of("Code1"));
+
+        // Perform GET request for /demonstration/matchMaking to verify that only James is in the list
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/matchMaking", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(1, jsonArray.length());
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            assertEquals(userIdJames, jsonObject.getJSONObject("first").getLong("id"));
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Setup another student and achievement in DB
+        testHelper.setupStudentWithValidPic("Adam", "Brown", "adamstudent");
+        testHelper.postNewAchievement("Code2", "Name2", "GRADE_4", "ACHIEVEMENT", "http://example.com/Code2");
+        Long userIdAdam = testHelper.getIdFromUserName("adamstudent");
+
+        // Perform POST request for /grade/group_users to grade Jane and James on Code2 achievement
+        testHelper.postGradeGroupUsers(List.of(userIdJane, userIdJames), List.of("Code2"));
+
+        // Perform GET request for /demonstration/matchMaking to verify that only Adam and James are in the list with 2 vs 1 achievement(s)
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/matchMaking", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        try {
+            JSONArray jsonArray = new JSONArray(responseEntity.getBody());
+            assertEquals(2, jsonArray.length());
+
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            Long firstUserId = jsonObject.getJSONObject("first").getLong("id");
+            JSONObject jsonObject2 = jsonArray.getJSONObject(1);
+            Long secondUserId = jsonObject2.getJSONObject("first").getLong("id");
+            assertTrue((firstUserId == userIdAdam && secondUserId == userIdJames) || (firstUserId == userIdJames && secondUserId == userIdAdam));
+
+            int aLength = jsonObject.getJSONArray("second").length();
+            int aLength2 = jsonObject2.getJSONArray("second").length();
+            assertTrue(aLength == 1 && aLength2 == 2 || aLength == 2 && aLength2 == 1);
+        }
+        catch (JSONException e) {
+            fail("Failed to parse JSON object/array: " + e.getMessage());
+        }
+
+        // Assert throws exception when current user is a student, hence not authorized
+        testHelper.postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        testHelper.updateToken("somestudent"); // Authenticate as student
+        
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            testHelper.makeRequest(HttpMethod.GET, "/demonstration/matchMaking", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+    
+    @Test
+    public void testClearAllActiveDemonstrationsUser(){
+        // Perform GET request for /demonstration/clearList to clear an empty list of active demos
+        ResponseEntity<String> responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/clearList", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(testHelper.getIdsOfActiveDemonstrations().length == 0);
+
+        // Add 1 student with an active demonstration, verify that the list of active demos has 1 element
+        testHelper.postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        assertTrue(testHelper.getIdsOfActiveDemonstrations().length == 1);
+        
+        // Perform GET request for /demonstration/clearList to clear the list of active demonstrations
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/clearList", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(testHelper.getIdsOfActiveDemonstrations().length == 0);
+        
+        // Add 2 students with active demonstrations, verify that the list of active demos has 2 elements
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Adam", "Brown", "adamstudent");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        assertTrue(testHelper.getIdsOfActiveDemonstrations().length == 2);
+
+        // Perform GET request for /demonstration/clearList to clear the list of active demonstrations
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/clearList", null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(testHelper.getIdsOfActiveDemonstrations().length == 0);
+
+        // Assert throws exception when current user is a student, hence not authorized
+        testHelper.postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        testHelper.updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            testHelper.makeRequest(HttpMethod.GET, "/demonstration/clearList", null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+    
+    @Test
+    public void testCancelDemonstration(){
+        // Cancel demonstration with invalid demonstration id
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            testHelper.makeRequest(HttpMethod.GET, "/demonstration/cancel/1000L", null, true);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+
+        // Setup achievement and 3 users with active demonstrations
+        testHelper.postNewAchievement("Code1", "Name1", "GRADE_3", "ACHIEVEMENT", "http://example.com/Code1");
+        Long achievementId = testHelper.getIdFromAchievementCode("Code1");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Jane", "Doe", "janestudent");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "James", "Smith", "jamesstudent");
+        testHelper.setupStudentWithValidPicAndActiveDemoAndHelpRequest("Code1", "Adam", "Brown", "adamstudent");
+        Long userIdJane = testHelper.getIdFromUserName("janestudent");
+        Long userIdJames = testHelper.getIdFromUserName("jamesstudent");
+        Long userIdAdam = testHelper.getIdFromUserName("adamstudent");
+        Long demonstrationIdJane = testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJane);
+        Long demonstrationIdJames = testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJames);
+        Long demonstrationIdAdam = testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdAdam);
+
+        // Teacher cancels a demonstration that a student submitted, verify that it is removed from the list of active demonstrations
+        ResponseEntity<String> responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/cancel/" + demonstrationIdJane, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJane) == 0);
+        
+        // Student cancels a claimed demonstration that it has submitted, verify that it is removed from the list of active demonstrations
+        testHelper.postDemoClaim(demonstrationIdJames);
+        testHelper.updateToken("jamesstudent");
+            responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/cancel/" + demonstrationIdJames, null, true);
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        testHelper.updateToken("johnteacher");
+        assertTrue(testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJames) == 0);
+        
+        // Student tries to cancel a demonstration from another student, should fail, verify that the demonstration is still active
+        testHelper.updateToken("jamesstudent");
+            HttpClientErrorException exception2 = assertThrows(HttpClientErrorException.class, () -> {
+                testHelper.makeRequest(HttpMethod.GET, "/demonstration/cancel/" + demonstrationIdAdam, null, true);
+            });
+            assertEquals(HttpStatus.BAD_REQUEST, exception2.getStatusCode());
+        testHelper.updateToken("johnteacher");
+        assertTrue(testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdAdam) != 0);
+
+        // Teacher cancels an already cancelled demonstration
+        responseEntity = testHelper.makeRequest(HttpMethod.GET, "/demonstration/cancel/" + demonstrationIdJames, null, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(testHelper.getDemoIdFromAchievementAndUser(achievementId, userIdJames) == 0);
+    }
 }

@@ -1,6 +1,8 @@
 package com.uu.au.api;
+
 import com.uu.au.models.Json;
 import com.uu.au.enums.Result;
+import com.uu.au.enums.SortKey;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
@@ -603,6 +605,29 @@ public class GodControllerIT {
         
         HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
             testHelper.makeRequest(HttpMethod.GET, "/explore/student/" + userId, null, true);
+        });
+        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
+    }
+
+    @Test
+    public void testExploreVelocity() {
+        Json.ExploreVelocity velocityData = Json.ExploreVelocity.builder()
+                .velocity(1L)
+                .sortBy(SortKey.VELOCITY_DEC)
+                .build();
+
+        // Perform POST request for /explore/velocity with no students
+        ResponseEntity<String> responseEntity = testHelper.makeRequest(HttpMethod.POST, "/explore/velocity", velocityData, true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        // FIXME: Add more tests when logic is implemented
+
+        // Assert throws exception when current user is a student, hence not authorized
+        testHelper.postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
+        testHelper.updateToken("somestudent"); // Authenticate as student
+
+        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
+            testHelper.makeRequest(HttpMethod.POST, "/explore/velocity", velocityData, true);
         });
         assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
