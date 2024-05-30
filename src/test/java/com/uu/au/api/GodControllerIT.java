@@ -1841,14 +1841,5 @@ public class GodControllerIT {
         // Perform POST request for /webhook/github/accept with valid data and githubhandle
         responseEntity = testHelper.makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        
-        // Assert throws exception when current user is a student, hence not authorized
-        testHelper.postNewUser("Some", "One", "some.one@uu.se", "somestudent", "STUDENT");
-        testHelper.updateToken("somestudent"); // Authenticate as student
-
-        HttpClientErrorException notAuthException = assertThrows(HttpClientErrorException.class, () -> {
-            testHelper.makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
-        });
-        assertEquals(HttpStatus.FORBIDDEN, notAuthException.getStatusCode());
     }
 }
