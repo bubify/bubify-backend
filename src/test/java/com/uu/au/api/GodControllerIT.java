@@ -1833,7 +1833,7 @@ public class GodControllerIT {
         // Perform POST request for /webhook/github/accept with valid data but no githubhandle set
         responseEntity = testHelper.makeRequest(HttpMethod.POST, "/webhook/github/accept", githubData, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
+        
         // Update user with githubhandle
         testHelper.putUserData(userId, "Jane", "Doe", "jane.doe@uu.se", "janestudent", "STUDENT", "janestudentgithub", "Room1", LocalDate.now().plusWeeks(2).toString(), "http://github.com/janestudentgithub");
         // FIXME: testHelper.putUserData (through put request to the UserController) can't update githubhandle if it's null in the first place
