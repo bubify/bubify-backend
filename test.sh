@@ -32,8 +32,17 @@ mkdir -p logs
 cd backend
 rm -rf target
 
-# Start tests and store a copy of results to file
-mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
+# Start tests based on the argument
+if [ "$1" == "unit" ]; then
+    echo "Running only unit tests..."
+    mvn test -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
+elif [ "$1" == "integration" ]; then
+    echo "Running only integration tests..."
+    mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true -DskipUnit=true
+else
+    echo "Running all tests..."
+    mvn verify -Dspring.profiles.active=test -Dmaven.test.failure.ignore=true
+fi
 
 # Create JaCoCo report (stored in target/site/jacoco/)
 mvn jacoco:report

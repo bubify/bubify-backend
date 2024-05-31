@@ -17,6 +17,7 @@
   <properties>
     <java.version>15</java.version>
     <log4j2.version>2.16.0</log4j2.version>
+    <skipUnit>${skipTests}</skipUnit>
   </properties>
 
   <dependencies>
@@ -245,7 +246,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- <skipTests>true</skipTests> -->
+          <skipTests>${skipUnit}</skipTests>
         </configuration>
       </plugin>
       <plugin>
@@ -257,11 +258,6 @@
                     <goal>integration-test</goal>
                     <goal>verify</goal>
                 </goals>
-                <!-- <configuration>
-                  <includes>
-                      <include>com.uu.au.api.DemonstrationControllerIT</include>
-                  </includes>
-                </configuration> -->
             </execution>
           </executions>
       </plugin>

@@ -1,9 +1,9 @@
 FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TEST_TYPE
 
-# LABEL maintainer="jonas.norlinder@it.uu.se"
-LABEL maintainer="erik.magnehed.7725@student.uu.se"
+LABEL maintainer="jonas.norlinder@it.uu.se"
 
 RUN apt update
 RUN apt upgrade -y
@@ -52,6 +52,7 @@ ENV AU_KEY_STORE_TYPE=PKCS12
 
 ENV AU_PROFILE_PICTURE_DIR=/home/bubify/profile_pictures/
 ENV AU_BACKUP_DIR=/home/bubify/au_backups/
+ENV TEST_TYPE=${TEST_TYPE}
 
 WORKDIR /home/bubify
 
