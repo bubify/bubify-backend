@@ -20,7 +20,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(name = "idx_status", columnList = "status"))
+@Table(indexes = @Index(name = "idx_status_demo", columnList = "status"))
 public class Demonstration {
     @Id
     @GeneratedValue

@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Controller
-@Profile("development")
+@Profile({"development", "test"})
 public class DevelopmentController {
     @Autowired
     AuthController authController;
