@@ -1,0 +1,35 @@
+name: 'Test Report'
+on:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate Unit Tests Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        artifact: test-results
+        name: Unit Tests Report
+        path: target/surefire-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true
+
+    - name: Generate Integration Tests Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        artifact: test-results
+        name: Integration Tests Report
+        path: target/failsafe-reports/*.xml
+        reporter: java-junit
+        fail-on-error: true

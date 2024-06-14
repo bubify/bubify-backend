@@ -1,5 +1,4 @@
-name: Build and Test with Maven
-permissions: write-all
+name: CI
 
 on:
   push:
@@ -9,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     env:
@@ -69,20 +67,9 @@ jobs:
     - name: Remove failsafe-summary.xml
       run: rm -f target/failsafe-reports/failsafe-summary.xml
 
-    - name: Create Unit Tests Report
-      uses: dorny/test-reporter@v1
-      if: always()
+    - name: Upload test results
+    - uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
-        name: Unit Tests Report
+        name: test-results
         path: target/surefire-reports/*.xml
-        reporter: java-junit
-        fail-on-error: true
-
-    - name: Create Integration Tests Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Integration Tests Report
-        path: target/failsafe-reports/*.xml
-        reporter: java-junit
-        fail-on-error: true
