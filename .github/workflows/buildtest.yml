@@ -1,8 +1,5 @@
 name: Build and Test with Maven
-permissions:
-  id-token: write
-  contents: read
-  checks: write
+permissions: write-all
 
 on:
   push:
