@@ -1,4 +1,8 @@
 name: Build and Test with Maven
+permissions:
+  id-token: write
+  contents: read
+  checks: write
 
 on:
   push:
