@@ -175,7 +175,7 @@ public class User {
 
     @JsonIgnore
     public String emailPrefix() {
-        return email.substring(0, email.indexOf('@'));
+        return email.contains("@") ? email.substring(0, email.indexOf('@')) : null;
     }
 
     @JsonIgnore
